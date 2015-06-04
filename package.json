@@ -1,0 +1,29 @@
+{
+  "name": "morning.work",
+  "version": "1.0.0",
+  "description": "http://morning.work",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leizongmin/morning.work.git"
+  },
+  "keywords": [
+    "blog"
+  ],
+  "author": "Zongmin Lei <leizongmin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leizongmin/morning.work/issues"
+  },
+  "homepage": "https://github.com/leizongmin/morning.work",
+  "dependencies": {
+    "async": "^1.2.0",
+    "markdown-it": "^4.2.1",
+    "mkdirp": "^0.5.1",
+    "rd": "0.0.2",
+    "tinyliquid": "^0.2.29"
+  }
+}
