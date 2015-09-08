@@ -22,6 +22,7 @@
   "dependencies": {
     "async": "^1.2.0",
     "markdown-it": "^4.2.1",
+    "markdown-it-toc": "^1.1.0",
     "mkdirp": "^0.5.1",
     "rd": "0.0.2",
     "tinyliquid": "^0.2.29"

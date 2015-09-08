@@ -11,6 +11,9 @@ link:  https://github.com/leizongmin/node-lei-stream
 
 因此，我很顺理成章地选用了`fs.createReadStream()`来读取文件，自然在写文件时也使用对应的`fs.createWriteStream()`来做。
 
+@[toc](目录)
+
+
 ## 按行读写流
 
 由于要操作的是文本文件，并且文件中的内容每一行记录均使用换行符`\n`来分隔，我编写了一个模块用来按行从一个`stream`中读取内容，以及按行往一个`stream`中写入内容，下面将介绍这个模块的简单使用方法。
@@ -555,5 +558,5 @@ WriteStream.prototype._write = function(data, encoding, cb) {
 + 数据可被拆分成小块处理（比如一些日志文件，按行读写）
 + 控制读取速度，保持读写速度同步
 
-本文中提到的`lei-stream`模块源码可从这里获得：[https://github.com/leizongmin/node-lei-stream](https://github.com/leizongmin/node-lei-stream)
+本文中提到的`lei-stream`模块源码可从这里获得：https://github.com/leizongmin/node-lei-stream
 

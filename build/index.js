@@ -11,7 +11,13 @@ var rd = require('rd');
 var mkdirp = require('mkdirp');
 var tinyliquid = require('tinyliquid');
 var MarkdownIt = require('markdown-it');
-var md = new MarkdownIt();
+var md = new MarkdownIt({
+  linkify: true,
+  html: true,
+  langPrefix: 'language-',
+  typography: true
+});
+md.use(require('markdown-it-toc'));
 
 
 var SOURCE_DIR = path.resolve(__dirname, '../source');
