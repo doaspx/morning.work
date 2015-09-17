@@ -1,0 +1,16 @@
+{
+  "name": "nodejs-config-file",
+  "version": "1.0.0",
+  "description": "",
+  "main": "1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zongmin Lei <leizongmin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^1.16.0",
+    "strip-json-comments": "^1.0.4",
+    "yamljs": "^0.2.4"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  // debug 为 true 时，用于本地调试
+  "debug": true,
+  // 社区名字
+  "name": "Nodeclub",
+  // 社区的描述
+  "description": "CNode：Node.js专业中文社区",
+  "keywords": "nodejs, node, express, connect, socket.io"
+}
