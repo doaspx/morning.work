@@ -20,7 +20,7 @@ undefined
 1
 > s.doSegment('神奇的REPL')
 [ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
-> 
+>
 ```
 
 但当我修改了模块的代码后，要看效果时又要重复输入上面的代码，这种**做重复无意义工作的行为绝非是一名有理想的程序员想要的**。于是，我决定自己**定制一个REPL**，这样就可以预先执行一些初始化代码，一启动程序就可以进入主题了。
@@ -63,7 +63,7 @@ $ chmod +x repl
 $ ./repl
 > s('神奇的REPL')
 [ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
-> 
+>
 ```
 
 之后每次更改了代码，只要按两下`CTRL+C`来退出当前REPL，再执行`./repl`来启动程序，然后输入`s('神奇的REPL')`就可以看到分词的效果了，如果要执行其他函数，也可以直接操作`segment`变量来做。
@@ -100,7 +100,7 @@ c._load = function () {
 // 在REPL中执行reload()可重新加载模块
 c.reload = function () {
   var t = Date.now();
-  
+
   // 清空当前项目根目录下所有文件的缓存
   var dir = path.resolve(__dirname) + path.sep;
   for (var i in require.cache) {
@@ -108,7 +108,7 @@ c.reload = function () {
       delete require.cache[i];
     }
   }
-  
+
   // 重新执行初始化
   c._load();
   console.log('OK. (spent %sms)', Date.now() - t);
@@ -125,12 +125,13 @@ OK. (spent 458ms)
 undefined
 > s('神奇的REPL')
 [ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
-> 
+>
 ```
+
 
 ## 总结
 
-本文所介绍的定制REPL的方法并不高深，如果在合适的场景中使用，却也能省不少事情。我能目前想到的应用场景有以下几个：
+本文所介绍的定制REPL的方法并不高深，如果在合适的场景中使用，却也能省不少事情。我目前能想到的应用场景有以下几个：
 
 + 开发时需要在交互界面下查看测试结果
 + 在演示代码时不需要录入一系列初始化代码而快速进入演示环境
@@ -143,3 +144,4 @@ undefined
 + **Build Your Own App Specific REPL For Your NodeJS App** http://derickbailey.com/2014/07/02/build-your-own-app-specific-repl-for-your-nodejs-app/
 + **Node.js命令行程序开发教程** http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html
 + **Node.js里的REPL** https://cnodejs.org/topic/55c2ba865965fe2c74f478ac
+
