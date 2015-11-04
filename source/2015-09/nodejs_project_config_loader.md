@@ -393,17 +393,17 @@ false
 关于`config`模块的详细使用方法可阅读其帮助文档。
 
 
-## 参考文献
+## 参考资料
 
-+ **百度百科：环境变量** - http://baike.baidu.com/view/95930.htm
-+ **ENV 定制开发，测试，发布环境变量** - http://yijiebuyi.com/blog/1bfcf43248a873b39a3471901e764b68.html
-+ **node-config 模块根据 ENV 环境变量不同加载响应的配置文件** - http://yijiebuyi.com/blog/ad84da0f2d945dd77cf9631c8548e02c.html
-+ **YAML 格式** - http://aicode.cc/article/413.html
-+ **.gitignore 文件使用说明** - http://segmentfault.com/a/1190000000522997
++ [百度百科：环境变量](http://baike.baidu.com/view/95930.htm)
++ [ENV 定制开发，测试，发布环境变量](http://yijiebuyi.com/blog/1bfcf43248a873b39a3471901e764b68.html)
++ [node-config 模块根据 ENV 环境变量不同加载响应的配置文件](http://yijiebuyi.com/blog/ad84da0f2d945dd77cf9631c8548e02c.html)
++ [YAML 格式](http://aicode.cc/article/413.html)
++ [.gitignore 文件使用说明](http://segmentfault.com/a/1190000000522997)
 
 
 ## 相关模块
 
-+ **strip-json-comments** - 去掉JSON字符串中的备注 - https://www.npmjs.com/package/strip-json-comments
-+ **yamljs** - 解析YAML - https://www.npmjs.com/package/yamljs
-+ **config** - 配置文件管理 - https://www.npmjs.com/package/config
++ [strip-json-comments](https://www.npmjs.com/package/strip-json-comments) - 去掉JSON字符串中的备注
++ [yamljs](https://www.npmjs.com/package/yamljs) - 解析YAML
++ [config](https://www.npmjs.com/package/config) - 配置文件管理

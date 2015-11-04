@@ -138,10 +138,10 @@ undefined
 + 开发基于Node.js的Shell程序
 
 
-## 参考文献
+## 参考资料
 
-+ **Node.js之REPL** http://segmentfault.com/a/1190000002673137
-+ **Build Your Own App Specific REPL For Your NodeJS App** http://derickbailey.com/2014/07/02/build-your-own-app-specific-repl-for-your-nodejs-app/
-+ **Node.js命令行程序开发教程** http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html
-+ **Node.js里的REPL** https://cnodejs.org/topic/55c2ba865965fe2c74f478ac
++ [Node.js之REPL](http://segmentfault.com/a/1190000002673137)
++ [Build Your Own App Specific REPL For Your NodeJS App](http://derickbailey.com/2014/07/02/build-your-own-app-specific-repl-for-your-nodejs-app/)
++ [Node.js命令行程序开发教程](http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html)
++ [Node.js里的REPL](https://cnodejs.org/topic/55c2ba865965fe2c74f478ac)
 

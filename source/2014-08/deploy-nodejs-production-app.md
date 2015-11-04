@@ -121,5 +121,5 @@ node app
 
 ## 扩展阅读
 
-+ 《告别node-forever,拥抱PM2》 http://www.oschina.net/translate/goodbye-node-forever-hello-pm2
-+ 《Git入门指引》 http://blog.segmentfault.com/pengedy/1190000000514886
++ [告别node-forever,拥抱PM2](http://www.oschina.net/translate/goodbye-node-forever-hello-pm2)
++ [Git入门指引](http://blog.segmentfault.com/pengedy/1190000000514886)
