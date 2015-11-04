@@ -22,9 +22,9 @@ body {
 }
 code {
   padding: 0 6px;
-  font-size: 1em;
+  font-size: 0.875em;
   word-break: break-word;
-  color: rgba(0,0,0,.9);
+  color: #c7254e;
   background-color: #f7f7f8;
   font-family: Consolas,Menlo,Monaco,"Courier New",monospace;
   font-weight: 400;
@@ -39,6 +39,7 @@ pre {
 }
 pre code {
   padding: 0;
+  color: rgba(0,0,0,.9);
 }
 h2 {
   border-top: 2px solid #CCC;
@@ -61,6 +62,10 @@ img {
   max-width: 100%;
   margin: auto;
 }
+li > p {
+  margin-top: 5px;
+  margin-bottom: 0.4em;
+}
 </style>
 </head>
 <body>
@@ -73,7 +78,7 @@ img {
   <hr>
   <p>相信在学习Node.js的时候，对Node.js的REPL并不陌生。我们可以在REPL里面输入JavaScript代码并立刻看到效果，常常用来试用一些新的模块，甚至直接把REPL当计算器来用。</p>
 <p>最近在修改以前使用Node.js写的<a href="https://github.com/leizongmin/node-segment">中文分词模块</a>时，想要看到代码修改后的效果，但是又不方便马上写测试代码，自然想到使用REPL来测试。比如执行以下命令启动Node.js的REPL界面：</p>
-<pre><code class="language-bash">$ node
+<pre><code class="prettyprint bash">$ node
 </code></pre>
 <p>然后在控制台界面中输入要测试的代码（其中<code>&gt;</code>开头的行是手工输入并按回车的代码，其他部分为REPL的输出结果）：</p>
 <pre><code>&gt; var Segment = require('./')
@@ -89,7 +94,7 @@ undefined
 <p>但当我修改了模块的代码后，要看效果时又要重复输入上面的代码，这种<strong>做重复无意义工作的行为绝非是一名有理想的程序员想要的</strong>。于是，我决定自己<strong>定制一个REPL</strong>，这样就可以预先执行一些初始化代码，一启动程序就可以进入主题了。</p>
 <p>看了一下<a href="https://nodejs.org/api/repl.html">REPL模块的文档</a>之后，大概搞清了怎么个用法，接下来开始写代码了。</p>
 <p>首先在项目的根目录下新建名为<code>repl</code>的文件，代码如下：</p>
-<pre><code class="language-javascript">#!/usr/bin/env node
+<pre><code class="prettyprint javascript">#!/usr/bin/env node
 
 var repl = require('repl');
 
@@ -110,7 +115,7 @@ c.s = function () {
 };
 </code></pre>
 <p>文件第一行的<code>#!/usr/bin/env node</code>表示这是一个脚本文件，使用<code>node</code>命令来执行它，所以还要给这个文件加上可执行权限：</p>
-<pre><code class="language-bash">$ chmod +x repl
+<pre><code class="prettyprint bash">$ chmod +x repl
 </code></pre>
 <p>现在就可以试试这个定制的REPL了：</p>
 <pre><code>$ ./repl
@@ -123,7 +128,7 @@ c.s = function () {
 <p>当我修改了模块代码，为什么要重启REPL呢，难道不能重新加载一次这个模块，然后该干嘛还干嘛？</p>
 <p>从<a href="https://nodejs.org/api/modules.html#modules_caching">Node.js的模块系统文档</a>可知，在使用<code>require()</code>来加载模块后，相关的文件内容会被缓存到<code>require.cache[filename]</code>中，当再次<code>require()</code>此文件的时候并不会重新加载。所以要想在不重启进程的情况下重新加载模块，我们就要清理这个模块相关的所有缓存。</p>
 <p>把<code>repl</code>文件改成以下代码：</p>
-<pre><code class="language-javascript">#!/usr/bin/env node
+<pre><code class="prettyprint javascript">#!/usr/bin/env node
 
 var fs = require('fs');
 var path = require('path');
@@ -187,6 +192,12 @@ undefined
 
 </body>
 </html>
+
+<link rel="stylesheet" href="http://cdn.staticfile.org/prettify/r298/prettify.min.css">
+<script src="http://cdn.staticfile.org/prettify/r298/prettify.min.js"></script>
+<script>
+prettyPrint();
+</script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

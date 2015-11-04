@@ -14,7 +14,7 @@ var MarkdownIt = require('markdown-it');
 var md = new MarkdownIt({
   linkify: true,
   html: true,
-  langPrefix: 'language-',
+  langPrefix: 'prettyprint ',
   typography: true
 });
 md.use(require('markdown-it-toc'));

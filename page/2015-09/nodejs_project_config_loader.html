@@ -22,9 +22,9 @@ body {
 }
 code {
   padding: 0 6px;
-  font-size: 1em;
+  font-size: 0.875em;
   word-break: break-word;
-  color: rgba(0,0,0,.9);
+  color: #c7254e;
   background-color: #f7f7f8;
   font-family: Consolas,Menlo,Monaco,"Courier New",monospace;
   font-weight: 400;
@@ -39,6 +39,7 @@ pre {
 }
 pre code {
   padding: 0;
+  color: rgba(0,0,0,.9);
 }
 h2 {
   border-top: 2px solid #CCC;
@@ -61,6 +62,10 @@ img {
   max-width: 100%;
   margin: auto;
 }
+li > p {
+  margin-top: 5px;
+  margin-bottom: 0.4em;
+}
 </style>
 </head>
 <body>
@@ -76,7 +81,7 @@ img {
 <h2><a id="_6"></a>通过环境变量指定配置</h2>
 <p><a href="http://baike.baidu.com/view/95930.htm">环境变量（environment variables）</a> 一般是指在操作系统中用来指定操作系统运行环境的一些参数，如：临时文件夹位置和系统文件夹位置等。比如<code>HOME</code>表示当前用户的根目录，<code>TMPDIR</code>表示系统临时目录等，我们可以通过设置一些特定的环境变量，程序在启动时可以读取这些环境变量并做相应的初始化动作。</p>
 <p>在 Node.js 中可以通过<code>process.env</code>来访问当前的环境变量信息，比如：</p>
-<pre><code class="language-javascript">{ PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
+<pre><code class="prettyprint javascript">{ PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   TMPDIR: '/var/folders/rs/g4wqpvvj7bj08t35dxvfm0rr0000gn/T/',
   LOGNAME: 'glen',
   XPC_FLAGS: '0x0',
@@ -106,22 +111,22 @@ img {
 <h3><a id="_41"></a>设置环境变量</h3>
 <p>环境变量的名字一般为大写，多个单词之间可通过下划线来连接。</p>
 <p>Windows 系统下可通过<code>set</code>命令来设置环境变量，比如：</p>
-<pre><code class="language-bash">$ set HELLO_MSG=&quot;Hello, world!&quot;
+<pre><code class="prettyprint bash">$ set HELLO_MSG=&quot;Hello, world!&quot;
 </code></pre>
 <p>Linux 系统下可通过<code>export</code>命令来设置，比如：</p>
-<pre><code class="language-bash">$ export HELLO_MSG=&quot;Hello, world!&quot;
+<pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world!&quot;
 </code></pre>
 <h3><a id="_Nodejs__57"></a>在 Node.js 中读取环境变量</h3>
 <p>创建文件<code>1.js</code>，代码如下：</p>
-<pre><code class="language-javascript">console.log(process.env.HELLO_MSG);
+<pre><code class="prettyprint javascript">console.log(process.env.HELLO_MSG);
 </code></pre>
 <p>然后在命令行中执行：</p>
-<pre><code class="language-bash">$ export HELLO_MSG=&quot;Hello, world&quot; &amp;&amp; node 1.js
+<pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world&quot; &amp;&amp; node 1.js
 </code></pre>
 <p>控制台将输出<code>Hello, world</code>，即我们启动程序时给环境变量<code>HELLO_MSG</code>设置的值。</p>
 <h2><a id="_74"></a>通过配置文件指定配置</h2>
 <p>一些规模较小的项目往往会通过单一的配置文件来存储其配置，比如 CNode 中文社区的开源项目 <a href="https://github.com/cnodejs/nodeclub">nodeclub</a> 在启动时会载入文件<code>config.js</code>，该文件的大概结构如下：</p>
-<pre><code class="language-javascript">var config = {
+<pre><code class="prettyprint javascript">var config = {
   // debug 为 true 时，用于本地调试
   debug: true,
 
@@ -134,7 +139,7 @@ img {
 module.exports = config;
 </code></pre>
 <p>在程序启动的时候，可以使用<code>require()</code>来载入此文件，得到一个对象，然后通过此对象的属性来读取相应的配置信息：</p>
-<pre><code class="language-javascript">// 载入配置文件
+<pre><code class="prettyprint javascript">// 载入配置文件
 var config = require('./config');
 
 // 以下为使用到配置的部分代码：
@@ -162,7 +167,7 @@ app.listen(config.port, function () {
 <p>使用配置文件与使用环境变量来指定配置相比，配置文件的可读性更强，可以表示一些更复杂的结构，而使用环境变量一般只限于<code>key=value</code>的形式。但在配置项数量较少时，使用环境变量会更简单，比如项目中只需要配置一个监听端口，可以简单使用<code>export PORT=3000 &amp;&amp; node app.js</code>命令来启动程序，而不需要单独创建一个配置文件。大多数时候往往会结合这两种方式来进行，下文讲详细讲解。</p>
 <h3><a id="_123"></a>其他配置文件格式</h3>
 <p>一般为了方便，在 Node.js 项目中会习惯使用<code>.js</code>文件格式，它的好处是可以使用通过程序来动态生成一些配置项，比如 nodeclub 的其中一个配置项：</p>
-<pre><code class="language-javascript">var config = {
+<pre><code class="prettyprint javascript">var config = {
   // 文件上传配置
   // 注：如果填写 qn_access，则会上传到 7牛，以下配置无效
   upload: {
@@ -174,7 +179,7 @@ app.listen(config.port, function () {
 <p>其中使用到了<code>path.join()</code>和<code>__dirname</code>来生成<code>upload.path</code>。</p>
 <h4><a id="JSON_140"></a>JSON格式</h4>
 <p>另外，我们也可以使用 <a href="http://json.org/">JSON</a> 格式的配置文件，比如文件<code>config.json</code>：</p>
-<pre><code class="language-json">{
+<pre><code class="prettyprint json">{
   &quot;debug&quot;: true,
   &quot;name&quot;: &quot;Nodeclub&quot;,
   &quot;description&quot;: &quot;CNode：Node.js专业中文社区&quot;,
@@ -182,7 +187,7 @@ app.listen(config.port, function () {
 }
 </code></pre>
 <p>在程序中可以通过以下方式来载入JSON文件配置：</p>
-<pre><code class="language-javascript">// 通过require()函数
+<pre><code class="prettyprint javascript">// 通过require()函数
 var config = require('./config.json');
 
 // 读取文件并使用JSON.parse()解析
@@ -191,7 +196,7 @@ var config = JSON.parse(fs.readFileSync('./config.json').toString());
 </code></pre>
 <p>大多数时候，我们往往需要添加一些备注信息来说明某个配置项的使用方法及用途，在标准JSON文件中是不允许添加备注的，我们可以使用<code>strip-json-comments</code>模块来去掉配置文件中的备注，再将其当作标准的JSON来解析。</p>
 <p>比如以下是带备注信息的JSON配置文件：</p>
-<pre><code class="language-javascript">{
+<pre><code class="prettyprint javascript">{
   // debug 为 true 时，用于本地调试
   &quot;debug&quot;: true,
   // 社区名字
@@ -202,7 +207,7 @@ var config = JSON.parse(fs.readFileSync('./config.json').toString());
 }
 </code></pre>
 <p>我们可以编写一个<code>loadJSONFile()</code>函数来载入带有备注的JSON文件：</p>
-<pre><code class="language-javascript">var fs = require('fs');
+<pre><code class="prettyprint javascript">var fs = require('fs');
 var stripJsonComments = require('strip-json-comments');
 
 function loadJSONFile (file) {
@@ -215,7 +220,7 @@ console.log(config);
 </code></pre>
 <h4><a id="YAML_195"></a>YAML格式</h4>
 <p><a href="http://yaml.org/">YAML</a> 是面向所有编程语言的对人类友好的数据序列化标准。其最大的优点是可读性较好，比如以下 YAML 格式的配置：</p>
-<pre><code class="language-yaml">name: John Smith
+<pre><code class="prettyprint yaml">name: John Smith
 age: 37
 spouse:
   name: Jane Smith
@@ -227,7 +232,7 @@ children:
     age: 12
 </code></pre>
 <p>其对应的JSON结构如下：</p>
-<pre><code class="language-json">{
+<pre><code class="prettyprint json">{
   &quot;age&quot;: 37, 
   &quot;spouse&quot;: {
     &quot;age&quot;: 25, 
@@ -247,7 +252,7 @@ children:
 }
 </code></pre>
 <p>在 Node.js 中可以通过<code>yamljs</code>模块来解析 YAML 格式，比如可以编写一个<code>loadYAMLFile()</code>函数来载入 YAML 格式的配置文件：</p>
-<pre><code class="language-javascript">var fs = require('fs');
+<pre><code class="prettyprint javascript">var fs = require('fs');
 var YAML = require('yamljs');
 
 function loadYAMLFile (file) {
@@ -264,17 +269,17 @@ console.log(config);
 <p>由于<code>./config.js</code>文件已经被添加到<code>.gitignore</code>文件中，因此我们<code>./config.js</code>文件的修改不会被纳入到项目的版本管理中，所以不同机器中的<code>./config.js</code>不会产生冲突，可以使用各自的配置来启动程序。</p>
 <h3><a id="_260"></a>通过环境变量指定配置文件名</h3>
 <p>我们可以通过环境变量来指定配置文件，比如：</p>
-<pre><code class="language-bash">$ export CONFIG_FILE=&quot;./config/production.js&quot;
+<pre><code class="prettyprint bash">$ export CONFIG_FILE=&quot;./config/production.js&quot;
 </code></pre>
 <p>然后可以通过以下方式来载入配置文件：</p>
-<pre><code class="language-javascript">var path = require('path');
+<pre><code class="prettyprint javascript">var path = require('path');
 var config = require(path.resolve(process.env.CONFIG_FILE));
 </code></pre>
 <p>另外，也可以通过环境变量来指定当前运行环境的名称，然后在指定目录下载入相应的配置，比如：</p>
-<pre><code class="language-bash">$ export NODE_ENV=&quot;production&quot;
+<pre><code class="prettyprint bash">$ export NODE_ENV=&quot;production&quot;
 </code></pre>
 <p>然后可以通过以下方式来载入配置文件：</p>
-<pre><code class="language-javascript">var path = require('path');
+<pre><code class="prettyprint javascript">var path = require('path');
 var configFile = path.resolve('./config', process.env.NODE_ENV + '.js');
 var config = require(configFile);
 </code></pre>
@@ -283,7 +288,7 @@ var config = require(configFile);
 <p><code>config</code>模块通过环境变量<code>NODE_CONFIG_DIR</code>来指定配置文件所在的目录，默认为<code>./config</code>（即当前运行目录下的<code>config</code>目录），通过环境变量<code>NODE_ENV</code>来指定当前的运行环境版本。</p>
 <p>配置文件使用 JSON 格式，模块加载后，会首先载入默认的配置文件<code>${NODE_CONFIG_DIR}/default.json</code>，再载入文件<code>${NODE_CONFIG_DIR}/${NODE_ENV}.json</code>，如果配置项有冲突则覆盖默认的配置。</p>
 <p>比如我们新建默认配置文件<code>config/default.json</code>：</p>
-<pre><code class="language-javascript">{
+<pre><code class="prettyprint javascript">{
   // Customer module configs
   &quot;Customer&quot;: {
     &quot;dbConfig&quot;: {
@@ -300,7 +305,7 @@ var config = require(configFile);
 }
 </code></pre>
 <p>再新建<code>production</code>环境配置文件<code>config/production.json</code>：</p>
-<pre><code class="language-javascript">{
+<pre><code class="prettyprint javascript">{
   &quot;Customer&quot;: {
     &quot;dbConfig&quot;: {
       &quot;host&quot;: &quot;prod-db-server&quot;
@@ -312,25 +317,25 @@ var config = require(configFile);
 }
 </code></pre>
 <p>再新建测试文件<code>1.js</code>：</p>
-<pre><code class="language-javascript">var config = require('config');
+<pre><code class="prettyprint javascript">var config = require('config');
 console.log(config);
 </code></pre>
 <p>执行程序，可看到其输出的结果为默认的配置：</p>
-<pre><code class="language-javascript">{ Customer:
+<pre><code class="prettyprint javascript">{ Customer:
    { dbConfig: { host: 'localhost', port: 5984, dbName: 'customers' },
      credit: { initialLimit: 100, initialDays: 1 } } }
 </code></pre>
 <p>假如要使用<code>production</code>的配置，则使用以下命令启动：</p>
-<pre><code class="language-bash">$ export NODE_ENV=production &amp;&amp; node 1.js
+<pre><code class="prettyprint bash">$ export NODE_ENV=production &amp;&amp; node 1.js
 </code></pre>
 <p>则其输出将是如下结果：</p>
-<pre><code class="language-json">{ Customer:
+<pre><code class="prettyprint json">{ Customer:
    { dbConfig: { host: 'prod-db-server', port: 5984, dbName: 'customers' },
      credit: { initialLimit: 100, initialDays: 30 } } }
 </code></pre>
 <p>在<code>production.json</code>文件中，重新定义了<code>Customer.dbConfig.host</code>和<code>Customer.credit.initialDays</code>这两个配置项，所以在<code>production</code>环境中仅这两项被覆盖为新的值，而其他配置项则使用<code>default.json</code>中指定的值。</p>
 <p>载入<code>config</code>模块后，其返回的对象实际上就是当前的配置信息，同时提供了两个方法<code>get()</code>和<code>has()</code>来操作配置项。比如：</p>
-<pre><code class="language-javascript">var config = require('config');
+<pre><code class="prettyprint javascript">var config = require('config');
 console.log(config);
 console.log(config.get('Customer'));
 console.log(config.get('Customer.dbConfig'));
@@ -366,6 +371,12 @@ false
 
 </body>
 </html>
+
+<link rel="stylesheet" href="http://cdn.staticfile.org/prettify/r298/prettify.min.css">
+<script src="http://cdn.staticfile.org/prettify/r298/prettify.min.js"></script>
+<script>
+prettyPrint();
+</script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

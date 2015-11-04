@@ -22,9 +22,9 @@ body {
 }
 code {
   padding: 0 6px;
-  font-size: 1em;
+  font-size: 0.875em;
   word-break: break-word;
-  color: rgba(0,0,0,.9);
+  color: #c7254e;
   background-color: #f7f7f8;
   font-family: Consolas,Menlo,Monaco,"Courier New",monospace;
   font-weight: 400;
@@ -39,6 +39,7 @@ pre {
 }
 pre code {
   padding: 0;
+  color: rgba(0,0,0,.9);
 }
 h2 {
   border-top: 2px solid #CCC;
@@ -60,6 +61,10 @@ img {
   display: block;
   max-width: 100%;
   margin: auto;
+}
+li > p {
+  margin-top: 5px;
+  margin-bottom: 0.4em;
 }
 </style>
 </head>
@@ -104,6 +109,12 @@ img {
 
 </body>
 </html>
+
+<link rel="stylesheet" href="http://cdn.staticfile.org/prettify/r298/prettify.min.css">
+<script src="http://cdn.staticfile.org/prettify/r298/prettify.min.js"></script>
+<script>
+prettyPrint();
+</script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
