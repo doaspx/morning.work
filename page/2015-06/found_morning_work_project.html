@@ -58,7 +58,19 @@ hr {
   border-bottom: 2px solid #CCC;
   margin: 20px 0 40px 0;
 }
-img {
+#nav {
+  border-bottom: 2px solid #eee;
+  font-size: 18px;
+}
+#license {
+  font-size: 14px;
+  background-color: #f7f7f8;
+  padding: 16px 6px;
+}
+#content {
+  min-height: 200px;
+}
+#content img {
   display: block;
   max-width: 100%;
   margin: auto;
@@ -70,15 +82,19 @@ li > p {
 </style>
 </head>
 <body>
-  <h1>morning.work上线</h1>
-  <p>
-  作者：<a href="http://ucdok.com">老雷</a> 发表在 <a href="http://morning.work">早起搬砖</a><br>
-  链接：<a href="http://morning.work/page/2015-06/found_morning_work_project.html">http://morning.work/page/2015-06/found_morning_work_project.html</a><br>
-  转载请注明出处
-  </p>
-  <hr>
-  <p>想了好几天，今天终于开始动手了。</p>
+  <nav id="nav">
+    <a href="http://morning.work">早起搬砖 morning.work</a>
+  </nav>
 
+  <h1>morning.work上线</h1>
+  <article id="content">
+    <p>想了好几天，今天终于开始动手了。</p>
+
+  </article>
+
+  <p id="license">
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">Zongmin Lei</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
+  </p>
 </body>
 </html>
 
@@ -98,33 +114,17 @@ prettyPrint();
 </script>
 
 
-<!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015-06/found_morning_work_project.html" data-title="morning.work上线 - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-06/found_morning_work_project.html"></div>
-<!-- 多说评论框 end -->
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-var duoshuoQuery = {
-  short_name: "morningwork"
-};
-(function() {
-  var ds = document.createElement('script');
-  ds.type = 'text/javascript';
-  ds.async = true;
-  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-  ds.charset = 'UTF-8';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
-})();
-</script>
-<!-- 多说公共JS代码 end -->
-<!-- 百度自动最少URL start -->
+<div id="disqus_thread"></div>
 <script>
-(function(){
-  if (window.location.hostname === 'morning.work') {
-    var bp = document.createElement('script');
-    bp.src = '//push.zhanzhang.baidu.com/push.js';
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-  }
+var disqus_config = function () {
+  this.page.url = 'http://morning.work/page/2015-06/found_morning_work_project.html';
+  this.page.identifier = '/2015-06/found_morning_work_project.html';
+};
+(function() {  // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = '//leizongmin-writings.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
 })();
 </script>
-<!-- 百度自动最少URL end -->
+
