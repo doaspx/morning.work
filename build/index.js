@@ -70,43 +70,26 @@ function lastItem (arr) {
   return arr[arr.length - 1];
 }
 
+/******************************************************************************/
 
-var list = rd.readFileFilterSync(SOURCE_DIR, /\.md$/).map(function (f, s) {
-  console.log('read file: %s', f);
-  return readFile(f);
-}).sort(function (a, b) {
-  var ad = new Date(lastItem(a.date)).getTime();
-  var bd = new Date(lastItem(b.date)).getTime();
-  return bd - ad;
-});
-
-console.log('================================================================================');
-list.forEach(function (item) {
-  console.log('%s to %s:\t%s', firstItem(item.date), lastItem(item.date), item.title);
-});
-console.log('================================================================================');
-console.log('total %s', list.length);
-
-
-async.eachSeries(list, function (item, next) {
-
-  var context = tinyliquid.newContext({locals: item});
-  tinyliquid.run(TPL_ITEM, context, function (err) {
-    if (!err) {
-      item.html = context.getBuffer();
-      var f = path.resolve(TARGET_DIR, item.url.slice(1));
-      console.log('write to file: %s', f);
-      writeFile(f, item.html);
-    }
-    next(err);
+function getPostList () {
+  return rd.readFileFilterSync(SOURCE_DIR, /\.md$/).map(function (f, s) {
+    console.log('read file: %s', f);
+    return readFile(f);
+  }).sort(function (a, b) {
+    var ad = new Date(lastItem(a.date)).getTime();
+    var bd = new Date(lastItem(b.date)).getTime();
+    return bd - ad;
+  }).filter(function (a) {
+    return !a.draft;
   });
+}
 
-}, function (err) {
-  if (err) throw err;
-
+function renderPostList (list, callback) {
+  list = list || getPostList();
   var context = tinyliquid.newContext({locals: {list: list}});
   tinyliquid.run(TPL_LIST, context, function (err) {
-    if (err) throw err;
+    if (err) return callback(err);
 
     var html = context.getBuffer();
     var f = path.resolve(TARGET_DIR, 'index.html');
@@ -116,6 +99,52 @@ async.eachSeries(list, function (item, next) {
     var f2 = path.resolve(__dirname, '../index.html');
     writeFile(f2, html);
 
-    console.log('done');
+    callback();
   });
-});
+}
+
+function renderPost (item, callback) {
+  if (typeof item === 'string') {
+    item = readFile(item);
+  }
+  var context = tinyliquid.newContext({locals: item});
+  tinyliquid.run(TPL_ITEM, context, function (err) {
+    if (!err) {
+      item.html = context.getBuffer();
+      var f = path.resolve(TARGET_DIR, item.url.slice(1));
+      console.log('write to file: %s', f);
+      writeFile(f, item.html);
+    }
+    callback(err);
+  });
+}
+
+exports.renderPostList = renderPostList;
+exports.renderPost = renderPost;
+
+/******************************************************************************/
+
+function startBuild () {
+  var list = getPostList();
+
+  console.log('================================================================================');
+  list.forEach(function (item) {
+    console.log('%s to %s:\t%s', firstItem(item.date), lastItem(item.date), item.title);
+  });
+  console.log('================================================================================');
+  console.log('total %s', list.length);
+
+  async.eachSeries(list, renderPost, function (err) {
+    if (err) throw err;
+
+    renderPostList(list, function (err) {
+      if (err) throw err;
+
+      console.log('done');
+    });
+  });
+}
+
+if (!module.parent) {
+  startBuild();
+}
