@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>《Node.js 入门系列》—— 寻找第三方模块 - 早起搬砖 morning.work</title>
+<title>Node.js的Buffer那些你可能不知道的用法 - 早起搬砖 morning.work</title>
 <style>
 body {
   font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;
@@ -86,38 +86,19 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>《Node.js 入门系列》—— 寻找第三方模块</h1>
+  <h1>Node.js的Buffer那些你可能不知道的用法</h1>
   <article id="content">
-    <p><h3>目录</h3><ul><ul><li><a href="#1_4">1、知道模块名，寻找模块的文档</a></li><li><a href="#2_19">2、不知道模块名，根据关键字搜索需要的模块</a></li></ul></ul></p>
-<h2><a id="1_4"></a>1、知道模块名，寻找模块的文档</h2>
-<p>在看别人的代码或者文章的时候，经常会遇到自己没用过的第三方模块，怎么办呢？
-其实很简单，你只要在浏览器中输入网址 <code>https://npmjs.org/package/模块名称</code> ，即可
-进入这个模块的介绍页面。比如，别人的源码中出现一行 <code>var xss = require('xss')</code> ，
-说明这里使用到了 <code>xss</code> 这个模块，在浏览器中打开 <code>https://npmjs.org/package/xss</code>
-，即可进入这个模块在 NPM 上的主页：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380023785392-1.png" alt="xss模块的NPM主页"></p>
-<p>模块主页中显示这个模块的简介、作者、当前版本号、最后更新时间、模块源码链接、
-报告 Bug 的链接和 README 页面。一般 README 页面都会简要地写出了模块的用途、用法
-等等信息，大多数模块也都是托管在 Github 上的，直接点模块源码链接（Repository）
-即可跳到其在 Github 上的主页，可以通过这里获得更多的帮助。</p>
-<h2><a id="2_19"></a>2、不知道模块名，根据关键字搜索需要的模块</h2>
-<p>我们可以通过 NPM 来寻找自己需要的模块。打开 NPM 的首页 <code>https://npmjs.org/</code> ，
-在 Logo 的右边，有一个搜索框，只要在上面输入关键字，即可搜索出相应的模块。比如
-我们要搜索“模板”相关的模块，在搜索框输入 <code>template</code> 并按回车：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380024594836-2.png" alt="NPM搜索结果"></p>
-<p>页面中显示出了相应的模块名称、简介、作者和当前版本，直接点击模块名称即可进入这个
-模块的主页。</p>
-<p>但是， NPM 的搜索结果中，我们没法直接看到这个模块有多少人用，最后更新时间是什么
-时候了（有些模块可能已经是几年前的了），怎么办？这就要用到我压箱底多年的工具了，
-一般人我不告诉他的：</p>
-<p>在浏览器中打开 <code>http://eirikb.github.io/nipster/</code> （由于要加载所模块的信息，可能
-要等一阵才能完全显示出来）：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380025151549-3.png" alt="Nipster首页"></p>
-<p>在搜索栏中输入关键字，会自动筛选出相应的模块。模块信息包括了模块名称、简介、
-作者、最后更新时间、Fork 数量和收藏数量。默认按照 Fork 数量降序排序，基本上
-最前面的结果是最多人用的。</p>
-<p>上面简单介绍了两种寻找 Node.js 模块的方法，学会了这两招之后，妈妈基本上再也不用
-担心你找不到好模块了。</p>
+    <p>集中在内存分配，IO数据流拼接截取、字符串转换.</p>
+<h2><a id="_4"></a>扩展阅读</h2>
+<ul>
+<li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer那些事儿</a></li>
+<li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c">浅析nodejs的buffer类</a></li>
+<li><a href="https://cnodejs.org/topic/4faf65852e8fb5bc65113403">小心buffer的拼接问题</a></li>
+<li><a href="http://blog.fens.me/nodejs-buffer/">Node.js缓冲模块Buffer</a></li>
+<li><a href="http://www.tutorialspoint.com/nodejs/nodejs_buffers.htm">Node.js - Buffers</a></li>
+<li><a href="https://docs.nodejitsu.com/articles/advanced/buffers/how-to-use-buffers">How to Use Buffers in Node.js</a></li>
+<li><a href="https://nodejs.org/api/buffer.html">Node.js API Documentation - Buffer</a></li>
+</ul>
 
   </article>
 
@@ -144,7 +125,7 @@ prettyPrint();
 
 
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2013-09/nodejs-find-modules.html" data-title="《Node.js 入门系列》—— 寻找第三方模块 - 早起搬砖 morning.work" data-url="http://morning.work/page/2013-09/nodejs-find-modules.html"></div>
+<div class="ds-thread" data-thread-key="/2015-11/nodejs_buffer.html" data-title="Node.js的Buffer那些你可能不知道的用法 - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-11/nodejs_buffer.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
