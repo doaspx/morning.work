@@ -1,5 +1,7 @@
-date: 2015-11-7
+date: 2015-11-16
 title: Node.js的Buffer那些你可能不知道的用法
+
+@[toc](目录)
 
 ## 前言
 
@@ -209,6 +211,58 @@ console.log(ret);
   { number: 100005, lesson: 1001, score: 55 } ]
 */
 ```
+
+## lei-proto模块介绍
+
+上面的例子中，当每一条记录的结构有变化时，我们需要修改`readRecord()`和`writeRecord()`，重新计算每一个字段在Buffer中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了`lei-proto`模块，它允许你通过简单定义每条记录的结构即可生成对应的`readRecord()`和`writeRecord()函数。
+
+首先执行以下命令安装此模块：
+
+```bash
+$ npm install lei-proto --save
+```
+
+使用`lei-proto`模块后，前文的例子可以改为这样：
+
+```javascript
+var parsePorto = require('lei-proto');
+
+// 生成指定记录结构的数据编码/解码器
+var record = parsePorto([
+  ['number', 'uint', 3],
+  ['lesson', 'uint', 2],
+  ['score', 'uint', 1]
+]);
+
+function readList (buf) {
+  var list = [];
+  var offset = 0;
+  while (offset < buf.length) {
+    list.push(record.decode(buf.slice(offset, offset + 6)));
+    offset += 6;
+  }
+  return list;
+}
+
+function writeList (list) {
+  return Buffer.concat(list.map(record.encodeEx));
+}
+```
+
+运行与上文同样的测试程序，可看到其结果是一样的：
+
+```
+<Buffer 01 86 a1 03 e9 63 01 86 a2 03 e9 58 01 86 a3 03 e9 4d 01 86 a4 03 e9 42 01 86 a5 03 e9 37>
+[ { number: 100001, lesson: 1001, score: 99 },
+  { number: 100002, lesson: 1001, score: 88 },
+  { number: 100003, lesson: 1001, score: 77 },
+  { number: 100004, lesson: 1001, score: 66 },
+  { number: 100005, lesson: 1001, score: 55 } ]
+```
+
+关于`lei-proto`模块的详细使用方法可访问该模块的主页浏览：https://github.com/leizongmin/node-lei-proto
+
+对此感兴趣的读者也可研究一下其实现原理。
 
 
 ## 扩展阅读
