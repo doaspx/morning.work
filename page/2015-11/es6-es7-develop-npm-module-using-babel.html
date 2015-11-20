@@ -456,10 +456,98 @@ function isURL (url) {
 </code></pre>
 <p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
 <h3><a id="3_450"></a>3、模块系统</h3>
+<p>Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给<code>exports</code>对象设置属性来做：</p>
+<pre><code class="prettyprint javascript">// 输出变量或函数
+exports.x = 123;
+exports.y = function () { console.log('hello'); };
+</code></pre>
+<p>可以通过以下方式来操作：</p>
+<pre><code class="prettyprint javascript">var mod = require('./my_module');
+
+console.log(mod.x);
+mod.y();
+</code></pre>
+<p>也可以通过覆盖<code>module.exports</code>来输出一个函数或者其他数据类型：</p>
+<pre><code class="prettyprint javascript">module.exports = function () {
+  console.log('这是一个函数');
+};
+</code></pre>
+<p>通过以下方式来操作：</p>
+<pre><code class="prettyprint javascript">var fn = require('./my_module');
+
+fn();
+</code></pre>
+<p>而在ES2015中，模块通过<code>export</code>语句来输出：</p>
+<pre><code class="prettyprint javascript">// 普通输出，相当于 exports.x = y;
+export const a = 123;
+export var b = 456;
+export function c() { }
+export class d { }
+
+// 默认输出，相当于 module.exports = z;
+export default function y() { }
+</code></pre>
+<p>通过<code>import</code>语句来引入模块，不同的引入方式其含义是不一样的，比如：</p>
+<pre><code class="prettyprint javascript">// 操作 export var x = y 方式的输出
+import {a, b, c, d} from './my_module';
+// 通过相应的变量名称 a, b, c, d 来操作
+
+// 或者将所有输出指向一个对象
+import * as mod from './my_module';
+// 通过 mod.a, mod.b, mod.c, mod.d 来操作
+
+// 操作 export default x 方式的输出
+import y from './my_module';
+</code></pre>
+<p>对于非ES2015程序输出的模块，<code>import * as mod</code>和<code>import mod</code>其结果是一样的，比如：</p>
+<pre><code>import * as fs1 from 'fs';
+import fs2 from 'fs';
+
+// fs1.readFile() 和 fs2.readFile() 是一样的
+</code></pre>
+<p>为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。可通过访问<a href="http://babeljs.io/repl/">babel的在线REPL</a>或将程序保存到本地，并执行<code>babel file.js</code>来查看编译后的程序。</p>
+<p>以下ES2015程序：</p>
+<pre><code class="prettyprint javascript">export const a = 123;
+export var b = 456;
+export function c() { }
+export class d { }
+
+export default function y() { }
+</code></pre>
+<p>编译后结果如下：</p>
+<pre><code class="prettyprint javascript">&quot;use strict&quot;;
+
+Object.defineProperty(exports, &quot;__esModule&quot;, {
+  value: true
+});
+exports.c = c;
+exports[&quot;default&quot;] = y;
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError(&quot;Cannot call a class as a function&quot;);
+  }
+}
+
+var a = 123;
+exports.a = a;
+var b = 456;
+exports.b = b;
+
+function c() {}
+
+var d = function d() {
+  _classCallCheck(this, d);
+};
+
+exports.d = d;
+
+function y() {}
+</code></pre>
 <p>模块系统详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
-<h2><a id="_457"></a>单元测试</h2>
-<h2><a id="_460"></a>发布模块</h2>
-<h2><a id="_463"></a>扩展阅读</h2>
+<h2><a id="_572"></a>单元测试</h2>
+<h2><a id="_575"></a>发布模块</h2>
+<h2><a id="_578"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
@@ -469,6 +557,7 @@ function isURL (url) {
 <li><a href="http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/">Using ES6 and ES7 in the Browser, with Babel 6 and Webpack</a></li>
 <li><a href="http://jamesknelson.com/writing-npm-packages-with-es6-using-the-babel-6-cli/">Writing NPM packages with ES6 using the Babel 6 CLI</a></li>
 <li><a href="http://info.meteor.com/blog/set-up-sublime-text-for-meteor-es6-es2015-and-jsx-syntax-and-linting">Set up Sublime Text for Meteor ES6 (ES2015) and JSX Syntax and Linting</a></li>
+<li><a href="http://exploringjs.com/es6/ch_modules.html">Exploring ES6 - Modules</a></li>
 </ul>
 
   </article>

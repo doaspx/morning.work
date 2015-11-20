@@ -451,6 +451,121 @@ download(__filename, '/tmp/copy.js', (size, total) => {
 
 ### 3、模块系统
 
+Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给`exports`对象设置属性来做：
+
+```javascript
+// 输出变量或函数
+exports.x = 123;
+exports.y = function () { console.log('hello'); };
+```
+
+可以通过以下方式来操作：
+
+```javascript
+var mod = require('./my_module');
+
+console.log(mod.x);
+mod.y();
+```
+
+也可以通过覆盖`module.exports`来输出一个函数或者其他数据类型：
+
+```javascript
+module.exports = function () {
+  console.log('这是一个函数');
+};
+```
+
+通过以下方式来操作：
+
+```javascript
+var fn = require('./my_module');
+
+fn();
+```
+
+而在ES2015中，模块通过`export`语句来输出：
+
+```javascript
+// 普通输出，相当于 exports.x = y;
+export const a = 123;
+export var b = 456;
+export function c() { }
+export class d { }
+
+// 默认输出，相当于 module.exports = z;
+export default function y() { }
+```
+
+通过`import`语句来引入模块，不同的引入方式其含义是不一样的，比如：
+
+```javascript
+// 操作 export var x = y 方式的输出
+import {a, b, c, d} from './my_module';
+// 通过相应的变量名称 a, b, c, d 来操作
+
+// 或者将所有输出指向一个对象
+import * as mod from './my_module';
+// 通过 mod.a, mod.b, mod.c, mod.d 来操作
+
+// 操作 export default x 方式的输出
+import y from './my_module';
+```
+
+对于非ES2015程序输出的模块，`import * as mod`和`import mod`其结果是一样的，比如：
+
+```
+import * as fs1 from 'fs';
+import fs2 from 'fs';
+
+// fs1.readFile() 和 fs2.readFile() 是一样的
+```
+
+为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。可通过访问[babel的在线REPL](http://babeljs.io/repl/)或将程序保存到本地，并执行`babel file.js`来查看编译后的程序。
+
+以下ES2015程序：
+
+```javascript
+export const a = 123;
+export var b = 456;
+export function c() { }
+export class d { }
+
+export default function y() { }
+```
+
+编译后结果如下：
+
+```javascript
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.c = c;
+exports["default"] = y;
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+var a = 123;
+exports.a = a;
+var b = 456;
+exports.b = b;
+
+function c() {}
+
+var d = function d() {
+  _classCallCheck(this, d);
+};
+
+exports.d = d;
+
+function y() {}
+```
 
 
 模块系统详细说明可参考：阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)中[Module](http://es6.ruanyifeng.com/#docs/module)一章。
@@ -472,4 +587,5 @@ download(__filename, '/tmp/copy.js', (size, total) => {
 + [Using ES6 and ES7 in the Browser, with Babel 6 and Webpack](http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/)
 + [Writing NPM packages with ES6 using the Babel 6 CLI](http://jamesknelson.com/writing-npm-packages-with-es6-using-the-babel-6-cli/)
 + [Set up Sublime Text for Meteor ES6 (ES2015) and JSX Syntax and Linting](http://info.meteor.com/blog/set-up-sublime-text-for-meteor-es6-es2015-and-jsx-syntax-and-linting)
++ [Exploring ES6 - Modules](http://exploringjs.com/es6/ch_modules.html)
 
