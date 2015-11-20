@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ES2015实战：开发NPM模块 - 早起搬砖 morning.work</title>
+<style>
+body {
+  font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;
+  width: 92%;
+  max-width: 800px;
+  margin: auto;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.8);
+  -webkit-font-smoothing: antialiased;
+  word-break: break-word;
+  font-size: 100%;
+  line-height: 1.6;
+}
+#ds-thread {
+  margin-top: 100px;
+}
+blockquote {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 16px 24px;
+}
+code {
+  padding: 0 6px;
+  font-size: 0.875em;
+  word-break: break-word;
+  color: #c7254e;
+  background-color: #f7f7f8;
+  font-family: Consolas,Menlo,Monaco,"Courier New",monospace;
+  font-weight: 400;
+  text-rendering: optimizeSpeed;
+  border-radius: 3px;
+}
+pre {
+  line-height: 1.45;
+  padding: 16px;
+  background-color: #f7f7f8;
+  border-radius: 3px;
+}
+pre code {
+  padding: 0;
+  color: rgba(0,0,0,.9);
+}
+h2 {
+  border-bottom: 1px solid #CCC;
+  margin-top: 32px;
+}
+a {
+  color: #008E59;
+  text-decoration: none;
+}
+a:hover {
+  color: #B60000;
+}
+hr {
+  border: none;
+  border-bottom: 2px solid #CCC;
+  margin: 20px 0 40px 0;
+}
+table {
+  max-width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td, th {
+  border: 1px solid #CCC;
+  padding: 4px 16px;
+}
+#nav {
+  border-bottom: 2px solid #eee;
+  font-size: 18px;
+}
+#license {
+  font-size: 14px;
+  background-color: #f7f7f8;
+  padding: 16px 6px;
+}
+#content {
+  min-height: 200px;
+}
+#content img {
+  display: block;
+  max-width: 100%;
+  margin: auto;
+}
+li > p {
+  margin-top: 5px;
+  margin-bottom: 0.4em;
+}
+</style>
+</head>
+<body>
+  <nav id="nav">
+    <a href="http://morning.work">早起搬砖 morning.work</a>
+  </nav>
+
+  <h1>ES2015实战：开发NPM模块</h1>
+  <article id="content">
+    <p>近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（<strong>PHP是世界上最好的语言，但JavaScript终将统一全宇宙</strong>），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。</p>
+<p>前不久ES6标准正式发布，而Node.js也在最近刚刚发布了5.1.0版本，对ES6标准的支持也越来越完善，babel（一个将ES6/ES7写的代码转换为ES5代码的编译器）也发布了6.0版本，近期也涌现出了不少好文章（比如小问写的<a href="http://gank.io/post/564151c1f1df1210001c9161">「给 JavaScript 初心者的 ES2015 实战」</a>），种种迹象表明ES6真的要火了，而我也终于按耐不住了……</p>
+<p>这几天正在写一个<a href="https://github.com/leizongmin/node-lei-download">方便下载文件的模块</a>（可以得到下载进度信息），正好可以使用ES6新语法特性来改写，作为我写下的第一个使用ES6语法的NPM模块。本文内容将分为以下几部分：</p>
+<ul>
+<li>配置babel编译环境</li>
+<li>编写模块</li>
+<li>单元测试</li>
+<li>发布模块</li>
+</ul>
+<p>本文会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>或babel官方文档中的<a href="http://babeljs.io/docs/learn-es2015/">「Learn ES2015」</a>。</p>
+<p>babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤其有用。访问网址http://babeljs.io/repl ，其界面如下：</p>
+<p><img src="../../images/2015-11/babel_online_repl.jpg" alt="babel online repl"></p>
+<p>说明：使用时勾选左边的<code>Experimental</code>可使用最新的语法特性</p>
+<h2><a id="_22"></a>软件环境</h2>
+<p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步<strong>准确无误</strong>地运行下去，以下列出所用到的软件和模块的版本：</p>
+<ul>
+<li><strong>Node.js</strong> <code>v5.1.0</code></li>
+<li><strong>npm</strong> <code>3.3.12</code></li>
+<li><strong>babel</strong> <code>6.2.0 (babel-core 6.2.1)</code></li>
+</ul>
+<h2><a id="babel_30"></a>配置babel编译环境</h2>
+<h3><a id="babel_32"></a>安装babel</h3>
+<blockquote>
+<p>Babel is a JavaScript compiler. Use next generation JavaScript, today</p>
+</blockquote>
+<p>目前最新版的Node.js（v5.1.0）还未完全支持ES2015的新语法特性，而且我们编写的模块可能要在Node v0.12.x或更低版本下运行，因此需要借助babel将ES2015标准的JavaScript程序转换成ES5标准的。</p>
+<p>执行以下命令安装babel：</p>
+<pre><code class="prettyprint bash">$ npm i -g babel-cli@6.2.0
+</code></pre>
+<p>由于babel依赖的模块比较多，可能会花费比较长的时间甚至安装不成功，可以尝试使用cnpmjs的NPM镜像，比如（简单在安装命令末尾添加<code>--registry=http://registry.npm.taobao.org</code>）：</p>
+<pre><code class="prettyprint bash">$ npm i -g babel-cli@6.2.0 --registry=http://registry.npm.taobao.org
+</code></pre>
+<p>cnpmjs镜像的详细介绍可访问其官网：<a href="http://cnpmjs.org/">http://cnpmjs.org/</a></p>
+<p>安装完成后，系统将获得以下两个命令：</p>
+<ul>
+<li><code>babel</code> 编译器</li>
+<li><code>babel-node</code> 可以直接运行ES2015程序的Node命令</li>
+</ul>
+<p><code>babel-cli</code>的详细用法可以参考其文档：<a href="https://babeljs.io/docs/usage/cli/">https://babeljs.io/docs/usage/cli/</a></p>
+<h3><a id="_59"></a>初始化项目</h3>
+<p>执行以下命令初始化项目（执行<code>npm init</code>时需要按提示输入相应信息，可直接按回车跳过）：</p>
+<pre><code class="prettyprint bash">$ mkdir es2015_demo &amp;&amp; cd es2015_demo &amp;&amp; git init &amp;&amp; npm init
+</code></pre>
+<p>现在我们新建一个文件<code>test.js</code>试试是否能正常运行：</p>
+<pre><code class="prettyprint javascript">function sleep(ms = 0) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function test() {
+  for (let i = 0; i &lt; 10; i++) {
+    await sleep(500);
+    console.log(`i=${i}`);
+  }
+}
+
+test().then(() =&gt; console.log('done'));
+</code></pre>
+<p>执行以下命令运行<code>test.js</code>：</p>
+<pre><code class="prettyprint bash">$ babel-node test.js
+</code></pre>
+<p>在我本机的环境下显示以下错误信息：</p>
+<pre><code>/usr/local/lib/node_modules/babel-cli/node_modules/babel-core/lib/transformation/file/index.js:540
+      throw err;
+      ^
+
+SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
+   5 | }
+   6 |
+&gt;  7 | async function test() {
+     |       ^
+   8 |   for (let i = 0; i &lt; 10; i++) {
+   9 |     await sleep(500);
+  10 |     console.log(`i=${i}`);
+    at Parser.pp.raise (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/location.js:22:13)
+    at Parser.pp.unexpected (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:91:8)
+    at Parser.pp.semicolon (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:78:38)
+    at Parser.pp.parseExpressionStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:471:8)
+    at Parser.pp.parseStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:162:17)
+    at Parser.pp.parseBlockBody (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:527:25)
+    at Parser.pp.parseTopLevel (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:29:8)
+    at Parser.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/index.js:96:17)
+    at Object.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/index.js:44:50)
+    at File.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babel-core/lib/transformation/file/index.js:472:24)
+</code></pre>
+<p>由提示信息可判断出，应该是不支持<code>async function</code>导致的，因为这是ES7标准中定义的新语法，需要配置相应的babel插件才能支持它。本文为了方面使用最新的JavaScript语法，暂时不考虑babel的编译性能，直接开启所有可能用到的插件，具体可以自行研究babel的官方文档。</p>
+<p>新建文件<code>.babelrc</code>：</p>
+<pre><code class="prettyprint json">{
+  &quot;presets&quot;: [&quot;es2015&quot;, &quot;stage-0&quot;]
+}
+</code></pre>
+<p><code>.babelrc</code>为babel的配置文件，保存在项目的根目录下，其中<code>presets</code>用于设置开启的语法特性集合，详细介绍可参考官方文档：<a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
+<p>由于当前版本的babel没有预置<code>stage-0</code>，所以我们还需要执行以下命令安装并保存到<code>package.json</code>的<code>devDependencies</code>中：</p>
+<pre><code class="prettyprint bash">$ npm i babel-preset-stage-0 --save-dev
+</code></pre>
+<p>现在再重新执行<code>test.js</code>，可看到控制台每隔500ms打印出一行，直到输出<code>done</code>时结束：</p>
+<pre><code class="prettyprint bash">$ babel-node test.js
+
+i=0
+i=1
+i=2
+i=3
+i=4
+i=5
+i=6
+i=7
+i=8
+i=9
+done
+</code></pre>
+<p>至此，我们已经配置了一个能使用ES2015语法的Node.js运行环境了。</p>
+<h2><a id="_158"></a>编写模块</h2>
+<h2><a id="_163"></a>扩展阅读</h2>
+<ul>
+<li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
+<li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
+<li><a href="https://blog.leancloud.cn/3910/">「大概可能也许是」目前最好的 JavaScript 异步方案 async/await</a></li>
+<li><a href="http://babeljs.io/docs/learn-es2015/">Learn ES2015 - A detailed overview of ECMAScript 6 features</a></li>
+<li><a href="http://mammal.io/articles/using-es6-today/">Using ES6 with npm today</a></li>
+<li><a href="http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/">Using ES6 and ES7 in the Browser, with Babel 6 and Webpack</a></li>
+<li><a href="http://jamesknelson.com/writing-npm-packages-with-es6-using-the-babel-6-cli/">Writing NPM packages with ES6 using the Babel 6 CLI</a></li>
+<li><a href="http://info.meteor.com/blog/set-up-sublime-text-for-meteor-es6-es2015-and-jsx-syntax-and-linting">Set up Sublime Text for Meteor ES6 (ES2015) and JSX Syntax and Linting</a></li>
+</ul>
+
+  </article>
+
+  <p id="license">
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由<a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">老雷</a>创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+  </p>
+</body>
+</html>
+
+<link rel="stylesheet" href="//cdn.staticfile.org/prettify/r298/prettify.min.css">
+<script src="//cdn.staticfile.org/prettify/r298/prettify.min.js"></script>
+<script>
+prettyPrint();
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-26599868-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/2015-11/es6-es7-develop-npm-module-using-babel.html" data-title="ES2015实战：开发NPM模块 - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {
+  short_name: "morningwork"
+};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';
+  ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度自动推送URL start -->
+<script>
+(function(){
+  if (window.location.hostname === 'morning.work') {
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  }
+})();
+</script>
+<!-- 百度自动推送URL end -->
+
