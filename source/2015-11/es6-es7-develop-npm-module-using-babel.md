@@ -106,16 +106,8 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
    8 |   for (let i = 0; i < 10; i++) {
    9 |     await sleep(500);
   10 |     console.log(`i=${i}`);
-    at Parser.pp.raise (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/location.js:22:13)
-    at Parser.pp.unexpected (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:91:8)
-    at Parser.pp.semicolon (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:78:38)
-    at Parser.pp.parseExpressionStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:471:8)
-    at Parser.pp.parseStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:162:17)
-    at Parser.pp.parseBlockBody (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:527:25)
-    at Parser.pp.parseTopLevel (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:29:8)
-    at Parser.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/index.js:96:17)
-    at Object.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/index.js:44:50)
-    at File.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babel-core/lib/transformation/file/index.js:472:24)
+
+...
 ```
 
 由提示信息可判断出，应该是不支持`async function`导致的，因为这是ES7标准中定义的新语法，需要配置相应的babel插件才能支持它。本文为了方面使用最新的JavaScript语法，暂时不考虑babel的编译性能，直接开启所有可能用到的插件，具体可以自行研究babel的官方文档。
@@ -177,14 +169,8 @@ $ node test.compiled.js
 
 ReferenceError: regeneratorRuntime is not defined
     at /Users/glen/work/tmp/es2015_demo/test.compiled.js:4:31
-    at Object.<anonymous> (/Users/glen/work/tmp/es2015_demo/test.compiled.js:40:3)
-    at Module._compile (module.js:425:26)
-    at Object.Module._extensions..js (module.js:432:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:313:12)
-    at Function.Module.runMain (module.js:457:10)
-    at startup (node.js:138:18)
-    at node.js:974:3
+
+...
 ```
 
 经阅读官方文档可知，编译后的JavaScript程序有时候需要依赖一些运行时`polyfill`，通过安装`babel-polyfill`模块来获得：

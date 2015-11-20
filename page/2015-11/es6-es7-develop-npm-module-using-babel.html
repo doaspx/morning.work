@@ -178,16 +178,8 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
    8 |   for (let i = 0; i &lt; 10; i++) {
    9 |     await sleep(500);
   10 |     console.log(`i=${i}`);
-    at Parser.pp.raise (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/location.js:22:13)
-    at Parser.pp.unexpected (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:91:8)
-    at Parser.pp.semicolon (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/util.js:78:38)
-    at Parser.pp.parseExpressionStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:471:8)
-    at Parser.pp.parseStatement (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:162:17)
-    at Parser.pp.parseBlockBody (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:527:25)
-    at Parser.pp.parseTopLevel (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/statement.js:29:8)
-    at Parser.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/parser/index.js:96:17)
-    at Object.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babylon/lib/index.js:44:50)
-    at File.parse (/usr/local/lib/node_modules/babel-cli/node_modules/babel-core/lib/transformation/file/index.js:472:24)
+
+...
 </code></pre>
 <p>由提示信息可判断出，应该是不支持<code>async function</code>导致的，因为这是ES7标准中定义的新语法，需要配置相应的babel插件才能支持它。本文为了方面使用最新的JavaScript语法，暂时不考虑babel的编译性能，直接开启所有可能用到的插件，具体可以自行研究babel的官方文档。</p>
 <p>新建文件<code>.babelrc</code>：</p>
@@ -195,7 +187,7 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
   &quot;presets&quot;: [&quot;es2015&quot;, &quot;stage-0&quot;]
 }
 </code></pre>
-<p><code>.babelrc</code>为babel的配置文件，保存在项目的根目录下，其中<code>presets</code>用于设置开启的语法特性集合，详细介绍可参考官方文档：<a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
+<p><code>.babelrc</code>为babel的配置文件，保存在项目的根目录下，其中<code>presets</code>用于设置开启的语法特性集合，详细介绍可参考官方文档：<a href="https://babeljs.io/docs/usage/babelrc/">https://babeljs.io/docs/usage/babelrc/</a> 和 <a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
 <p>由于当前版本的babel没有预置<code>stage-0</code>，所以我们还需要执行以下命令安装并保存到<code>package.json</code>的<code>devDependencies</code>中：</p>
 <pre><code class="prettyprint bash">$ npm i babel-preset-stage-0 --save-dev
 </code></pre>
@@ -214,9 +206,34 @@ i=8
 i=9
 done
 </code></pre>
+<h3><a id="_147"></a>编译程序</h3>
+<p>在发布项目时，要求可以在不依赖babel编译器的环境下运行，因此我们需要将ES2015的程序编译成ES5的：</p>
+<pre><code class="prettyprint bash">$ babel test.js --out-file test.compiled.js
+</code></pre>
+<p>执行上面的命令后，生成了编译后的文件<code>test.compiled.js</code>，我们尝试执行它看看：</p>
+<pre><code class="prettyprint bash">$ node test.compiled.js
+</code></pre>
+<p>在我的系统环境下提示以下出错信息：</p>
+<pre><code>/Users/glen/work/tmp/es2015_demo/test.compiled.js:4
+  var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+                              ^
+
+ReferenceError: regeneratorRuntime is not defined
+    at /Users/glen/work/tmp/es2015_demo/test.compiled.js:4:31
+
+...
+</code></pre>
+<p>经阅读官方文档可知，编译后的JavaScript程序有时候需要依赖一些运行时<code>polyfill</code>，通过安装<code>babel-polyfill</code>模块来获得：</p>
+<pre><code class="prettyprint bash">$ npm i babel-polyfill --save-dev
+</code></pre>
+<p>然后，我们需要修改编译后的文件<code>test.compiled.js</code>，在其首行加上以下代码来载入<code>babel-polyfill</code>：</p>
+<pre><code class="prettyprint javascript">require('babel-polyfill');
+</code></pre>
+<p>再次执行<code>test.compiled.js</code>便可看到与<code>$ babel-node test.js</code>一样的结果。</p>
+<p><code>polyfill</code>的详细介绍可参考官方文档：<a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
 <p>至此，我们已经配置了一个能使用ES2015语法的Node.js运行环境了。</p>
-<h2><a id="_158"></a>编写模块</h2>
-<h2><a id="_163"></a>扩展阅读</h2>
+<h2><a id="_193"></a>编写模块</h2>
+<h2><a id="_198"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
