@@ -270,7 +270,7 @@ download('http://avatars.githubusercontent.com/u/841625', 'avatar.jpg', (size, t
 <p>然后在编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
 <h3><a id="2_236"></a>2、编写程序</h3>
 <p>在本项目中，所有的ES2015源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
-<p>新建文件<code>src/copy.js</code>：</p>
+<p>实现<code>copyFile()</code>函数，新建文件<code>src/copy.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
 
 export default function copyFile(source, target, progress, callback) {
@@ -288,16 +288,178 @@ export default function copyFile(source, target, progress, callback) {
       progress &amp;&amp; progress(copySize, stats.size);
     });
 
-    ss.on('end', _ =&gt; callback(null, target));
+    ss.on('end', () =&gt; callback(null, target));
 
     ss.pipe(ts);
   });
 }
 </code></pre>
-<h3><a id="3_267"></a>3、模块系统</h3>
-<h2><a id="_270"></a>单元测试</h2>
-<h2><a id="_273"></a>发布模块</h2>
-<h2><a id="_276"></a>扩展阅读</h2>
+<p>说明：</p>
+<ul>
+<li><code>import fs from 'fs'</code>为ES2015模块系统加载模块的方式，可理解为<code>var fs = require('fs')</code>，具体在下文「模块系统」一节中介绍。</li>
+<li>通过<code>fs.createReadStream(source)</code>和<code>fs.createWriteStream(target)</code>来创建读取文件流和写入文件流，并监听读取文件流的<code>data</code>事件获得当前进度信息。</li>
+<li><code>export default function copyFile() {}</code>将函数<code>copyFile()</code>作为模块输出，相当于<code>module.exports = function copyFile() {}</code>，具体在下文「模块系统」一节中介绍。</li>
+</ul>
+<p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
+<pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; {
+  console.log(`进度${size}/${total}`);
+}, (err, filename) =&gt; {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`已保存到${filename}`);
+  }
+});
+</code></pre>
+<p>以上程序的作用是将当前JavaScript文件复制到<code>/tmp/copy.js</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
+<pre><code class="prettyprint bash">$ babel-node src/copy.js
+
+进度749/749
+已保存到/tmp/copy.js
+</code></pre>
+<p>实现<code>downloadFile()</code>函数，新建文件<code>src/download.js</code>：</p>
+<pre><code class="prettyprint javascript">import fs from 'fs';
+import request from 'request';
+
+export default function downloadFile(url, target, progress, callback) {
+  let s = fs.createWriteStream(target);
+  s.on('error', callback);
+
+  let totalSize = 0;
+  let downloadSize = 0;
+  let req = request
+    .get({
+      url: url,
+      encoding: null
+    })
+    .on('response', res =&gt; {
+      if (res.statusCode !== 200) {
+        return callback(new Error('status #' + res.statusCode));
+      }
+      totalSize = res.headers['content-length'] || null;
+
+      res.on('data', data =&gt; {
+        downloadSize += data.length;
+        progress &amp;&amp; progress(downloadSize, totalSize);
+      });
+      res.on('end', () =&gt; callback(null, target));
+    })
+    .pipe(s);
+}
+</code></pre>
+<p>说明：</p>
+<ul>
+<li>程序使用<code>request</code>模块来下载URL的内容，使用时执行命令<code>$ npm i request --save</code>安装该模块。</li>
+<li>通过<code>request</code>模块的<code>pipe()</code>方法将收到的数据写入到<code>fs.createWriteStream(target)</code>创建的写入文件流中，<code>request</code>模块的详细使用方法可参考其文档：<a href="https://www.npmjs.com/package/request">https://www.npmjs.com/package/request</a></li>
+</ul>
+<p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
+<pre><code class="prettyprint javascript">downloadFile('http://avatars.githubusercontent.com/u/841625', '/tmp/avatar.jpg', (size, total) =&gt; {
+  console.log(`进度${size}/${total}`);
+}, (err, filename) =&gt; {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`已保存到${filename}`);
+  }
+});
+</code></pre>
+<p>以上程序的作用是将URL为<code>http://avatars.githubusercontent.com/u/841625</code>的文件复制到<code>/tmp/avatar.jpg</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
+<pre><code class="prettyprint bash">$ babel-node src/download.js
+
+进度15622/34956
+进度32006/34956
+进度34956/34956
+已保存到/tmp/avatar.jpg
+</code></pre>
+<p>实现<code>download()</code>函数，新建文件<code>src/download.js</code>：</p>
+<pre><code class="prettyprint javascript">import os from 'os';
+import path from 'path';
+import mkdirp from 'mkdirp';
+import copyFile from './copy';
+import downloadFile from './download';
+
+export default function download(...args) {
+  var source, target, progress, callback;
+  if (args.length &lt; 2) {
+    throw new TypeError('invalid argument number');
+  }
+  source = args[0];
+  callback = args[args.length - 1];
+  if (args.length === 2) {
+    callback = args[1];
+  } else if (args.length === 3) {
+    if (typeof args[1] === 'function') {
+      progress = args[1];
+    } else {
+      target = args[1];
+    }
+  } else {
+    target = args[1];
+    progress = args[2];
+  }
+  progress = progress || null;
+  target = target || randomFilename(download.tmpDir);
+
+  mkdirp(path.dirname(target), err =&gt; {
+    if (err) return callback(err);
+
+    if (isURL(source)) {
+      downloadFile(source, target, progress, callback);
+    } else {
+      copyFile(source, target, progress, callback);
+    }
+  });
+}
+
+let getTmpDir = os.tmpdir || os.tmpDir;
+
+function randomString(size = 6, chars = 'abcdefghijklmnopqrstuvwxyz0123456789') {
+  let max = chars.length + 1;
+  let str = '';
+  while (size &gt; 0) {
+    str += chars.charAt(Math.floor(Math.random() * max));
+    size--;
+  }
+  return str;
+}
+
+function randomFilename(tmpDir = getTmpDir()) {
+  return path.resolve(tmpDir, randomString(20));
+}
+
+function isURL (url) {
+  if (url.substr(0, 7) === 'http://') return true;
+  if (url.substr(0, 8) === 'https://') return true;
+  return false;
+}
+</code></pre>
+<p>说明：</p>
+<ul>
+<li><code>import copyFile from './copy'</code>用于载入模块，相当于<code>var copyFile = require('./copy')</code>。</li>
+<li><code>download(...args)</code>函数中的<code>...args</code>相当于<code>var args = Array.prototype.call(arguments);</code>。</li>
+<li>程序使用<code>mkdirp</code>模块来创建目标文件的上级目录，使用时执行命令<code>$ npm i mkdirp --save</code>安装该模块。</li>
+<li><code>getTmpDir()</code>函数用于取得当前系统的临时目录，通过<code>os.tmpDir()</code>获得。</li>
+<li><code>randomString(size)</code>函数用于生成指定长度的随机字符串。</li>
+<li><code>randomFilename(tmpDir)</code>用于生成临时文件名，默认存储在系统临时目录下，可通过<code>tmpDir</code>参数指定。</li>
+<li><code>isURL(url)</code>函数用于判断参数是否为一个URL。</li>
+</ul>
+<p>为了验证程序是否正确，我们可以将上文的<code>src/copy.js</code>和<code>src/download.js</code>中的测试程序放到<code>src/index.js</code>文件的末尾并执行（需要将旧的程序程序删除），比如：</p>
+<pre><code class="prettyprint javascript">download(__filename, '/tmp/copy.js', (size, total) =&gt; {
+  console.log(`进度${size}/${total}`);
+}, (err, filename) =&gt; {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`已保存到${filename}`);
+  }
+});
+</code></pre>
+<p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
+<h3><a id="3_450"></a>3、模块系统</h3>
+<p>模块系统详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
+<h2><a id="_457"></a>单元测试</h2>
+<h2><a id="_460"></a>发布模块</h2>
+<h2><a id="_463"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
