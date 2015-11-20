@@ -1,6 +1,8 @@
 title: ES2015实战：开发NPM模块
 date: 2015-11-20
 
+## 前言
+
 近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（**PHP是世界上最好的语言，但JavaScript终将统一全宇宙**），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。
 
 前不久ES6标准正式发布，而Node.js也在最近刚刚发布了5.1.0版本，对ES6标准的支持也越来越完善，babel（一个将ES6/ES7写的代码转换为ES5代码的编译器）也发布了6.0版本，近期也涌现出了不少好文章（比如小问写的[「给 JavaScript 初心者的 ES2015 实战」](http://gank.io/post/564151c1f1df1210001c9161)），种种迹象表明ES6真的要火了，而我也终于按耐不住了……
@@ -31,7 +33,7 @@ babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript�
 
 ## 配置babel编译环境
 
-### 安装babel
+### 1、安装babel
 
 > Babel is a JavaScript compiler. Use next generation JavaScript, today
 
@@ -58,7 +60,7 @@ cnpmjs镜像的详细介绍可访问其官网：http://cnpmjs.org/
 
 `babel-cli`的详细用法可以参考其文档：https://babeljs.io/docs/usage/cli/
 
-### 初始化项目
+### 2、初始化项目
 
 执行以下命令初始化项目（执行`npm init`时需要按提示输入相应信息，可直接按回车跳过）：
 
@@ -146,7 +148,7 @@ i=9
 done
 ```
 
-### 编译程序
+### 3、编译程序
 
 在发布项目时，要求可以在不依赖babel编译器的环境下运行，因此我们需要将ES2015的程序编译成ES5的：
 
@@ -194,7 +196,83 @@ require('babel-polyfill');
 
 ## 编写模块
 
+### 1、功能描述
 
+本文以[lei-download](https://github.com/leizongmin/node-lei-download)模块为例，该模块是一个主要功能是根据一个URL来下载文件到本地，或者本地直接文件的复制，同时提供下载/复制进度信息。其使用方法如下：
+
+```javascript
+let download = require('lei-download');
+
+download('http://avatars.githubusercontent.com/u/841625', 'avatar.jpg', (size, total) => {
+  console.log(`已下载${size}，总共${total}`);
+}, (err, filename) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`已保存到${filename}`);
+  }
+});
+```
+
+`download()`函数支持以下参数组合：
+
++ `download(source, callback);`
++ `download(source, progress, callback);`
++ `download(source, target, callback);`
++ `download(source, target, progress, callback);`
+
+参数说明如下：
+
++ `source` 源文件，可以为本地文件或URL（http://或https://开头）
++ `target` 目标文件，可省略，默认生成一个在本地临时目录的随机文件名
++ `progress` 下载进度，可省略
++ `callback` 回调函数
+
+在编写模块时，我们首先要实现以下两个函数的功能：
+
++ `downloadFile(source, target, progress, callback)` 从一个URL下载文件并保存到本地
++ `copyFile(source, target, progress, callback)` 复制一个本地文件
+
+然后在编写一个`download()`函数来判断`source`参数，并选择使用`downloadFile()`或者`copyFile()`来完成请求。
+
+### 2、编写程序
+
+在本项目中，所有的ES2015源程序均保存在`src`目录下，发布项目时会执行相应的命令将其编译并输出到`lib`目录，具体方法在**「发布模块」**小节中介绍。
+
+新建文件`src/copy.js`：
+
+```javascript
+import fs from 'fs';
+
+export default function copyFile(source, target, progress, callback) {
+  fs.stat(source, (err, stats) => {
+    if (err) return callback(err);
+
+    let ss = fs.createReadStream(source);
+    let ts = fs.createWriteStream(target);
+    ss.on('error', callback);
+    ts.on('error', callback);
+
+    let copySize = 0;
+    ss.on('data', data => {
+      copySize += data.length;
+      progress && progress(copySize, stats.size);
+    });
+
+    ss.on('end', _ => callback(null, target));
+
+    ss.pipe(ts);
+  });
+}
+```
+
+### 3、模块系统
+
+
+## 单元测试
+
+
+## 发布模块
 
 
 ## 扩展阅读

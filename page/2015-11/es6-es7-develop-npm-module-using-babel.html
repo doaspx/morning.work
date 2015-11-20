@@ -103,7 +103,8 @@ li > p {
 
   <h1>ES2015实战：开发NPM模块</h1>
   <article id="content">
-    <p>近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（<strong>PHP是世界上最好的语言，但JavaScript终将统一全宇宙</strong>），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。</p>
+    <h2><a id="_2"></a>前言</h2>
+<p>近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（<strong>PHP是世界上最好的语言，但JavaScript终将统一全宇宙</strong>），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。</p>
 <p>前不久ES6标准正式发布，而Node.js也在最近刚刚发布了5.1.0版本，对ES6标准的支持也越来越完善，babel（一个将ES6/ES7写的代码转换为ES5代码的编译器）也发布了6.0版本，近期也涌现出了不少好文章（比如小问写的<a href="http://gank.io/post/564151c1f1df1210001c9161">「给 JavaScript 初心者的 ES2015 实战」</a>），种种迹象表明ES6真的要火了，而我也终于按耐不住了……</p>
 <p>这几天正在写一个<a href="https://github.com/leizongmin/node-lei-download">方便下载文件的模块</a>（可以得到下载进度信息），正好可以使用ES6新语法特性来改写，作为我写下的第一个使用ES6语法的NPM模块。本文内容将分为以下几部分：</p>
 <ul>
@@ -116,15 +117,15 @@ li > p {
 <p>babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤其有用。访问网址http://babeljs.io/repl ，其界面如下：</p>
 <p><img src="../../images/2015-11/babel_online_repl.jpg" alt="babel online repl"></p>
 <p>说明：使用时勾选左边的<code>Experimental</code>可使用最新的语法特性</p>
-<h2><a id="_22"></a>软件环境</h2>
+<h2><a id="_24"></a>软件环境</h2>
 <p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步<strong>准确无误</strong>地运行下去，以下列出所用到的软件和模块的版本：</p>
 <ul>
 <li><strong>Node.js</strong> <code>v5.1.0</code></li>
 <li><strong>npm</strong> <code>3.3.12</code></li>
 <li><strong>babel</strong> <code>6.2.0 (babel-core 6.2.1)</code></li>
 </ul>
-<h2><a id="babel_30"></a>配置babel编译环境</h2>
-<h3><a id="babel_32"></a>安装babel</h3>
+<h2><a id="babel_32"></a>配置babel编译环境</h2>
+<h3><a id="1babel_34"></a>1、安装babel</h3>
 <blockquote>
 <p>Babel is a JavaScript compiler. Use next generation JavaScript, today</p>
 </blockquote>
@@ -142,7 +143,7 @@ li > p {
 <li><code>babel-node</code> 可以直接运行ES2015程序的Node命令</li>
 </ul>
 <p><code>babel-cli</code>的详细用法可以参考其文档：<a href="https://babeljs.io/docs/usage/cli/">https://babeljs.io/docs/usage/cli/</a></p>
-<h3><a id="_59"></a>初始化项目</h3>
+<h3><a id="2_61"></a>2、初始化项目</h3>
 <p>执行以下命令初始化项目（执行<code>npm init</code>时需要按提示输入相应信息，可直接按回车跳过）：</p>
 <pre><code class="prettyprint bash">$ mkdir es2015_demo &amp;&amp; cd es2015_demo &amp;&amp; git init &amp;&amp; npm init
 </code></pre>
@@ -206,7 +207,7 @@ i=8
 i=9
 done
 </code></pre>
-<h3><a id="_147"></a>编译程序</h3>
+<h3><a id="3_149"></a>3、编译程序</h3>
 <p>在发布项目时，要求可以在不依赖babel编译器的环境下运行，因此我们需要将ES2015的程序编译成ES5的：</p>
 <pre><code class="prettyprint bash">$ babel test.js --out-file test.compiled.js
 </code></pre>
@@ -232,8 +233,71 @@ ReferenceError: regeneratorRuntime is not defined
 <p>再次执行<code>test.compiled.js</code>便可看到与<code>$ babel-node test.js</code>一样的结果。</p>
 <p><code>polyfill</code>的详细介绍可参考官方文档：<a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
 <p>至此，我们已经配置了一个能使用ES2015语法的Node.js运行环境了。</p>
-<h2><a id="_193"></a>编写模块</h2>
-<h2><a id="_198"></a>扩展阅读</h2>
+<h2><a id="_195"></a>编写模块</h2>
+<h3><a id="1_197"></a>1、功能描述</h3>
+<p>本文以<a href="https://github.com/leizongmin/node-lei-download">lei-download</a>模块为例，该模块是一个主要功能是根据一个URL来下载文件到本地，或者本地直接文件的复制，同时提供下载/复制进度信息。其使用方法如下：</p>
+<pre><code class="prettyprint javascript">let download = require('lei-download');
+
+download('http://avatars.githubusercontent.com/u/841625', 'avatar.jpg', (size, total) =&gt; {
+  console.log(`已下载${size}，总共${total}`);
+}, (err, filename) =&gt; {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`已保存到${filename}`);
+  }
+});
+</code></pre>
+<p><code>download()</code>函数支持以下参数组合：</p>
+<ul>
+<li><code>download(source, callback);</code></li>
+<li><code>download(source, progress, callback);</code></li>
+<li><code>download(source, target, callback);</code></li>
+<li><code>download(source, target, progress, callback);</code></li>
+</ul>
+<p>参数说明如下：</p>
+<ul>
+<li><code>source</code> 源文件，可以为本地文件或URL（<a href="http://xn--https-wm6j">http://或https</a>://开头）</li>
+<li><code>target</code> 目标文件，可省略，默认生成一个在本地临时目录的随机文件名</li>
+<li><code>progress</code> 下载进度，可省略</li>
+<li><code>callback</code> 回调函数</li>
+</ul>
+<p>在编写模块时，我们首先要实现以下两个函数的功能：</p>
+<ul>
+<li><code>downloadFile(source, target, progress, callback)</code> 从一个URL下载文件并保存到本地</li>
+<li><code>copyFile(source, target, progress, callback)</code> 复制一个本地文件</li>
+</ul>
+<p>然后在编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
+<h3><a id="2_236"></a>2、编写程序</h3>
+<p>在本项目中，所有的ES2015源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
+<p>新建文件<code>src/copy.js</code>：</p>
+<pre><code class="prettyprint javascript">import fs from 'fs';
+
+export default function copyFile(source, target, progress, callback) {
+  fs.stat(source, (err, stats) =&gt; {
+    if (err) return callback(err);
+
+    let ss = fs.createReadStream(source);
+    let ts = fs.createWriteStream(target);
+    ss.on('error', callback);
+    ts.on('error', callback);
+
+    let copySize = 0;
+    ss.on('data', data =&gt; {
+      copySize += data.length;
+      progress &amp;&amp; progress(copySize, stats.size);
+    });
+
+    ss.on('end', _ =&gt; callback(null, target));
+
+    ss.pipe(ts);
+  });
+}
+</code></pre>
+<h3><a id="3_267"></a>3、模块系统</h3>
+<h2><a id="_270"></a>单元测试</h2>
+<h2><a id="_273"></a>发布模块</h2>
+<h2><a id="_276"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
