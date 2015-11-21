@@ -1,4 +1,4 @@
-title: ES2015实战：开发NPM模块
+title: ES2015 & babel 实战：开发NPM模块
 date: 2015-11-20
 
 ## 前言
@@ -30,6 +30,7 @@ babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript�
 + **Node.js** `v5.1.0`
 + **npm** `3.3.12`
 + **babel** `6.2.0 (babel-core 6.2.1)`
++ **mocha** `2.3.4`
 
 ## 配置babel编译环境
 
@@ -178,7 +179,7 @@ ReferenceError: regeneratorRuntime is not defined
 经阅读官方文档可知，编译后的JavaScript程序有时候需要依赖一些运行时`polyfill`，通过安装`babel-polyfill`模块来获得：
 
 ```bash
-$ npm i babel-polyfill --save-dev
+$ npm i babel-polyfill --save
 ```
 
 然后，我们需要修改编译后的文件`test.compiled.js`，在其首行加上以下代码来载入`babel-polyfill`：
@@ -358,7 +359,7 @@ $ babel-node src/download.js
 已保存到/tmp/avatar.jpg
 ```
 
-实现`download()`函数，新建文件`src/download.js`：
+实现`download()`函数，新建文件`src/index.js`：
 
 ```javascript
 import os from 'os';
@@ -521,9 +522,9 @@ import fs2 from 'fs';
 // fs1.readFile() 和 fs2.readFile() 是一样的
 ```
 
-为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。可通过访问[babel的在线REPL](http://babeljs.io/repl/)或将程序保存到本地，并执行`babel file.js`来查看编译后的程序。
+为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。访问[babel的在线REPL](http://babeljs.io/repl/)或将程序保存到本地，并执行`babel file.js`来查看编译后的程序。
 
-以下ES2015程序：
+以下ES2015代码：
 
 ```javascript
 export const a = 123;
@@ -567,14 +568,329 @@ exports.d = d;
 function y() {}
 ```
 
+有上面的代码可以看出，`export var b = 456`这样的输出方式，实际上相当于`var b = exports.b = 456`，即直接设置`exports`对象的属性来完成。而`export default y`则是设置`exports`对象的`default`属性。
 
-模块系统详细说明可参考：阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)中[Module](http://es6.ruanyifeng.com/#docs/module)一章。
+另外，还设置了`exports.__esModule = true`来标记这是一个ES2015输出的模块，在通过`import`来引入模块时会判断此属性来执行相应的规则，下文将详细介绍。
+
+再看看以下的ES2015代码：
+
+```javascript
+import {a, b, c, d} from './my_module';
+import * as mod from './my_module';
+import y from './my_module';
+
+a;
+mod.a;
+y;
+```
+
+其编译后的JavaScript代码如下：
+
+```javascript
+'use strict';
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    'default': obj
+  };
+}
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+      }
+    }
+    newObj['default'] = obj;
+    return newObj;
+  }
+}
+
+var _my_module = require('./my_module');
+
+var mod = _interopRequireWildcard(_my_module);
+
+var _my_module2 = _interopRequireDefault(_my_module);
+
+_my_module.a;
+mod.a;
+_my_module2['default'];
+```
+
+首先，`a`是通过`import {a} from './my_module'`来引入的，编译后的代码中访问`a`使用的是`_my_module.a`，而`_my_module = require('./my_module')`，所以其对应的是`export var a = 123`这样的输出。
+
+`mod`是通过`import * as mod from './my_module'`来引入的，其编译后的代码为`_interopRequireWildcard(require('./my_module'))`。在`_interopRequireWildcard()`函数中，如果载入的模块是由ES2015输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其`default`属性为自身。
+
+`y`是通过`import y from './my_module'`来引入的，对`y`的访问被编译成了`_my_module2['default']`，所以`y`实际上是`export default`的输出。而`_my_module2 = _interopRequireDefault(require('./my_module'))`，函数`_interopRequireDefault()`对载入的非ES2015模块做了处理，会返回一个`default`属性指向该模块的新对象。
+
+当然模块系统的还有更复杂的语法规则，详细说明可参考：阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)中[Module](http://es6.ruanyifeng.com/#docs/module)一章。
+
+### 4、封装模块
+
+上文例子中的`download()`函数所在的文件`src/index.js`中用到`randomFilename()`和`isURL()`这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到`src/utils.js`中。
+
+新建文件`src/utils.js`：
+
+```javascript
+import path from 'path';
+import os from 'os';
+
+let getTmpDir = os.tmpdir || os.tmpDir;
+
+function randomString(size = 6, chars = 'abcdefghijklmnopqrstuvwxyz0123456789') {
+  let max = chars.length + 1;
+  let str = '';
+  while (size > 0) {
+    str += chars.charAt(Math.floor(Math.random() * max));
+    size--;
+  }
+  return str;
+}
+
+export function randomFilename(tmpDir = getTmpDir()) {
+  return path.resolve(tmpDir, randomString(20));
+}
+
+export function isURL (url) {
+  if (url.substr(0, 7) === 'http://') return true;
+  if (url.substr(0, 8) === 'https://') return true;
+  return false;
+}
+```
+
+说明：`getTmpDir()`和`randomString()`仅在函数`randomFilename()`函数中用到，所以不需要使用`export`输出。
+
+修改文件`src/index.js`，将相应的代码删掉，并在文件首部`import`语句后面增加以下代码：
+
+```javascript
+import {randomFilename, isURL} from './utils';
+```
 
 
 ## 单元测试
 
+本文将以`mocha`测试框架为例，单元测试程序也将使用ES2015来写。
+
+首先执行以下命令安装`mocha`：
+
+```bash
+$ npm i -g mocha
+```
+
+安装完成后可执行以下命令验证是否安装成功：
+
+```
+$ mocha --version
+
+2.3.4
+```
+
+通过阅读`babel`的官方文档（访问http://babeljs.io/docs/setup/#mocha ）可知，为了让Node.js中的`require()`函数能直接载入ES2015程序，需要依赖`babel-core`模块，执行以下命令安装：
+
+```bash
+$ npm i babel-core mocha --save-dev
+```
+
+运行`mocha`命令的时候，需要增加额外的参数`--compilers js:babel-core/register`让其使用`babel`来载入JavaScript程序。为了方便，我们可以修改`package.json`文件，增加以下内容：
+
+```json
+{
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register"
+  }
+}
+```
+
+说明：我们通过`npm init`命令生成`package.json`文件时，已经自动生成了`test`命令，其默认值为`echo \"Error: no test specified\" && exit 1`，直接将其改为`mocha --compilers js:babel-core/register`即可。
+
+以上准备工作完成后，便可以开始写单元测试程序了。新建文件`test/test.js`：
+
+```javascript
+import assert from 'assert';
+import path from 'path';
+import fs from 'fs';
+import download from '../src';
+import {randomFilename} from '../src/utils';
+
+let readFile = f => fs.readFileSync(f).toString();
+let getFileSize = f => fs.statSync(f).size;
+
+describe('es2015_demo', () => {
+
+  it('复制本地文件成功', done => {
+
+    let source = __filename;
+    let target = randomFilename();
+    let onProgress = false;
+
+    download(source, target, (size, total) => {
+
+      onProgress = true;
+      assert.equal(size, total);
+      assert.equal(total, getFileSize(source));
+
+    }, (err, filename) => {
+
+      assert.equal(err, null);
+      assert.equal(onProgress, true);
+      assert.equal(target, filename);
+      assert.equal(readFile(source), readFile(target));
+
+      done();
+
+    });
+  });
+
+});
+```
+
+说明：本文只为了演示如何配置`mocha`和编写单元测试程序，所以没有给`download()`函数编写完整的单元测试，仅编写一个测试用例作为演示。
+
+好了，现在执行`$ npm test`命令看看：
+
+```bash
+$ npm test
+
+> es2015_demo@1.0.0 test /Users/glen/work/tmp/es2015_demo
+> mocha --compilers js:babel-core/register
+
+
+
+  es2015_demo
+    ✓ 复制本地文件成功
+
+
+  1 passing (49ms)
+
+
+```
+
+至此，我们已经完成了使用ES2015编写模块，并使用`mocha`来进行单元测试，下文将介绍如何通过`babel`编译程序，并发布模块。
+
 
 ## 发布模块
+
+### 1、编译
+
+上文已提到，为了让使用ES2015编写的代码能在Node.js上正常运行，需要先将其编译成ES5标准的代码，然后还需要在程序入口载入`babel-polyfill`模块。
+
+我们可以修改文件`package.json`，为其增加`compile`命令：
+
+```json
+{
+  "scripts": {
+    "compile": "babel -d lib/ src/"
+  }
+}
+```
+
+说明：`$ babel -d lib/ src/`命令表示`lib`目录下的所有文件，并保存到`src`目录下。
+
+配置完成后，可以执行`$ npm run compile`命令编译试试：
+
+```bash
+$ npm run compile
+
+> @isnc/es2015_demo@1.0.0 compile /Users/glen/work/tmp/es2015_demo
+> babel -d lib/ src/
+
+src/copy.js -> lib/copy.js
+src/download.js -> lib/download.js
+src/index.js -> lib/index.js
+src/utils.js -> lib/utils.js
+```
+
+此时，我们还不能直接载入`lib/index.js`文件，因为在此之前需要载入`babel-polyfill`模块。编辑文件`package.json`，设置模块入口文件：
+
+```json
+{
+  "main": "index.js"
+}
+```
+
+说明：使用`$ npm init`生成`package.json`文件时，`main`的默认值即为`index.js`，可无需修改。
+
+新建文件`index.js`：
+
+```javascript
+require('babel-polyfill');
+module.exports = require('./lib').default;
+```
+
+说明：在`src/index.js`中`download()`函数使用的是`export default`输出，所以在Node.js中需要读取模块输出的`default`属性。
+
+为了验证编译后的程序能否正常工作，可以新建文件`test_compiled.js`：
+
+```javascript
+var download = require('./');
+
+download(__filename, '/tmp/copy.js', function (size, total) {
+  console.log('进度%s/%s', size, total);
+}, (err, filename) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log('已保存到%s', filename);
+  }
+});
+```
+
+使用以下命令运行该程序是可以正常工作的：
+
+```bash
+$ node test_compiled.js
+```
+
+### 2、发布
+
+我们在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，`lib`目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到`node_modules`目录下，这些内容也是不应该纳入版本管理的。可以添加文件`.gitignore`来将其排除：
+
+```
+*.log
+node_modules
+lib
+```
+
+如果要将模块发布到NPM上，ES2015编写的源程序也是不需要的，可以添加文件`.npmignore`来将其排除：
+
+```
+src
+```
+
+在使用`$ npm publish`命令发布模块时，可以设置`prepublish`命令来让其自动执行编译。编辑文件`package.json`，增加以下内容：
+
+```json
+{
+  "scripts": {
+    "prepublish": "npm run compile"
+  }
+}
+```
+
+### 3、善后
+
+上文例子中需要依赖`mocha`和`babel`两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖`babel`的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的`babel`版本。
+
+首先执行以下命令安装`babel-cli`和`mocha`：
+
+```bash
+$ npm i babel-cli mocha --save-dev
+```
+
+安装完成后，对于上文中使用的`babel`和`mocha`命令，可以使用`./node_modules/.bin/babel`和`./node_modules/.bin/mocha`来执行。编辑`package.json`文件，更改`compile`和`test`命令：
+
+```json
+{
+  "scripts": {
+    "compile": "./node_modules/.bin/babel -d lib/ src/",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register"
+  }
+}
+```
 
 
 ## 扩展阅读

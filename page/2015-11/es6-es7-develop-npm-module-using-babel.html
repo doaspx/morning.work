@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>ES2015实战：开发NPM模块 - 早起搬砖 morning.work</title>
+<title>ES2015 &amp; babel 实战：开发NPM模块 - 早起搬砖 morning.work</title>
 <style>
 body {
   font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;
@@ -101,7 +101,7 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>ES2015实战：开发NPM模块</h1>
+  <h1>ES2015 &amp; babel 实战：开发NPM模块</h1>
   <article id="content">
     <h2><a id="_2"></a>前言</h2>
 <p>近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（<strong>PHP是世界上最好的语言，但JavaScript终将统一全宇宙</strong>），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。</p>
@@ -123,9 +123,10 @@ li > p {
 <li><strong>Node.js</strong> <code>v5.1.0</code></li>
 <li><strong>npm</strong> <code>3.3.12</code></li>
 <li><strong>babel</strong> <code>6.2.0 (babel-core 6.2.1)</code></li>
+<li><strong>mocha</strong> <code>2.3.4</code></li>
 </ul>
-<h2><a id="babel_32"></a>配置babel编译环境</h2>
-<h3><a id="1babel_34"></a>1、安装babel</h3>
+<h2><a id="babel_33"></a>配置babel编译环境</h2>
+<h3><a id="1babel_35"></a>1、安装babel</h3>
 <blockquote>
 <p>Babel is a JavaScript compiler. Use next generation JavaScript, today</p>
 </blockquote>
@@ -143,7 +144,7 @@ li > p {
 <li><code>babel-node</code> 可以直接运行ES2015程序的Node命令</li>
 </ul>
 <p><code>babel-cli</code>的详细用法可以参考其文档：<a href="https://babeljs.io/docs/usage/cli/">https://babeljs.io/docs/usage/cli/</a></p>
-<h3><a id="2_61"></a>2、初始化项目</h3>
+<h3><a id="2_62"></a>2、初始化项目</h3>
 <p>执行以下命令初始化项目（执行<code>npm init</code>时需要按提示输入相应信息，可直接按回车跳过）：</p>
 <pre><code class="prettyprint bash">$ mkdir es2015_demo &amp;&amp; cd es2015_demo &amp;&amp; git init &amp;&amp; npm init
 </code></pre>
@@ -207,7 +208,7 @@ i=8
 i=9
 done
 </code></pre>
-<h3><a id="3_149"></a>3、编译程序</h3>
+<h3><a id="3_150"></a>3、编译程序</h3>
 <p>在发布项目时，要求可以在不依赖babel编译器的环境下运行，因此我们需要将ES2015的程序编译成ES5的：</p>
 <pre><code class="prettyprint bash">$ babel test.js --out-file test.compiled.js
 </code></pre>
@@ -225,7 +226,7 @@ ReferenceError: regeneratorRuntime is not defined
 ...
 </code></pre>
 <p>经阅读官方文档可知，编译后的JavaScript程序有时候需要依赖一些运行时<code>polyfill</code>，通过安装<code>babel-polyfill</code>模块来获得：</p>
-<pre><code class="prettyprint bash">$ npm i babel-polyfill --save-dev
+<pre><code class="prettyprint bash">$ npm i babel-polyfill --save
 </code></pre>
 <p>然后，我们需要修改编译后的文件<code>test.compiled.js</code>，在其首行加上以下代码来载入<code>babel-polyfill</code>：</p>
 <pre><code class="prettyprint javascript">require('babel-polyfill');
@@ -233,8 +234,8 @@ ReferenceError: regeneratorRuntime is not defined
 <p>再次执行<code>test.compiled.js</code>便可看到与<code>$ babel-node test.js</code>一样的结果。</p>
 <p><code>polyfill</code>的详细介绍可参考官方文档：<a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
 <p>至此，我们已经配置了一个能使用ES2015语法的Node.js运行环境了。</p>
-<h2><a id="_195"></a>编写模块</h2>
-<h3><a id="1_197"></a>1、功能描述</h3>
+<h2><a id="_196"></a>编写模块</h2>
+<h3><a id="1_198"></a>1、功能描述</h3>
 <p>本文以<a href="https://github.com/leizongmin/node-lei-download">lei-download</a>模块为例，该模块是一个主要功能是根据一个URL来下载文件到本地，或者本地直接文件的复制，同时提供下载/复制进度信息。其使用方法如下：</p>
 <pre><code class="prettyprint javascript">let download = require('lei-download');
 
@@ -268,7 +269,7 @@ download('http://avatars.githubusercontent.com/u/841625', 'avatar.jpg', (size, t
 <li><code>copyFile(source, target, progress, callback)</code> 复制一个本地文件</li>
 </ul>
 <p>然后在编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
-<h3><a id="2_236"></a>2、编写程序</h3>
+<h3><a id="2_237"></a>2、编写程序</h3>
 <p>在本项目中，所有的ES2015源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
 <p>实现<code>copyFile()</code>函数，新建文件<code>src/copy.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
@@ -371,7 +372,7 @@ export default function downloadFile(url, target, progress, callback) {
 进度34956/34956
 已保存到/tmp/avatar.jpg
 </code></pre>
-<p>实现<code>download()</code>函数，新建文件<code>src/download.js</code>：</p>
+<p>实现<code>download()</code>函数，新建文件<code>src/index.js</code>：</p>
 <pre><code class="prettyprint javascript">import os from 'os';
 import path from 'path';
 import mkdirp from 'mkdirp';
@@ -455,7 +456,7 @@ function isURL (url) {
 });
 </code></pre>
 <p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
-<h3><a id="3_450"></a>3、模块系统</h3>
+<h3><a id="3_451"></a>3、模块系统</h3>
 <p>Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给<code>exports</code>对象设置属性来做：</p>
 <pre><code class="prettyprint javascript">// 输出变量或函数
 exports.x = 123;
@@ -505,8 +506,8 @@ import fs2 from 'fs';
 
 // fs1.readFile() 和 fs2.readFile() 是一样的
 </code></pre>
-<p>为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。可通过访问<a href="http://babeljs.io/repl/">babel的在线REPL</a>或将程序保存到本地，并执行<code>babel file.js</code>来查看编译后的程序。</p>
-<p>以下ES2015程序：</p>
+<p>为了更容易理解ES2015的模块系统原理，我们可以通过阅读编译后的JavaScript程序来了解。访问<a href="http://babeljs.io/repl/">babel的在线REPL</a>或将程序保存到本地，并执行<code>babel file.js</code>来查看编译后的程序。</p>
+<p>以下ES2015代码：</p>
 <pre><code class="prettyprint javascript">export const a = 123;
 export var b = 456;
 export function c() { }
@@ -544,10 +545,243 @@ exports.d = d;
 
 function y() {}
 </code></pre>
-<p>模块系统详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
-<h2><a id="_572"></a>单元测试</h2>
-<h2><a id="_575"></a>发布模块</h2>
-<h2><a id="_578"></a>扩展阅读</h2>
+<p>有上面的代码可以看出，<code>export var b = 456</code>这样的输出方式，实际上相当于<code>var b = exports.b = 456</code>，即直接设置<code>exports</code>对象的属性来完成。而<code>export default y</code>则是设置<code>exports</code>对象的<code>default</code>属性。</p>
+<p>另外，还设置了<code>exports.__esModule = true</code>来标记这是一个ES2015输出的模块，在通过<code>import</code>来引入模块时会判断此属性来执行相应的规则，下文将详细介绍。</p>
+<p>再看看以下的ES2015代码：</p>
+<pre><code class="prettyprint javascript">import {a, b, c, d} from './my_module';
+import * as mod from './my_module';
+import y from './my_module';
+
+a;
+mod.a;
+y;
+</code></pre>
+<p>其编译后的JavaScript代码如下：</p>
+<pre><code class="prettyprint javascript">'use strict';
+
+function _interopRequireDefault(obj) {
+  return obj &amp;&amp; obj.__esModule ? obj : {
+    'default': obj
+  };
+}
+
+function _interopRequireWildcard(obj) {
+  if (obj &amp;&amp; obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+      }
+    }
+    newObj['default'] = obj;
+    return newObj;
+  }
+}
+
+var _my_module = require('./my_module');
+
+var mod = _interopRequireWildcard(_my_module);
+
+var _my_module2 = _interopRequireDefault(_my_module);
+
+_my_module.a;
+mod.a;
+_my_module2['default'];
+</code></pre>
+<p>首先，<code>a</code>是通过<code>import {a} from './my_module'</code>来引入的，编译后的代码中访问<code>a</code>使用的是<code>_my_module.a</code>，而<code>_my_module = require('./my_module')</code>，所以其对应的是<code>export var a = 123</code>这样的输出。</p>
+<p><code>mod</code>是通过<code>import * as mod from './my_module'</code>来引入的，其编译后的代码为<code>_interopRequireWildcard(require('./my_module'))</code>。在<code>_interopRequireWildcard()</code>函数中，如果载入的模块是由ES2015输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其<code>default</code>属性为自身。</p>
+<p><code>y</code>是通过<code>import y from './my_module'</code>来引入的，对<code>y</code>的访问被编译成了<code>_my_module2['default']</code>，所以<code>y</code>实际上是<code>export default</code>的输出。而<code>_my_module2 = _interopRequireDefault(require('./my_module'))</code>，函数<code>_interopRequireDefault()</code>对载入的非ES2015模块做了处理，会返回一个<code>default</code>属性指向该模块的新对象。</p>
+<p>当然模块系统的还有更复杂的语法规则，详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
+<h3><a id="4_630"></a>4、封装模块</h3>
+<p>上文例子中的<code>download()</code>函数所在的文件<code>src/index.js</code>中用到<code>randomFilename()</code>和<code>isURL()</code>这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到<code>src/utils.js</code>中。</p>
+<p>新建文件<code>src/utils.js</code>：</p>
+<pre><code class="prettyprint javascript">import path from 'path';
+import os from 'os';
+
+let getTmpDir = os.tmpdir || os.tmpDir;
+
+function randomString(size = 6, chars = 'abcdefghijklmnopqrstuvwxyz0123456789') {
+  let max = chars.length + 1;
+  let str = '';
+  while (size &gt; 0) {
+    str += chars.charAt(Math.floor(Math.random() * max));
+    size--;
+  }
+  return str;
+}
+
+export function randomFilename(tmpDir = getTmpDir()) {
+  return path.resolve(tmpDir, randomString(20));
+}
+
+export function isURL (url) {
+  if (url.substr(0, 7) === 'http://') return true;
+  if (url.substr(0, 8) === 'https://') return true;
+  return false;
+}
+</code></pre>
+<p>说明：<code>getTmpDir()</code>和<code>randomString()</code>仅在函数<code>randomFilename()</code>函数中用到，所以不需要使用<code>export</code>输出。</p>
+<p>修改文件<code>src/index.js</code>，将相应的代码删掉，并在文件首部<code>import</code>语句后面增加以下代码：</p>
+<pre><code class="prettyprint javascript">import {randomFilename, isURL} from './utils';
+</code></pre>
+<h2><a id="_672"></a>单元测试</h2>
+<p>本文将以<code>mocha</code>测试框架为例，单元测试程序也将使用ES2015来写。</p>
+<p>首先执行以下命令安装<code>mocha</code>：</p>
+<pre><code class="prettyprint bash">$ npm i -g mocha
+</code></pre>
+<p>安装完成后可执行以下命令验证是否安装成功：</p>
+<pre><code>$ mocha --version
+
+2.3.4
+</code></pre>
+<p>通过阅读<code>babel</code>的官方文档（访问http://babeljs.io/docs/setup/#mocha ）可知，为了让Node.js中的<code>require()</code>函数能直接载入ES2015程序，需要依赖<code>babel-core</code>模块，执行以下命令安装：</p>
+<pre><code class="prettyprint bash">$ npm i babel-core mocha --save-dev
+</code></pre>
+<p>运行<code>mocha</code>命令的时候，需要增加额外的参数<code>--compilers js:babel-core/register</code>让其使用<code>babel</code>来载入JavaScript程序。为了方便，我们可以修改<code>package.json</code>文件，增加以下内容：</p>
+<pre><code class="prettyprint json">{
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;mocha --compilers js:babel-core/register&quot;
+  }
+}
+</code></pre>
+<p>说明：我们通过<code>npm init</code>命令生成<code>package.json</code>文件时，已经自动生成了<code>test</code>命令，其默认值为<code>echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1</code>，直接将其改为<code>mocha --compilers js:babel-core/register</code>即可。</p>
+<p>以上准备工作完成后，便可以开始写单元测试程序了。新建文件<code>test/test.js</code>：</p>
+<pre><code class="prettyprint javascript">import assert from 'assert';
+import path from 'path';
+import fs from 'fs';
+import download from '../src';
+import {randomFilename} from '../src/utils';
+
+let readFile = f =&gt; fs.readFileSync(f).toString();
+let getFileSize = f =&gt; fs.statSync(f).size;
+
+describe('es2015_demo', () =&gt; {
+
+  it('复制本地文件成功', done =&gt; {
+
+    let source = __filename;
+    let target = randomFilename();
+    let onProgress = false;
+
+    download(source, target, (size, total) =&gt; {
+
+      onProgress = true;
+      assert.equal(size, total);
+      assert.equal(total, getFileSize(source));
+
+    }, (err, filename) =&gt; {
+
+      assert.equal(err, null);
+      assert.equal(onProgress, true);
+      assert.equal(target, filename);
+      assert.equal(readFile(source), readFile(target));
+
+      done();
+
+    });
+  });
+
+});
+</code></pre>
+<p>说明：本文只为了演示如何配置<code>mocha</code>和编写单元测试程序，所以没有给<code>download()</code>函数编写完整的单元测试，仅编写一个测试用例作为演示。</p>
+<p>好了，现在执行<code>$ npm test</code>命令看看：</p>
+<pre><code class="prettyprint bash">$ npm test
+
+&gt; es2015_demo@1.0.0 test /Users/glen/work/tmp/es2015_demo
+&gt; mocha --compilers js:babel-core/register
+
+
+
+  es2015_demo
+    ✓ 复制本地文件成功
+
+
+  1 passing (49ms)
+
+
+</code></pre>
+<p>至此，我们已经完成了使用ES2015编写模块，并使用<code>mocha</code>来进行单元测试，下文将介绍如何通过<code>babel</code>编译程序，并发布模块。</p>
+<h2><a id="_773"></a>发布模块</h2>
+<h3><a id="1_775"></a>1、编译</h3>
+<p>上文已提到，为了让使用ES2015编写的代码能在Node.js上正常运行，需要先将其编译成ES5标准的代码，然后还需要在程序入口载入<code>babel-polyfill</code>模块。</p>
+<p>我们可以修改文件<code>package.json</code>，为其增加<code>compile</code>命令：</p>
+<pre><code class="prettyprint json">{
+  &quot;scripts&quot;: {
+    &quot;compile&quot;: &quot;babel -d lib/ src/&quot;
+  }
+}
+</code></pre>
+<p>说明：<code>$ babel -d lib/ src/</code>命令表示<code>lib</code>目录下的所有文件，并保存到<code>src</code>目录下。</p>
+<p>配置完成后，可以执行<code>$ npm run compile</code>命令编译试试：</p>
+<pre><code class="prettyprint bash">$ npm run compile
+
+&gt; @isnc/es2015_demo@1.0.0 compile /Users/glen/work/tmp/es2015_demo
+&gt; babel -d lib/ src/
+
+src/copy.js -&gt; lib/copy.js
+src/download.js -&gt; lib/download.js
+src/index.js -&gt; lib/index.js
+src/utils.js -&gt; lib/utils.js
+</code></pre>
+<p>此时，我们还不能直接载入<code>lib/index.js</code>文件，因为在此之前需要载入<code>babel-polyfill</code>模块。编辑文件<code>package.json</code>，设置模块入口文件：</p>
+<pre><code class="prettyprint json">{
+  &quot;main&quot;: &quot;index.js&quot;
+}
+</code></pre>
+<p>说明：使用<code>$ npm init</code>生成<code>package.json</code>文件时，<code>main</code>的默认值即为<code>index.js</code>，可无需修改。</p>
+<p>新建文件<code>index.js</code>：</p>
+<pre><code class="prettyprint javascript">require('babel-polyfill');
+module.exports = require('./lib').default;
+</code></pre>
+<p>说明：在<code>src/index.js</code>中<code>download()</code>函数使用的是<code>export default</code>输出，所以在Node.js中需要读取模块输出的<code>default</code>属性。</p>
+<p>为了验证编译后的程序能否正常工作，可以新建文件<code>test_compiled.js</code>：</p>
+<pre><code class="prettyprint javascript">var download = require('./');
+
+download(__filename, '/tmp/copy.js', function (size, total) {
+  console.log('进度%s/%s', size, total);
+}, (err, filename) =&gt; {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log('已保存到%s', filename);
+  }
+});
+</code></pre>
+<p>使用以下命令运行该程序是可以正常工作的：</p>
+<pre><code class="prettyprint bash">$ node test_compiled.js
+</code></pre>
+<h3><a id="2_846"></a>2、发布</h3>
+<p>我们在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，<code>lib</code>目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到<code>node_modules</code>目录下，这些内容也是不应该纳入版本管理的。可以添加文件<code>.gitignore</code>来将其排除：</p>
+<pre><code>*.log
+node_modules
+lib
+</code></pre>
+<p>如果要将模块发布到NPM上，ES2015编写的源程序也是不需要的，可以添加文件<code>.npmignore</code>来将其排除：</p>
+<pre><code>src
+</code></pre>
+<p>在使用<code>$ npm publish</code>命令发布模块时，可以设置<code>prepublish</code>命令来让其自动执行编译。编辑文件<code>package.json</code>，增加以下内容：</p>
+<pre><code class="prettyprint json">{
+  &quot;scripts&quot;: {
+    &quot;prepublish&quot;: &quot;npm run compile&quot;
+  }
+}
+</code></pre>
+<h3><a id="3_872"></a>3、善后</h3>
+<p>上文例子中需要依赖<code>mocha</code>和<code>babel</code>两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖<code>babel</code>的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的<code>babel</code>版本。</p>
+<p>首先执行以下命令安装<code>babel-cli</code>和<code>mocha</code>：</p>
+<pre><code class="prettyprint bash">$ npm i babel-cli mocha --save-dev
+</code></pre>
+<p>安装完成后，对于上文中使用的<code>babel</code>和<code>mocha</code>命令，可以使用<code>./node_modules/.bin/babel</code>和<code>./node_modules/.bin/mocha</code>来执行。编辑<code>package.json</code>文件，更改<code>compile</code>和<code>test</code>命令：</p>
+<pre><code class="prettyprint json">{
+  &quot;scripts&quot;: {
+    &quot;compile&quot;: &quot;./node_modules/.bin/babel -d lib/ src/&quot;,
+    &quot;test&quot;: &quot;./node_modules/.bin/mocha --compilers js:babel-core/register&quot;
+  }
+}
+</code></pre>
+<h2><a id="_894"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
@@ -585,7 +819,7 @@ prettyPrint();
 
 
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015-11/es6-es7-develop-npm-module-using-babel.html" data-title="ES2015实战：开发NPM模块 - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html"></div>
+<div class="ds-thread" data-thread-key="/2015-11/es6-es7-develop-npm-module-using-babel.html" data-title="ES2015 &amp; babel 实战：开发NPM模块 - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
