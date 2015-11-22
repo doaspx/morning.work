@@ -871,6 +871,25 @@ src
 }
 ```
 
+现在我们执行`$ npm publish`就可以发布模块了：
+
+```
+$ npm publish
+
+> @leizongmin/es2015_demo@1.0.0 prepublish /Users/glen/work/tmp/es2015_demo
+> npm run compile
+
+
+> @leizongmin/es2015_demo@1.0.0 compile /Users/glen/work/tmp/es2015_demo
+> babel -d lib/ src/
+
+src/copy.js -> lib/copy.js
+src/download.js -> lib/download.js
+src/index.js -> lib/index.js
+src/utils.js -> lib/utils.js
++ @leizongmin/es2015_demo@1.0.0
+```
+
 ### 3、善后
 
 上文例子中需要依赖`mocha`和`babel`两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖`babel`的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的`babel`版本。
@@ -891,6 +910,11 @@ $ npm i babel-cli mocha --save-dev
   }
 }
 ```
+
+
+## 结束语
+
+本文的示例代码可通过 https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package 获得。
 
 
 ## 扩展阅读

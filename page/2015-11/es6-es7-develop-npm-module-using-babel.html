@@ -768,7 +768,23 @@ lib
   }
 }
 </code></pre>
-<h3><a id="3_872"></a>3、善后</h3>
+<p>现在我们执行<code>$ npm publish</code>就可以发布模块了：</p>
+<pre><code>$ npm publish
+
+&gt; @leizongmin/es2015_demo@1.0.0 prepublish /Users/glen/work/tmp/es2015_demo
+&gt; npm run compile
+
+
+&gt; @leizongmin/es2015_demo@1.0.0 compile /Users/glen/work/tmp/es2015_demo
+&gt; babel -d lib/ src/
+
+src/copy.js -&gt; lib/copy.js
+src/download.js -&gt; lib/download.js
+src/index.js -&gt; lib/index.js
+src/utils.js -&gt; lib/utils.js
++ @leizongmin/es2015_demo@1.0.0
+</code></pre>
+<h3><a id="3_891"></a>3、善后</h3>
 <p>上文例子中需要依赖<code>mocha</code>和<code>babel</code>两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖<code>babel</code>的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的<code>babel</code>版本。</p>
 <p>首先执行以下命令安装<code>babel-cli</code>和<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i babel-cli mocha --save-dev
@@ -781,7 +797,9 @@ lib
   }
 }
 </code></pre>
-<h2><a id="_894"></a>扩展阅读</h2>
+<h2><a id="_913"></a>结束语</h2>
+<p>本文的示例代码可通过 <a href="https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package">https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package</a> 获得。</p>
+<h2><a id="_918"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
