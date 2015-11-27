@@ -25,6 +25,7 @@ blockquote {
   font-size: 14px;
   color: rgba(0, 0, 0, 0.6);
   margin: 16px 24px;
+  font-style: italic;
 }
 code {
   padding: 0 6px;
@@ -113,12 +114,12 @@ li > p {
 <li>单元测试</li>
 <li>发布模块</li>
 </ul>
-<p>本文会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>或babel官方文档中的<a href="http://babeljs.io/docs/learn-es2015/">「Learn ES2015」</a>。</p>
-<p>babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤其有用。访问网址http://babeljs.io/repl ，其界面如下：</p>
+<p>本文的重点是介绍借助babel开发Node.js项目的基本方法，同时会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>或babel官方文档中的<a href="http://babeljs.io/docs/learn-es2015/">「Learn ES2015」</a>。</p>
+<p>babel官方提供了一个<a href="http://babeljs.io/repl">在线REPL</a>，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤为有用。访问网址http://babeljs.io/repl ，其界面如下：</p>
 <p><img src="../../images/2015-11/babel_online_repl.jpg" alt="babel online repl"></p>
-<p>说明：使用时勾选左边的<code>Experimental</code>可使用最新的语法特性</p>
+<p>说明：使用时勾选左边的<code>Experimental</code>可使用最新的语法特性。</p>
 <h2><a id="_24"></a>软件环境</h2>
-<p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步<strong>准确无误</strong>地运行下去，以下列出所用到的软件和模块的版本：</p>
+<p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步<strong>准确无误</strong>地运行下去，以下列出在编写本文时所用到的软件和模块的版本：</p>
 <ul>
 <li><strong>Node.js</strong> <code>v5.1.0</code></li>
 <li><strong>npm</strong> <code>3.3.12</code></li>
@@ -132,12 +133,12 @@ li > p {
 </blockquote>
 <p>目前最新版的Node.js（v5.1.0）还未完全支持ES2015的新语法特性，而且我们编写的模块可能要在Node v0.12.x或更低版本下运行，因此需要借助babel将ES2015标准的JavaScript程序转换成ES5标准的。</p>
 <p>执行以下命令安装babel：</p>
-<pre><code class="prettyprint bash">$ npm i -g babel-cli@6.2.0
+<pre><code class="prettyprint bash">$ npm i -g babel-cli
 </code></pre>
 <p>由于babel依赖的模块比较多，可能会花费比较长的时间甚至安装不成功，可以尝试使用cnpmjs的NPM镜像，比如（简单在安装命令末尾添加<code>--registry=http://registry.npm.taobao.org</code>）：</p>
-<pre><code class="prettyprint bash">$ npm i -g babel-cli@6.2.0 --registry=http://registry.npm.taobao.org
+<pre><code class="prettyprint bash">$ npm i -g babel-cli --registry=http://registry.npm.taobao.org
 </code></pre>
-<p>cnpmjs镜像的详细介绍可访问其官网：<a href="http://cnpmjs.org/">http://cnpmjs.org/</a></p>
+<p><a href="http://cnpmjs.org/">cnpmjs</a>镜像的详细介绍可访问其官网：<a href="http://cnpmjs.org/">http://cnpmjs.org/</a></p>
 <p>安装完成后，系统将获得以下两个命令：</p>
 <ul>
 <li><code>babel</code> 编译器</li>
@@ -150,9 +151,7 @@ li > p {
 </code></pre>
 <p>现在我们新建一个文件<code>test.js</code>试试是否能正常运行：</p>
 <pre><code class="prettyprint javascript">function sleep(ms = 0) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(resolve, ms);
-  });
+  return new Promise((resolve, reject) =&gt; setTimeout(resolve, ms));
 }
 
 async function test() {
@@ -172,14 +171,14 @@ test().then(() =&gt; console.log('done'));
       throw err;
       ^
 
-SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
-   5 | }
-   6 |
-&gt;  7 | async function test() {
-     |       ^
-   8 |   for (let i = 0; i &lt; 10; i++) {
-   9 |     await sleep(500);
-  10 |     console.log(`i=${i}`);
+SyntaxError: /private/tmp/es2015_demo/test.js: Unexpected token (5:6)
+  3 | }
+  4 |
+&gt; 5 | async function test() {
+    |       ^
+  6 |   for (let i = 0; i &lt; 10; i++) {
+  7 |     await sleep(500);
+  8 |     console.log(`i=${i}`);
 
 ...
 </code></pre>
@@ -190,7 +189,7 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
 }
 </code></pre>
 <p><code>.babelrc</code>为babel的配置文件，保存在项目的根目录下，其中<code>presets</code>用于设置开启的语法特性集合，详细介绍可参考官方文档：<a href="https://babeljs.io/docs/usage/babelrc/">https://babeljs.io/docs/usage/babelrc/</a> 和 <a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
-<p>由于当前版本的babel没有预置<code>stage-0</code>，所以我们还需要执行以下命令安装并保存到<code>package.json</code>的<code>devDependencies</code>中：</p>
+<p>接下来我们还需要安装插件依赖的模块，执行以下命令安装并保存到<code>package.json</code>的<code>devDependencies</code>中：</p>
 <pre><code class="prettyprint bash">$ npm i babel-preset-es2015 babel-preset-stage-0 --save-dev
 </code></pre>
 <p>现在再重新执行<code>test.js</code>，可看到控制台每隔500ms打印出一行，直到输出<code>done</code>时结束：</p>
@@ -208,7 +207,7 @@ i=8
 i=9
 done
 </code></pre>
-<h3><a id="3_150"></a>3、编译程序</h3>
+<h3><a id="3_148"></a>3、编译程序</h3>
 <p>在发布项目时，要求可以在不依赖babel编译器的环境下运行，因此我们需要将ES2015的程序编译成ES5的：</p>
 <pre><code class="prettyprint bash">$ babel test.js --out-file test.compiled.js
 </code></pre>
@@ -216,12 +215,12 @@ done
 <pre><code class="prettyprint bash">$ node test.compiled.js
 </code></pre>
 <p>在我的系统环境下提示以下出错信息：</p>
-<pre><code>/Users/glen/work/tmp/es2015_demo/test.compiled.js:4
+<pre><code>/private/tmp/es2015_demo/test.compiled.js:4
   var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
                               ^
 
 ReferenceError: regeneratorRuntime is not defined
-    at /Users/glen/work/tmp/es2015_demo/test.compiled.js:4:31
+    at /private/tmp/es2015_demo/test.compiled.js:4:31
 
 ...
 </code></pre>
@@ -234,64 +233,59 @@ ReferenceError: regeneratorRuntime is not defined
 <p>再次执行<code>test.compiled.js</code>便可看到与<code>$ babel-node test.js</code>一样的结果。</p>
 <p><code>polyfill</code>的详细介绍可参考官方文档：<a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
 <p>至此，我们已经配置了一个能使用ES2015语法的Node.js运行环境了。</p>
-<h2><a id="_196"></a>编写模块</h2>
-<h3><a id="1_198"></a>1、功能描述</h3>
+<h2><a id="_194"></a>编写模块</h2>
+<h3><a id="1_196"></a>1、功能描述</h3>
 <p>本文以<a href="https://github.com/leizongmin/node-lei-download">lei-download</a>模块为例，该模块是一个主要功能是根据一个URL来下载文件到本地，或者本地直接文件的复制，同时提供下载/复制进度信息。其使用方法如下：</p>
 <pre><code class="prettyprint javascript">let download = require('lei-download');
 
-download('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', 'avatar.jpg', (size, total) =&gt; {
-  console.log(`已下载${size}，总共${total}`);
-}, (err, filename) =&gt; {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
+let source = '一个URL或者本地文件名';
+let target = '要存储到的本地位置，null|false|undefined表示自动生成一个临时文件';
+// 用于获取进度通知的函数，可以省略
+let progress = (size, total) =&gt; console.log(`进度：${size}/${total}`);
+
+download(source, target, progress)
+  .then(filename =&gt; console.log(`已保存到：${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
+
+// 也可以使用callback模式
+download(source, target, progress, (err, filename) =&gt; {
+  if (err) console.log(`出错：${err}`);
+  else console.log(`已保存到：${filename}`);
 });
 </code></pre>
-<p><code>download()</code>函数支持以下参数组合：</p>
-<ul>
-<li><code>download(source, callback);</code></li>
-<li><code>download(source, progress, callback);</code></li>
-<li><code>download(source, target, callback);</code></li>
-<li><code>download(source, target, progress, callback);</code></li>
-</ul>
-<p>参数说明如下：</p>
-<ul>
-<li><code>source</code> 源文件，可以为本地文件或URL（<a href="http://xn--https-wm6j">http://或https</a>://开头）</li>
-<li><code>target</code> 目标文件，可省略，默认生成一个在本地临时目录的随机文件名</li>
-<li><code>progress</code> 下载进度，可省略</li>
-<li><code>callback</code> 回调函数</li>
-</ul>
 <p>在编写模块时，我们首先要实现以下两个函数的功能：</p>
 <ul>
-<li><code>downloadFile(source, target, progress, callback)</code> 从一个URL下载文件并保存到本地</li>
-<li><code>copyFile(source, target, progress, callback)</code> 复制一个本地文件</li>
+<li><code>downloadFile(source, target, progress)</code> 从一个URL下载文件并保存到本地</li>
+<li><code>copyFile(source, target, progress)</code> 复制一个本地文件</li>
 </ul>
-<p>然后在编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
-<h3><a id="2_237"></a>2、编写程序</h3>
+<p>然后再编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
+<h3><a id="2_226"></a>2、编写程序</h3>
 <p>在本项目中，所有的ES2015源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
 <p>实现<code>copyFile()</code>函数，新建文件<code>src/copy.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
 
-export default function copyFile(source, target, progress, callback) {
-  fs.stat(source, (err, stats) =&gt; {
-    if (err) return callback(err);
+export default function copyFile(source, target, progress) {
+  return new Promise((resolve, reject) =&gt; {
 
-    let ss = fs.createReadStream(source);
-    let ts = fs.createWriteStream(target);
-    ss.on('error', callback);
-    ts.on('error', callback);
+    fs.stat(source, (err, stats) =&gt; {
+      if (err) return reject(err);
 
-    let copySize = 0;
-    ss.on('data', data =&gt; {
-      copySize += data.length;
-      progress &amp;&amp; progress(copySize, stats.size);
+      let ss = fs.createReadStream(source);
+      let ts = fs.createWriteStream(target);
+      ss.on('error', reject);
+      ts.on('error', reject);
+
+      let copySize = 0;
+      ss.on('data', data =&gt; {
+        copySize += data.length;
+        progress &amp;&amp; progress(copySize, stats.size);
+      });
+
+      ss.on('end', () =&gt; resolve(target));
+
+      ss.pipe(ts);
     });
 
-    ss.on('end', () =&gt; callback(null, target));
-
-    ss.pipe(ts);
   });
 }
 </code></pre>
@@ -300,17 +294,12 @@ export default function copyFile(source, target, progress, callback) {
 <li><code>import fs from 'fs'</code>为ES2015模块系统加载模块的方式，可理解为<code>var fs = require('fs')</code>，具体在下文「模块系统」一节中介绍。</li>
 <li>通过<code>fs.createReadStream(source)</code>和<code>fs.createWriteStream(target)</code>来创建读取文件流和写入文件流，并监听读取文件流的<code>data</code>事件获得当前进度信息。</li>
 <li><code>export default function copyFile() {}</code>将函数<code>copyFile()</code>作为模块输出，相当于<code>module.exports = function copyFile() {}</code>，具体在下文「模块系统」一节中介绍。</li>
+<li>函数执行后返回一个<code>Promise</code>对象，通过其<code>.then()</code>和<code>.catch()</code>来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/#docs/promise">「ECMAScript 6 入门 - Promise对象」</a></li>
 </ul>
 <p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
-<pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) =&gt; {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+<pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
 <p>以上程序的作用是将当前JavaScript文件复制到<code>/tmp/copy.js</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
 <pre><code class="prettyprint bash">$ babel-node src/copy.js
@@ -322,55 +311,51 @@ export default function copyFile(source, target, progress, callback) {
 <pre><code class="prettyprint javascript">import fs from 'fs';
 import request from 'request';
 
-export default function downloadFile(url, target, progress, callback) {
-  let s = fs.createWriteStream(target);
-  s.on('error', callback);
+export default function downloadFile(url, target, progress) {
+  return new Promise((resolve, reject) =&gt; {
 
-  let totalSize = 0;
-  let downloadSize = 0;
-  let req = request
-    .get({
-      url: url,
-      encoding: null
-    })
-    .on('response', res =&gt; {
-      if (res.statusCode !== 200) {
-        return callback(new Error('status #' + res.statusCode));
-      }
-      totalSize = res.headers['content-length'] || null;
+    let s = fs.createWriteStream(target);
+    s.on('error', reject);
 
-      res.on('data', data =&gt; {
-        downloadSize += data.length;
-        progress &amp;&amp; progress(downloadSize, totalSize);
-      });
-      res.on('end', () =&gt; callback(null, target));
-    })
-    .pipe(s);
+    let totalSize = 0;
+    let downloadSize = 0;
+    let req = request
+      .get({
+        url: url,
+        encoding: null
+      })
+      .on('response', res =&gt; {
+        if (res.statusCode !== 200) {
+          return reject(new Error('status #' + res.statusCode));
+        }
+        totalSize = Number(res.headers['content-length']) || null;
+
+        res.on('data', data =&gt; {
+          downloadSize += data.length;
+          progress &amp;&amp; progress(downloadSize, totalSize);
+        });
+        res.on('end', () =&gt; resolve(target));
+      })
+      .pipe(s);
+
+  });
 }
 </code></pre>
 <p>说明：</p>
 <ul>
 <li>程序使用<code>request</code>模块来下载URL的内容，使用时执行命令<code>$ npm i request --save</code>安装该模块。</li>
-<li>通过<code>request</code>模块的<code>pipe()</code>方法将收到的数据写入到<code>fs.createWriteStream(target)</code>创建的写入文件流中，<code>request</code>模块的详细使用方法可参考其文档：<a href="https://www.npmjs.com/package/request">https://www.npmjs.com/package/request</a>
-I
-为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</li>
+<li>通过<code>request</code>模块的<code>pipe()</code>方法将收到的数据写入到<code>fs.createWriteStream(target)</code>创建的写入文件流中，<code>request</code>模块的详细使用方法可参考其文档：<a href="https://www.npmjs.com/package/request">https://www.npmjs.com/package/request</a></li>
 </ul>
-<pre><code class="prettyprint javascript">downloadFile('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', '/tmp/avatar.jpg', (size, total) =&gt; {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) =&gt; {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+<p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
+<pre><code class="prettyprint javascript">let url = 'http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg';
+downloadFile(url, '/tmp/avatar.jpg', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
 <p>以上程序的作用是将URL为<code>http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg</code>的文件复制到<code>/tmp/avatar.jpg</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
 <pre><code class="prettyprint bash">$ babel-node src/download.js
 
-进度15622/34956
-进度32006/34956
-进度34956/34956
+进度5944/5944
 已保存到/tmp/avatar.jpg
 </code></pre>
 <p>实现<code>download()</code>函数，新建文件<code>src/index.js</code>：</p>
@@ -380,36 +365,18 @@ import mkdirp from 'mkdirp';
 import copyFile from './copy';
 import downloadFile from './download';
 
-export default function download(...args) {
-  var source, target, progress, callback;
-  if (args.length &lt; 2) {
-    throw new TypeError('invalid argument number');
-  }
-  source = args[0];
-  callback = args[args.length - 1];
-  if (args.length === 2) {
-    callback = args[1];
-  } else if (args.length === 3) {
-    if (typeof args[1] === 'function') {
-      progress = args[1];
-    } else {
-      target = args[1];
-    }
-  } else {
-    target = args[1];
-    progress = args[2];
-  }
-  progress = progress || null;
+export default function download(source, target, progress) {
   target = target || randomFilename(download.tmpDir);
+  progress = progress || noop;
+  return new Promise((resolve, reject) =&gt; {
 
-  mkdirp(path.dirname(target), err =&gt; {
-    if (err) return callback(err);
+    mkdirp(path.dirname(target), err =&gt; {
+      if (err) return callback(err);
 
-    if (isURL(source)) {
-      downloadFile(source, target, progress, callback);
-    } else {
-      copyFile(source, target, progress, callback);
-    }
+      resolve((isURL(source) ? downloadFile : copyFile)
+        (source, target, progress));
+    });
+
   });
 }
 
@@ -446,18 +413,12 @@ function isURL (url) {
 <li><code>isURL(url)</code>函数用于判断参数是否为一个URL。</li>
 </ul>
 <p>为了验证程序是否正确，我们可以将上文的<code>src/copy.js</code>和<code>src/download.js</code>中的测试程序放到<code>src/index.js</code>文件的末尾并执行（需要将旧的程序程序删除），比如：</p>
-<pre><code class="prettyprint javascript">download(__filename, '/tmp/copy.js', (size, total) =&gt; {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) =&gt; {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+<pre><code class="prettyprint javascript">download(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
 <p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
-<h3><a id="3_451"></a>3、模块系统</h3>
+<h3><a id="3_412"></a>3、模块系统</h3>
 <p>Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给<code>exports</code>对象设置属性来做：</p>
 <pre><code class="prettyprint javascript">// 输出变量或函数
 exports.x = 123;
@@ -595,7 +556,7 @@ _my_module2['default'];
 <p><code>mod</code>是通过<code>import * as mod from './my_module'</code>来引入的，其编译后的代码为<code>_interopRequireWildcard(require('./my_module'))</code>。在<code>_interopRequireWildcard()</code>函数中，如果载入的模块是由ES2015输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其<code>default</code>属性为自身。</p>
 <p><code>y</code>是通过<code>import y from './my_module'</code>来引入的，对<code>y</code>的访问被编译成了<code>_my_module2['default']</code>，所以<code>y</code>实际上是<code>export default</code>的输出。而<code>_my_module2 = _interopRequireDefault(require('./my_module'))</code>，函数<code>_interopRequireDefault()</code>对载入的非ES2015模块做了处理，会返回一个<code>default</code>属性指向该模块的新对象。</p>
 <p>当然模块系统的还有更复杂的语法规则，详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
-<h3><a id="4_630"></a>4、封装模块</h3>
+<h3><a id="4_591"></a>4、封装模块</h3>
 <p>上文例子中的<code>download()</code>函数所在的文件<code>src/index.js</code>中用到<code>randomFilename()</code>和<code>isURL()</code>这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到<code>src/utils.js</code>中。</p>
 <p>新建文件<code>src/utils.js</code>：</p>
 <pre><code class="prettyprint javascript">import path from 'path';
@@ -627,7 +588,7 @@ export function isURL (url) {
 <p>修改文件<code>src/index.js</code>，将相应的代码删掉，并在文件首部<code>import</code>语句后面增加以下代码：</p>
 <pre><code class="prettyprint javascript">import {randomFilename, isURL} from './utils';
 </code></pre>
-<h2><a id="_672"></a>单元测试</h2>
+<h2><a id="_633"></a>单元测试</h2>
 <p>本文将以<code>mocha</code>测试框架为例，单元测试程序也将使用ES2015来写。</p>
 <p>首先执行以下命令安装<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i -g mocha
@@ -704,8 +665,8 @@ describe('es2015_demo', () =&gt; {
 
 </code></pre>
 <p>至此，我们已经完成了使用ES2015编写模块，并使用<code>mocha</code>来进行单元测试，下文将介绍如何通过<code>babel</code>编译程序，并发布模块。</p>
-<h2><a id="_773"></a>发布模块</h2>
-<h3><a id="1_775"></a>1、编译</h3>
+<h2><a id="_734"></a>发布模块</h2>
+<h3><a id="1_736"></a>1、编译</h3>
 <p>上文已提到，为了让使用ES2015编写的代码能在Node.js上正常运行，需要先将其编译成ES5标准的代码，然后还需要在程序入口载入<code>babel-polyfill</code>模块。</p>
 <p>我们可以修改文件<code>package.json</code>，为其增加<code>compile</code>命令：</p>
 <pre><code class="prettyprint json">{
@@ -753,7 +714,7 @@ download(__filename, '/tmp/copy.js', function (size, total) {
 <p>使用以下命令运行该程序是可以正常工作的：</p>
 <pre><code class="prettyprint bash">$ node test_compiled.js
 </code></pre>
-<h3><a id="2_846"></a>2、发布</h3>
+<h3><a id="2_807"></a>2、发布</h3>
 <p>我们在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，<code>lib</code>目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到<code>node_modules</code>目录下，这些内容也是不应该纳入版本管理的。可以添加文件<code>.gitignore</code>来将其排除：</p>
 <pre><code>*.log
 node_modules
@@ -785,7 +746,7 @@ src/index.js -&gt; lib/index.js
 src/utils.js -&gt; lib/utils.js
 + @leizongmin/es2015_demo@1.0.0
 </code></pre>
-<h3><a id="3_891"></a>3、善后</h3>
+<h3><a id="3_852"></a>3、善后</h3>
 <p>上文例子中需要依赖<code>mocha</code>和<code>babel</code>两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖<code>babel</code>的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的<code>babel</code>版本。</p>
 <p>首先执行以下命令安装<code>babel-cli</code>和<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i babel-cli mocha --save-dev
@@ -798,9 +759,9 @@ src/utils.js -&gt; lib/utils.js
   }
 }
 </code></pre>
-<h2><a id="_913"></a>后记</h2>
+<h2><a id="_874"></a>后记</h2>
 <p>本文的示例代码可通过 <a href="https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package">https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package</a> 获得。</p>
-<h2><a id="_918"></a>扩展阅读</h2>
+<h2><a id="_879"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>

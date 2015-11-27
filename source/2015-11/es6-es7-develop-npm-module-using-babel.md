@@ -15,18 +15,18 @@ draft
 + 单元测试
 + 发布模块
 
-本文会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)或babel官方文档中的[「Learn ES2015」](http://babeljs.io/docs/learn-es2015/)。
+本文的重点是介绍借助babel开发Node.js项目的基本方法，同时会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)或babel官方文档中的[「Learn ES2015」](http://babeljs.io/docs/learn-es2015/)。
 
-babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤其有用。访问网址http://babeljs.io/repl ，其界面如下：
+babel官方提供了一个[在线REPL](http://babeljs.io/repl)，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤为有用。访问网址http://babeljs.io/repl ，其界面如下：
 
 ![babel online repl](../../images/2015-11/babel_online_repl.jpg)
 
-说明：使用时勾选左边的`Experimental`可使用最新的语法特性
+说明：使用时勾选左边的`Experimental`可使用最新的语法特性。
 
 
 ## 软件环境
 
-由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步**准确无误**地运行下去，以下列出所用到的软件和模块的版本：
+由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步**准确无误**地运行下去，以下列出在编写本文时所用到的软件和模块的版本：
 
 + **Node.js** `v5.1.0`
 + **npm** `3.3.12`
@@ -44,16 +44,16 @@ babel官方提供了一个在线REPL，可以实时输出转换后的JavaScript�
 执行以下命令安装babel：
 
 ```bash
-$ npm i -g babel-cli@6.2.0
+$ npm i -g babel-cli
 ```
 
 由于babel依赖的模块比较多，可能会花费比较长的时间甚至安装不成功，可以尝试使用cnpmjs的NPM镜像，比如（简单在安装命令末尾添加`--registry=http://registry.npm.taobao.org`）：
 
 ```bash
-$ npm i -g babel-cli@6.2.0 --registry=http://registry.npm.taobao.org
+$ npm i -g babel-cli --registry=http://registry.npm.taobao.org
 ```
 
-cnpmjs镜像的详细介绍可访问其官网：http://cnpmjs.org/
+[cnpmjs](http://cnpmjs.org/)镜像的详细介绍可访问其官网：http://cnpmjs.org/
 
 安装完成后，系统将获得以下两个命令：
 
@@ -74,9 +74,7 @@ $ mkdir es2015_demo && cd es2015_demo && git init && npm init
 
 ```javascript
 function sleep(ms = 0) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(resolve, ms);
-  });
+  return new Promise((resolve, reject) => setTimeout(resolve, ms));
 }
 
 async function test() {
@@ -102,14 +100,14 @@ $ babel-node test.js
       throw err;
       ^
 
-SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
-   5 | }
-   6 |
->  7 | async function test() {
-     |       ^
-   8 |   for (let i = 0; i < 10; i++) {
-   9 |     await sleep(500);
-  10 |     console.log(`i=${i}`);
+SyntaxError: /private/tmp/es2015_demo/test.js: Unexpected token (5:6)
+  3 | }
+  4 |
+> 5 | async function test() {
+    |       ^
+  6 |   for (let i = 0; i < 10; i++) {
+  7 |     await sleep(500);
+  8 |     console.log(`i=${i}`);
 
 ...
 ```
@@ -126,7 +124,7 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
 
 `.babelrc`为babel的配置文件，保存在项目的根目录下，其中`presets`用于设置开启的语法特性集合，详细介绍可参考官方文档：https://babeljs.io/docs/usage/babelrc/ 和 http://babeljs.io/docs/plugins/#presets
 
-由于当前版本的babel没有预置`stage-0`，所以我们还需要执行以下命令安装并保存到`package.json`的`devDependencies`中：
+接下来我们还需要安装插件依赖的模块，执行以下命令安装并保存到`package.json`的`devDependencies`中：
 
 ```bash
 $ npm i babel-preset-es2015 babel-preset-stage-0 --save-dev
@@ -167,12 +165,12 @@ $ node test.compiled.js
 在我的系统环境下提示以下出错信息：
 
 ```
-/Users/glen/work/tmp/es2015_demo/test.compiled.js:4
+/private/tmp/es2015_demo/test.compiled.js:4
   var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
                               ^
 
 ReferenceError: regeneratorRuntime is not defined
-    at /Users/glen/work/tmp/es2015_demo/test.compiled.js:4:31
+    at /private/tmp/es2015_demo/test.compiled.js:4:31
 
 ...
 ```
@@ -205,37 +203,28 @@ require('babel-polyfill');
 ```javascript
 let download = require('lei-download');
 
-download('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', 'avatar.jpg', (size, total) => {
-  console.log(`已下载${size}，总共${total}`);
-}, (err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
+let source = '一个URL或者本地文件名';
+let target = '要存储到的本地位置，null|false|undefined表示自动生成一个临时文件';
+// 用于获取进度通知的函数，可以省略
+let progress = (size, total) => console.log(`进度：${size}/${total}`);
+
+download(source, target, progress)
+  .then(filename => console.log(`已保存到：${filename}`))
+  .catch(err => console.log(`出错：${err}`));
+
+// 也可以使用callback模式
+download(source, target, progress, (err, filename) => {
+  if (err) console.log(`出错：${err}`);
+  else console.log(`已保存到：${filename}`);
 });
 ```
 
-`download()`函数支持以下参数组合：
-
-+ `download(source, callback);`
-+ `download(source, progress, callback);`
-+ `download(source, target, callback);`
-+ `download(source, target, progress, callback);`
-
-参数说明如下：
-
-+ `source` 源文件，可以为本地文件或URL（http://或https://开头）
-+ `target` 目标文件，可省略，默认生成一个在本地临时目录的随机文件名
-+ `progress` 下载进度，可省略
-+ `callback` 回调函数
-
 在编写模块时，我们首先要实现以下两个函数的功能：
 
-+ `downloadFile(source, target, progress, callback)` 从一个URL下载文件并保存到本地
-+ `copyFile(source, target, progress, callback)` 复制一个本地文件
++ `downloadFile(source, target, progress)` 从一个URL下载文件并保存到本地
++ `copyFile(source, target, progress)` 复制一个本地文件
 
-然后在编写一个`download()`函数来判断`source`参数，并选择使用`downloadFile()`或者`copyFile()`来完成请求。
+然后再编写一个`download()`函数来判断`source`参数，并选择使用`downloadFile()`或者`copyFile()`来完成请求。
 
 ### 2、编写程序
 
@@ -246,24 +235,28 @@ download('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', 'avata
 ```javascript
 import fs from 'fs';
 
-export default function copyFile(source, target, progress, callback) {
-  fs.stat(source, (err, stats) => {
-    if (err) return callback(err);
+export default function copyFile(source, target, progress) {
+  return new Promise((resolve, reject) => {
 
-    let ss = fs.createReadStream(source);
-    let ts = fs.createWriteStream(target);
-    ss.on('error', callback);
-    ts.on('error', callback);
+    fs.stat(source, (err, stats) => {
+      if (err) return reject(err);
 
-    let copySize = 0;
-    ss.on('data', data => {
-      copySize += data.length;
-      progress && progress(copySize, stats.size);
+      let ss = fs.createReadStream(source);
+      let ts = fs.createWriteStream(target);
+      ss.on('error', reject);
+      ts.on('error', reject);
+
+      let copySize = 0;
+      ss.on('data', data => {
+        copySize += data.length;
+        progress && progress(copySize, stats.size);
+      });
+
+      ss.on('end', () => resolve(target));
+
+      ss.pipe(ts);
     });
 
-    ss.on('end', () => callback(null, target));
-
-    ss.pipe(ts);
   });
 }
 ```
@@ -273,19 +266,14 @@ export default function copyFile(source, target, progress, callback) {
 + `import fs from 'fs'`为ES2015模块系统加载模块的方式，可理解为`var fs = require('fs')`，具体在下文「模块系统」一节中介绍。
 + 通过`fs.createReadStream(source)`和`fs.createWriteStream(target)`来创建读取文件流和写入文件流，并监听读取文件流的`data`事件获得当前进度信息。
 + `export default function copyFile() {}`将函数`copyFile()`作为模块输出，相当于`module.exports = function copyFile() {}`，具体在下文「模块系统」一节中介绍。
++ 函数执行后返回一个`Promise`对象，通过其`.then()`和`.catch()`来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的[「ECMAScript 6 入门 - Promise对象」](http://es6.ruanyifeng.com/#docs/promise)
 
 为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：
 
 ```javascript
-copyFile(__filename, '/tmp/copy.js', (size, total) => {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+copyFile(__filename, '/tmp/copy.js', (size, total) => console.log(`进度${size}/${total}`))
+  .then(filename => console.log(`已保存到${filename}`))
+  .catch(err => console.log(`出错：${err}`));
 ```
 
 以上程序的作用是将当前JavaScript文件复制到`/tmp/copy.js`，使用`babel-node`执行该文件将得到以下结果：
@@ -303,30 +291,34 @@ $ babel-node src/copy.js
 import fs from 'fs';
 import request from 'request';
 
-export default function downloadFile(url, target, progress, callback) {
-  let s = fs.createWriteStream(target);
-  s.on('error', callback);
+export default function downloadFile(url, target, progress) {
+  return new Promise((resolve, reject) => {
 
-  let totalSize = 0;
-  let downloadSize = 0;
-  let req = request
-    .get({
-      url: url,
-      encoding: null
-    })
-    .on('response', res => {
-      if (res.statusCode !== 200) {
-        return callback(new Error('status #' + res.statusCode));
-      }
-      totalSize = res.headers['content-length'] || null;
+    let s = fs.createWriteStream(target);
+    s.on('error', reject);
 
-      res.on('data', data => {
-        downloadSize += data.length;
-        progress && progress(downloadSize, totalSize);
-      });
-      res.on('end', () => callback(null, target));
-    })
-    .pipe(s);
+    let totalSize = 0;
+    let downloadSize = 0;
+    let req = request
+      .get({
+        url: url,
+        encoding: null
+      })
+      .on('response', res => {
+        if (res.statusCode !== 200) {
+          return reject(new Error('status #' + res.statusCode));
+        }
+        totalSize = Number(res.headers['content-length']) || null;
+
+        res.on('data', data => {
+          downloadSize += data.length;
+          progress && progress(downloadSize, totalSize);
+        });
+        res.on('end', () => resolve(target));
+      })
+      .pipe(s);
+
+  });
 }
 ```
 
@@ -334,19 +326,14 @@ export default function downloadFile(url, target, progress, callback) {
 
 + 程序使用`request`模块来下载URL的内容，使用时执行命令`$ npm i request --save`安装该模块。
 + 通过`request`模块的`pipe()`方法将收到的数据写入到`fs.createWriteStream(target)`创建的写入文件流中，`request`模块的详细使用方法可参考其文档：https://www.npmjs.com/package/request
-I
+
 为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：
 
 ```javascript
-downloadFile('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', '/tmp/avatar.jpg', (size, total) => {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+let url = 'http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg';
+downloadFile(url, '/tmp/avatar.jpg', (size, total) => console.log(`进度${size}/${total}`))
+  .then(filename => console.log(`已保存到${filename}`))
+  .catch(err => console.log(`出错：${err}`));
 ```
 
 以上程序的作用是将URL为`http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg`的文件复制到`/tmp/avatar.jpg`，使用`babel-node`执行该文件将得到以下结果：
@@ -354,9 +341,7 @@ downloadFile('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', '/
 ```bash
 $ babel-node src/download.js
 
-进度15622/34956
-进度32006/34956
-进度34956/34956
+进度5944/5944
 已保存到/tmp/avatar.jpg
 ```
 
@@ -369,36 +354,18 @@ import mkdirp from 'mkdirp';
 import copyFile from './copy';
 import downloadFile from './download';
 
-export default function download(...args) {
-  var source, target, progress, callback;
-  if (args.length < 2) {
-    throw new TypeError('invalid argument number');
-  }
-  source = args[0];
-  callback = args[args.length - 1];
-  if (args.length === 2) {
-    callback = args[1];
-  } else if (args.length === 3) {
-    if (typeof args[1] === 'function') {
-      progress = args[1];
-    } else {
-      target = args[1];
-    }
-  } else {
-    target = args[1];
-    progress = args[2];
-  }
-  progress = progress || null;
+export default function download(source, target, progress) {
   target = target || randomFilename(download.tmpDir);
+  progress = progress || noop;
+  return new Promise((resolve, reject) => {
 
-  mkdirp(path.dirname(target), err => {
-    if (err) return callback(err);
+    mkdirp(path.dirname(target), err => {
+      if (err) return callback(err);
 
-    if (isURL(source)) {
-      downloadFile(source, target, progress, callback);
-    } else {
-      copyFile(source, target, progress, callback);
-    }
+      resolve((isURL(source) ? downloadFile : copyFile)
+        (source, target, progress));
+    });
+
   });
 }
 
@@ -438,15 +405,9 @@ function isURL (url) {
 为了验证程序是否正确，我们可以将上文的`src/copy.js`和`src/download.js`中的测试程序放到`src/index.js`文件的末尾并执行（需要将旧的程序程序删除），比如：
 
 ```javascript
-download(__filename, '/tmp/copy.js', (size, total) => {
-  console.log(`进度${size}/${total}`);
-}, (err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`已保存到${filename}`);
-  }
-});
+download(__filename, '/tmp/copy.js', (size, total) => console.log(`进度${size}/${total}`))
+  .then(filename => console.log(`已保存到${filename}`))
+  .catch(err => console.log(`出错：${err}`));
 ```
 
 正常情况下，其执行结果应该跟上文中的结果是一致的。
