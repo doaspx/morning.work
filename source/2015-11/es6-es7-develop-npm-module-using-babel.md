@@ -1,5 +1,6 @@
 title: ES2015 & babel 实战：开发NPM模块
 date: 2015-11-20
+draft
 
 ## 前言
 
@@ -128,7 +129,7 @@ SyntaxError: /Users/glen/work/tmp/es2015_demo/test.js: Unexpected token (7:6)
 由于当前版本的babel没有预置`stage-0`，所以我们还需要执行以下命令安装并保存到`package.json`的`devDependencies`中：
 
 ```bash
-$ npm i babel-preset-stage-0 --save-dev
+$ npm i babel-preset-es2015 babel-preset-stage-0 --save-dev
 ```
 
 现在再重新执行`test.js`，可看到控制台每隔500ms打印出一行，直到输出`done`时结束：
@@ -204,7 +205,7 @@ require('babel-polyfill');
 ```javascript
 let download = require('lei-download');
 
-download('http://avatars.githubusercontent.com/u/841625', 'avatar.jpg', (size, total) => {
+download('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', 'avatar.jpg', (size, total) => {
   console.log(`已下载${size}，总共${total}`);
 }, (err, filename) => {
   if (err) {
@@ -333,11 +334,11 @@ export default function downloadFile(url, target, progress, callback) {
 
 + 程序使用`request`模块来下载URL的内容，使用时执行命令`$ npm i request --save`安装该模块。
 + 通过`request`模块的`pipe()`方法将收到的数据写入到`fs.createWriteStream(target)`创建的写入文件流中，`request`模块的详细使用方法可参考其文档：https://www.npmjs.com/package/request
-
+I
 为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：
 
 ```javascript
-downloadFile('http://avatars.githubusercontent.com/u/841625', '/tmp/avatar.jpg', (size, total) => {
+downloadFile('http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg', '/tmp/avatar.jpg', (size, total) => {
   console.log(`进度${size}/${total}`);
 }, (err, filename) => {
   if (err) {
@@ -348,7 +349,7 @@ downloadFile('http://avatars.githubusercontent.com/u/841625', '/tmp/avatar.jpg',
 });
 ```
 
-以上程序的作用是将URL为`http://avatars.githubusercontent.com/u/841625`的文件复制到`/tmp/avatar.jpg`，使用`babel-node`执行该文件将得到以下结果：
+以上程序的作用是将URL为`http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg`的文件复制到`/tmp/avatar.jpg`，使用`babel-node`执行该文件将得到以下结果：
 
 ```bash
 $ babel-node src/download.js
@@ -912,7 +913,7 @@ $ npm i babel-cli mocha --save-dev
 ```
 
 
-## 结束语
+## 后记
 
 本文的示例代码可通过 https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package 获得。
 

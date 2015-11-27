@@ -2,37 +2,19 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 import copyFile from './copy';
 import downloadFile from './download';
-import {randomFilename, isURL} from './utils';
+import {randomFilename, isURL, noop, callbackify} from './utils';
 
-export default function download(...args) {
-  var source, target, progress, callback;
-  if (args.length < 2) {
-    throw new TypeError('invalid argument number');
-  }
-  source = args[0];
-  callback = args[args.length - 1];
-  if (args.length === 2) {
-    callback = args[1];
-  } else if (args.length === 3) {
-    if (typeof args[1] === 'function') {
-      progress = args[1];
-    } else {
-      target = args[1];
-    }
-  } else {
-    target = args[1];
-    progress = args[2];
-  }
-  progress = progress || null;
+export default callbackify(function download(source, target, progress) {
   target = target || randomFilename(download.tmpDir);
+  progress = progress || noop;
+  return new Promise((resolve, reject) => {
 
-  mkdirp(path.dirname(target), err => {
-    if (err) return callback(err);
+    mkdirp(path.dirname(target), err => {
+      if (err) return callback(err);
 
-    if (isURL(source)) {
-      downloadFile(source, target, progress, callback);
-    } else {
-      copyFile(source, target, progress, callback);
-    }
+      resolve((isURL(source) ? downloadFile : copyFile)
+        (source, target, progress));
+    });
+
   });
-}
+});

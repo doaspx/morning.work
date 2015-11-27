@@ -17,8 +17,27 @@ export function randomFilename(tmpDir = getTmpDir()) {
   return path.resolve(tmpDir, randomString(20));
 }
 
-export function isURL (url) {
+export function isURL(url) {
   if (url.substr(0, 7) === 'http://') return true;
   if (url.substr(0, 8) === 'https://') return true;
   return false;
+}
+
+export function noop() { }
+
+export function callbackify(fn) {
+  let argc = fn.length;
+  return (...args) => {
+    let callback = args[argc];
+    if (typeof callback !== 'function') callback = null;
+    return fn(...args)
+      .then(ret => {
+        callback && callback(null, ret);
+        return Promise.resolve(ret);
+      })
+      .catch(err => {
+        callback && callback(err);
+        return Promise.reject(err);
+      });
+  }
 }

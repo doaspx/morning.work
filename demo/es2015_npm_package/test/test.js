@@ -1,8 +1,8 @@
 import assert from 'assert';
 import path from 'path';
 import fs from 'fs';
-import download from '../src';
-import {randomFilename} from '../src/utils';
+import download from '../';
+import {randomFilename} from '../lib/utils';
 
 let readFile = f => fs.readFileSync(f).toString();
 let getFileSize = f => fs.statSync(f).size;
