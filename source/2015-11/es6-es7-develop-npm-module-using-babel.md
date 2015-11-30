@@ -266,7 +266,7 @@ export default function copyFile(source, target, progress) {
 + `import fs from 'fs'`为ES2015模块系统加载模块的方式，可理解为`var fs = require('fs')`，具体在下文「模块系统」一节中介绍。
 + 通过`fs.createReadStream(source)`和`fs.createWriteStream(target)`来创建读取文件流和写入文件流，并监听读取文件流的`data`事件获得当前进度信息。
 + `export default function copyFile() {}`将函数`copyFile()`作为模块输出，相当于`module.exports = function copyFile() {}`，具体在下文「模块系统」一节中介绍。
-+ 函数执行后返回一个`Promise`对象，通过其`.then()`和`.catch()`来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的[「ECMAScript 6 入门 - Promise对象」](http://es6.ruanyifeng.com/#docs/promise)
++ 函数执行后返回一个`Promise`对象，通过其`.then()`和`.catch()`来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的[「ECMAScript 6 入门 」](http://es6.ruanyifeng.com/)中[「 Promise对象」](http://es6.ruanyifeng.com/#docs/promise)一章。
 
 为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：
 
@@ -390,6 +390,8 @@ function isURL (url) {
   if (url.substr(0, 8) === 'https://') return true;
   return false;
 }
+
+export function noop() { }
 ```
 
 说明：
@@ -419,7 +421,9 @@ Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给`e
 ```javascript
 // 输出变量或函数
 exports.x = 123;
-exports.y = function () { console.log('hello'); };
+exports.y = function () {
+  console.log('hello');
+};
 ```
 
 可以通过以下方式来操作：
@@ -435,7 +439,7 @@ mod.y();
 
 ```javascript
 module.exports = function () {
-  console.log('这是一个函数');
+  console.log('hello');
 };
 ```
 
@@ -622,6 +626,8 @@ export function isURL (url) {
   if (url.substr(0, 8) === 'https://') return true;
   return false;
 }
+
+export function noop() { }
 ```
 
 说明：`getTmpDir()`和`randomString()`仅在函数`randomFilename()`函数中用到，所以不需要使用`export`输出。
@@ -629,7 +635,7 @@ export function isURL (url) {
 修改文件`src/index.js`，将相应的代码删掉，并在文件首部`import`语句后面增加以下代码：
 
 ```javascript
-import {randomFilename, isURL} from './utils';
+import {randomFilename, isURL, noop} from './utils';
 ```
 
 
@@ -695,15 +701,16 @@ describe('es2015_demo', () => {
       assert.equal(size, total);
       assert.equal(total, getFileSize(source));
 
-    }, (err, filename) => {
+    }).then(filename => {
 
-      assert.equal(err, null);
       assert.equal(onProgress, true);
       assert.equal(target, filename);
       assert.equal(readFile(source), readFile(target));
 
       done();
 
+    }).catch(err => {
+      throw err;
     });
   });
 
@@ -717,7 +724,7 @@ describe('es2015_demo', () => {
 ```bash
 $ npm test
 
-> es2015_demo@1.0.0 test /Users/glen/work/tmp/es2015_demo
+> es2015_demo@1.0.0 test /private/tmp/es2015_demo
 > mocha --compilers js:babel-core/register
 
 
@@ -726,8 +733,7 @@ $ npm test
     ✓ 复制本地文件成功
 
 
-  1 passing (49ms)
-
+  1 passing (51ms)
 
 ```
 
@@ -785,31 +791,61 @@ module.exports = require('./lib').default;
 
 说明：在`src/index.js`中`download()`函数使用的是`export default`输出，所以在Node.js中需要读取模块输出的`default`属性。
 
-为了验证编译后的程序能否正常工作，可以新建文件`test_compiled.js`：
+上文中我们的测试程序是直接载入`src`目录下的程序，但模块最终发布的却是编译后的程序，为了避免因babel的Bug而导致编译后的程序与源程序功能有差异，我们的单元测试需要改用编译后的代码。
 
-```javascript
-var download = require('./');
+编辑文件`test/test.js`，将引入`src`目录的模块：
 
-download(__filename, '/tmp/copy.js', function (size, total) {
-  console.log('进度%s/%s', size, total);
-}, (err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('已保存到%s', filename);
-  }
-});
+```
+import download from '../src';
+import {randomFilename} from '../src/utils';
 ```
 
-使用以下命令运行该程序是可以正常工作的：
+改为：
 
-```bash
-$ node test_compiled.js
+```javascript
+import download from '../';
+import {randomFilename} from '../lib/utils';
+```
+
+在编辑`package.json`文件，将`test`命令改为先执行`compile`编译代码后再执行`mocha`测试：
+
+```
+{
+  "scripts": {
+    "test": "npm run compile && mocha --compilers js:babel-core/register"
+  }
+}
+```
+
+重新执行`$ npm test`可看到如下结果：
+
+```
+$ npm test
+
+> es2015_demo@1.0.0 test /private/tmp/es2015_demo
+> npm run compile && mocha --compilers js:babel-core/register
+
+
+> es2015_demo@1.0.0 compile /private/tmp/es2015_demo
+> babel -d lib/ src/
+
+src/copy.js -> lib/copy.js
+src/download.js -> lib/download.js
+src/index.js -> lib/index.js
+src/utils.js -> lib/utils.js
+
+
+  es2015_demo
+    ✓ 复制本地文件成功
+
+
+  1 passing (42ms)
+
 ```
 
 ### 2、发布
 
-我们在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，`lib`目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到`node_modules`目录下，这些内容也是不应该纳入版本管理的。可以添加文件`.gitignore`来将其排除：
+在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，`lib`目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到`node_modules`目录下，这些内容也是不应该纳入版本管理的。可以添加文件`.gitignore`来将其排除：
 
 ```
 *.log
@@ -872,6 +908,86 @@ $ npm i babel-cli mocha --save-dev
   }
 }
 ```
+
+本文示例模块输出的`download()`函数使用的是Promise的异步模式，对于习惯使用callback模式的用户，我们也可以通过简单的修改来使其支持callback模式。
+
+编辑文件`src/utils.js`，增加`callbackify()`函数：
+
+```javascript
+export function callbackify(fn) {
+  let argc = fn.length;
+  return (...args) => {
+    let callback = args[argc];
+    if (typeof callback !== 'function') callback = null;
+    return fn(...args)
+      .then(ret => {
+        callback && callback(null, ret);
+        return Promise.resolve(ret);
+      })
+      .catch(err => {
+        callback && callback(err);
+        return Promise.reject(err);
+      });
+  }
+}
+```
+
+编辑文件`src/index.js`，将其改为以下内容：
+
+```javascript
+import path from 'path';
+import mkdirp from 'mkdirp';
+import copyFile from './copy';
+import downloadFile from './download';
+import {randomFilename, isURL, noop, callbackify} from './utils';
+
+export default callbackify(function download(source, target, progress) {
+  target = target || randomFilename(download.tmpDir);
+  progress = progress || noop;
+  return new Promise((resolve, reject) => {
+
+    mkdirp(path.dirname(target), err => {
+      if (err) return callback(err);
+
+      resolve((isURL(source) ? downloadFile : copyFile)
+        (source, target, progress));
+    });
+
+  });
+});
+```
+
+说明：`callbackify()`函数的作用是返回一个新的函数，这个函数可以支持原函数的Promise模式，同时支持callback模式。
+
+现在再给`test/test.js`增加一个测试用例：
+
+```javascript
+  it('复制本地文件成功 callback', done => {
+
+    let source = __filename;
+    let target = randomFilename();
+    let onProgress = false;
+
+    download(source, target, (size, total) => {
+
+      onProgress = true;
+      assert.equal(size, total);
+      assert.equal(total, getFileSize(source));
+
+    }, (err, filename) => {
+
+      assert.equal(err, null);
+      assert.equal(onProgress, true);
+      assert.equal(target, filename);
+      assert.equal(readFile(source), readFile(target));
+
+      done();
+
+    });
+  });
+```
+
+如无意外，重新执行`$ npm test`是可以测试通过的。
 
 
 ## 后记

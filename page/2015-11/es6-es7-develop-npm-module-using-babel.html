@@ -294,7 +294,7 @@ export default function copyFile(source, target, progress) {
 <li><code>import fs from 'fs'</code>为ES2015模块系统加载模块的方式，可理解为<code>var fs = require('fs')</code>，具体在下文「模块系统」一节中介绍。</li>
 <li>通过<code>fs.createReadStream(source)</code>和<code>fs.createWriteStream(target)</code>来创建读取文件流和写入文件流，并监听读取文件流的<code>data</code>事件获得当前进度信息。</li>
 <li><code>export default function copyFile() {}</code>将函数<code>copyFile()</code>作为模块输出，相当于<code>module.exports = function copyFile() {}</code>，具体在下文「模块系统」一节中介绍。</li>
-<li>函数执行后返回一个<code>Promise</code>对象，通过其<code>.then()</code>和<code>.catch()</code>来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/#docs/promise">「ECMAScript 6 入门 - Promise对象」</a></li>
+<li>函数执行后返回一个<code>Promise</code>对象，通过其<code>.then()</code>和<code>.catch()</code>来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门 」</a>中<a href="http://es6.ruanyifeng.com/#docs/promise">「 Promise对象」</a>一章。</li>
 </ul>
 <p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
 <pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(`进度${size}/${total}`))
@@ -401,6 +401,8 @@ function isURL (url) {
   if (url.substr(0, 8) === 'https://') return true;
   return false;
 }
+
+export function noop() { }
 </code></pre>
 <p>说明：</p>
 <ul>
@@ -418,11 +420,13 @@ function isURL (url) {
   .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
 <p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
-<h3><a id="3_412"></a>3、模块系统</h3>
+<h3><a id="3_414"></a>3、模块系统</h3>
 <p>Node.js使用的是CommonJS模块系统，模块的输出我们一般通过给<code>exports</code>对象设置属性来做：</p>
 <pre><code class="prettyprint javascript">// 输出变量或函数
 exports.x = 123;
-exports.y = function () { console.log('hello'); };
+exports.y = function () {
+  console.log('hello');
+};
 </code></pre>
 <p>可以通过以下方式来操作：</p>
 <pre><code class="prettyprint javascript">var mod = require('./my_module');
@@ -432,7 +436,7 @@ mod.y();
 </code></pre>
 <p>也可以通过覆盖<code>module.exports</code>来输出一个函数或者其他数据类型：</p>
 <pre><code class="prettyprint javascript">module.exports = function () {
-  console.log('这是一个函数');
+  console.log('hello');
 };
 </code></pre>
 <p>通过以下方式来操作：</p>
@@ -556,7 +560,7 @@ _my_module2['default'];
 <p><code>mod</code>是通过<code>import * as mod from './my_module'</code>来引入的，其编译后的代码为<code>_interopRequireWildcard(require('./my_module'))</code>。在<code>_interopRequireWildcard()</code>函数中，如果载入的模块是由ES2015输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其<code>default</code>属性为自身。</p>
 <p><code>y</code>是通过<code>import y from './my_module'</code>来引入的，对<code>y</code>的访问被编译成了<code>_my_module2['default']</code>，所以<code>y</code>实际上是<code>export default</code>的输出。而<code>_my_module2 = _interopRequireDefault(require('./my_module'))</code>，函数<code>_interopRequireDefault()</code>对载入的非ES2015模块做了处理，会返回一个<code>default</code>属性指向该模块的新对象。</p>
 <p>当然模块系统的还有更复杂的语法规则，详细说明可参考：阮一峰所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">Module</a>一章。</p>
-<h3><a id="4_591"></a>4、封装模块</h3>
+<h3><a id="4_595"></a>4、封装模块</h3>
 <p>上文例子中的<code>download()</code>函数所在的文件<code>src/index.js</code>中用到<code>randomFilename()</code>和<code>isURL()</code>这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到<code>src/utils.js</code>中。</p>
 <p>新建文件<code>src/utils.js</code>：</p>
 <pre><code class="prettyprint javascript">import path from 'path';
@@ -583,12 +587,14 @@ export function isURL (url) {
   if (url.substr(0, 8) === 'https://') return true;
   return false;
 }
+
+export function noop() { }
 </code></pre>
 <p>说明：<code>getTmpDir()</code>和<code>randomString()</code>仅在函数<code>randomFilename()</code>函数中用到，所以不需要使用<code>export</code>输出。</p>
 <p>修改文件<code>src/index.js</code>，将相应的代码删掉，并在文件首部<code>import</code>语句后面增加以下代码：</p>
-<pre><code class="prettyprint javascript">import {randomFilename, isURL} from './utils';
+<pre><code class="prettyprint javascript">import {randomFilename, isURL, noop} from './utils';
 </code></pre>
-<h2><a id="_633"></a>单元测试</h2>
+<h2><a id="_639"></a>单元测试</h2>
 <p>本文将以<code>mocha</code>测试框架为例，单元测试程序也将使用ES2015来写。</p>
 <p>首先执行以下命令安装<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i -g mocha
@@ -633,15 +639,16 @@ describe('es2015_demo', () =&gt; {
       assert.equal(size, total);
       assert.equal(total, getFileSize(source));
 
-    }, (err, filename) =&gt; {
+    }).then(filename =&gt; {
 
-      assert.equal(err, null);
       assert.equal(onProgress, true);
       assert.equal(target, filename);
       assert.equal(readFile(source), readFile(target));
 
       done();
 
+    }).catch(err =&gt; {
+      throw err;
     });
   });
 
@@ -651,7 +658,7 @@ describe('es2015_demo', () =&gt; {
 <p>好了，现在执行<code>$ npm test</code>命令看看：</p>
 <pre><code class="prettyprint bash">$ npm test
 
-&gt; es2015_demo@1.0.0 test /Users/glen/work/tmp/es2015_demo
+&gt; es2015_demo@1.0.0 test /private/tmp/es2015_demo
 &gt; mocha --compilers js:babel-core/register
 
 
@@ -660,13 +667,12 @@ describe('es2015_demo', () =&gt; {
     ✓ 复制本地文件成功
 
 
-  1 passing (49ms)
-
+  1 passing (51ms)
 
 </code></pre>
 <p>至此，我们已经完成了使用ES2015编写模块，并使用<code>mocha</code>来进行单元测试，下文将介绍如何通过<code>babel</code>编译程序，并发布模块。</p>
-<h2><a id="_734"></a>发布模块</h2>
-<h3><a id="1_736"></a>1、编译</h3>
+<h2><a id="_740"></a>发布模块</h2>
+<h3><a id="1_742"></a>1、编译</h3>
 <p>上文已提到，为了让使用ES2015编写的代码能在Node.js上正常运行，需要先将其编译成ES5标准的代码，然后还需要在程序入口载入<code>babel-polyfill</code>模块。</p>
 <p>我们可以修改文件<code>package.json</code>，为其增加<code>compile</code>命令：</p>
 <pre><code class="prettyprint json">{
@@ -698,24 +704,47 @@ src/utils.js -&gt; lib/utils.js
 module.exports = require('./lib').default;
 </code></pre>
 <p>说明：在<code>src/index.js</code>中<code>download()</code>函数使用的是<code>export default</code>输出，所以在Node.js中需要读取模块输出的<code>default</code>属性。</p>
-<p>为了验证编译后的程序能否正常工作，可以新建文件<code>test_compiled.js</code>：</p>
-<pre><code class="prettyprint javascript">var download = require('./');
-
-download(__filename, '/tmp/copy.js', function (size, total) {
-  console.log('进度%s/%s', size, total);
-}, (err, filename) =&gt; {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('已保存到%s', filename);
+<p>上文中我们的测试程序是直接载入<code>src</code>目录下的程序，但模块最终发布的却是编译后的程序，为了避免因babel的Bug而导致编译后的程序与源程序功能有差异，我们的单元测试需要改用编译后的代码。</p>
+<p>编辑文件<code>test/test.js</code>，将引入<code>src</code>目录的模块：</p>
+<pre><code>import download from '../src';
+import {randomFilename} from '../src/utils';
+</code></pre>
+<p>改为：</p>
+<pre><code class="prettyprint javascript">import download from '../';
+import {randomFilename} from '../lib/utils';
+</code></pre>
+<p>在编辑<code>package.json</code>文件，将<code>test</code>命令改为先执行<code>compile</code>编译代码后再执行<code>mocha</code>测试：</p>
+<pre><code>{
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;npm run compile &amp;&amp; mocha --compilers js:babel-core/register&quot;
   }
-});
+}
 </code></pre>
-<p>使用以下命令运行该程序是可以正常工作的：</p>
-<pre><code class="prettyprint bash">$ node test_compiled.js
+<p>重新执行<code>$ npm test</code>可看到如下结果：</p>
+<pre><code>$ npm test
+
+&gt; es2015_demo@1.0.0 test /private/tmp/es2015_demo
+&gt; npm run compile &amp;&amp; mocha --compilers js:babel-core/register
+
+
+&gt; es2015_demo@1.0.0 compile /private/tmp/es2015_demo
+&gt; babel -d lib/ src/
+
+src/copy.js -&gt; lib/copy.js
+src/download.js -&gt; lib/download.js
+src/index.js -&gt; lib/index.js
+src/utils.js -&gt; lib/utils.js
+
+
+  es2015_demo
+    ✓ 复制本地文件成功
+
+
+  1 passing (42ms)
+
 </code></pre>
-<h3><a id="2_807"></a>2、发布</h3>
-<p>我们在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，<code>lib</code>目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到<code>node_modules</code>目录下，这些内容也是不应该纳入版本管理的。可以添加文件<code>.gitignore</code>来将其排除：</p>
+<h3><a id="2_843"></a>2、发布</h3>
+<p>在开发项目时，一般都会使用Git这样的源代码版本管理工具。上文例子中，<code>lib</code>目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js项目在安装模块时会将其保存到<code>node_modules</code>目录下，这些内容也是不应该纳入版本管理的。可以添加文件<code>.gitignore</code>来将其排除：</p>
 <pre><code>*.log
 node_modules
 lib
@@ -746,7 +775,7 @@ src/index.js -&gt; lib/index.js
 src/utils.js -&gt; lib/utils.js
 + @leizongmin/es2015_demo@1.0.0
 </code></pre>
-<h3><a id="3_852"></a>3、善后</h3>
+<h3><a id="3_888"></a>3、善后</h3>
 <p>上文例子中需要依赖<code>mocha</code>和<code>babel</code>两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖<code>babel</code>的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的<code>babel</code>版本。</p>
 <p>首先执行以下命令安装<code>babel-cli</code>和<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i babel-cli mocha --save-dev
@@ -759,9 +788,77 @@ src/utils.js -&gt; lib/utils.js
   }
 }
 </code></pre>
-<h2><a id="_874"></a>后记</h2>
+<p>本文示例模块输出的<code>download()</code>函数使用的是Promise的异步模式，对于习惯使用callback模式的用户，我们也可以通过简单的修改来使其支持callback模式。</p>
+<p>编辑文件<code>src/utils.js</code>，增加<code>callbackify()</code>函数：</p>
+<pre><code class="prettyprint javascript">export function callbackify(fn) {
+  let argc = fn.length;
+  return (...args) =&gt; {
+    let callback = args[argc];
+    if (typeof callback !== 'function') callback = null;
+    return fn(...args)
+      .then(ret =&gt; {
+        callback &amp;&amp; callback(null, ret);
+        return Promise.resolve(ret);
+      })
+      .catch(err =&gt; {
+        callback &amp;&amp; callback(err);
+        return Promise.reject(err);
+      });
+  }
+}
+</code></pre>
+<p>编辑文件<code>src/index.js</code>，将其改为以下内容：</p>
+<pre><code class="prettyprint javascript">import path from 'path';
+import mkdirp from 'mkdirp';
+import copyFile from './copy';
+import downloadFile from './download';
+import {randomFilename, isURL, noop, callbackify} from './utils';
+
+export default callbackify(function download(source, target, progress) {
+  target = target || randomFilename(download.tmpDir);
+  progress = progress || noop;
+  return new Promise((resolve, reject) =&gt; {
+
+    mkdirp(path.dirname(target), err =&gt; {
+      if (err) return callback(err);
+
+      resolve((isURL(source) ? downloadFile : copyFile)
+        (source, target, progress));
+    });
+
+  });
+});
+</code></pre>
+<p>说明：<code>callbackify()</code>函数的作用是返回一个新的函数，这个函数可以支持原函数的Promise模式，同时支持callback模式。</p>
+<p>现在再给<code>test/test.js</code>增加一个测试用例：</p>
+<pre><code class="prettyprint javascript">  it('复制本地文件成功 callback', done =&gt; {
+
+    let source = __filename;
+    let target = randomFilename();
+    let onProgress = false;
+
+    download(source, target, (size, total) =&gt; {
+
+      onProgress = true;
+      assert.equal(size, total);
+      assert.equal(total, getFileSize(source));
+
+    }, (err, filename) =&gt; {
+
+      assert.equal(err, null);
+      assert.equal(onProgress, true);
+      assert.equal(target, filename);
+      assert.equal(readFile(source), readFile(target));
+
+      done();
+
+    });
+  });
+</code></pre>
+<p>如无意外，重新执行<code>$ npm test</code>是可以测试通过的。</p>
+<h2><a id="_990"></a>后记</h2>
 <p>本文的示例代码可通过 <a href="https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package">https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package</a> 获得。</p>
-<h2><a id="_879"></a>扩展阅读</h2>
+<h2><a id="_995"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
 <li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
