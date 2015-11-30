@@ -1,12 +1,12 @@
 title: ES2015 & babel 实战：开发NPM模块
-date: 2015-11-20
-draft
+date: 2015-11-20 to 2015-11-30
+
 
 ## 前言
 
 近一年来，JavaScript界关于ES6（ECMAScript 6，本文简称ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（**PHP是世界上最好的语言，但JavaScript终将统一全宇宙**），JavaScript的运行环境众多，对ECMAScript标准的支持程度不一，所以对于ES6我一直处于观望状态。
 
-前不久ES6标准正式发布，而Node.js也在最近刚刚发布了5.1.0版本，对ES6标准的支持也越来越完善，babel（一个将ES6/ES7写的代码转换为ES5代码的编译器）也发布了6.0版本，近期也涌现出了不少好文章（比如小问写的[「给 JavaScript 初心者的 ES2015 实战」](http://gank.io/post/564151c1f1df1210001c9161)），种种迹象表明ES6真的要火了，而我也终于按耐不住了……
+前不久ES6标准正式发布，而Node.js也在最近刚刚发布了5.1.0版本，对ES6标准的支持也越来越完善，babel（一个将ES6/ES7写的代码转换为ES5代码的编译器）也发布了6.0版本，近期也涌现出了不少好文章（比如[小问](http://lifemap.in/)写的[「给 JavaScript 初心者的 ES2015 实战」](http://gank.io/post/564151c1f1df1210001c9161)），种种迹象表明ES6真的要火了，而我也终于按耐不住了……
 
 这几天正在写一个[方便下载文件的模块](https://github.com/leizongmin/node-lei-download)（可以得到下载进度信息），正好可以使用ES6新语法特性来改写，作为我写下的第一个使用ES6语法的NPM模块。本文内容将分为以下几部分：
 
@@ -15,7 +15,7 @@ draft
 + 单元测试
 + 发布模块
 
-本文的重点是介绍借助babel开发Node.js项目的基本方法，同时会简略介绍文中出现的ES2015新语法，具体介绍可阅读阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)或babel官方文档中的[「Learn ES2015」](http://babeljs.io/docs/learn-es2015/)。
+本文的重点是介绍借助babel开发Node.js项目的基本方法，同时会简略介绍文中出现的ES2015新语法，具体介绍可阅读[阮一峰](http://www.ruanyifeng.com)所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)或babel官方文档中的[「Learn ES2015」](http://babeljs.io/docs/learn-es2015/)。
 
 babel官方提供了一个[在线REPL](http://babeljs.io/repl)，可以实时输出转换后的JavaScript代码，并且看到其运行结果，对于初学者尤为有用。访问网址http://babeljs.io/repl ，其界面如下：
 
@@ -266,7 +266,7 @@ export default function copyFile(source, target, progress) {
 + `import fs from 'fs'`为ES2015模块系统加载模块的方式，可理解为`var fs = require('fs')`，具体在下文「模块系统」一节中介绍。
 + 通过`fs.createReadStream(source)`和`fs.createWriteStream(target)`来创建读取文件流和写入文件流，并监听读取文件流的`data`事件获得当前进度信息。
 + `export default function copyFile() {}`将函数`copyFile()`作为模块输出，相当于`module.exports = function copyFile() {}`，具体在下文「模块系统」一节中介绍。
-+ 函数执行后返回一个`Promise`对象，通过其`.then()`和`.catch()`来获取执行结果，关于Promise的详细介绍可阅读阮一峰所著的[「ECMAScript 6 入门 」](http://es6.ruanyifeng.com/)中[「 Promise对象」](http://es6.ruanyifeng.com/#docs/promise)一章。
++ 函数执行后返回一个`Promise`对象，通过其`.then()`和`.catch()`来获取执行结果，关于Promise的详细介绍可阅读[阮一峰](http://www.ruanyifeng.com)所著的[「ECMAScript 6 入门 」](http://es6.ruanyifeng.com/)中[「 Promise对象」](http://es6.ruanyifeng.com/#docs/promise)一章。
 
 为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：
 
@@ -534,7 +534,7 @@ exports.d = d;
 function y() {}
 ```
 
-有上面的代码可以看出，`export var b = 456`这样的输出方式，实际上相当于`var b = exports.b = 456`，即直接设置`exports`对象的属性来完成。而`export default y`则是设置`exports`对象的`default`属性。
+由上面的代码可以看出，`export var b = 456`这样的输出方式，实际上相当于`var b = exports.b = 456`，即直接设置`exports`对象的属性来完成。而`export default y`则是设置`exports`对象的`default`属性。
 
 另外，还设置了`exports.__esModule = true`来标记这是一个ES2015输出的模块，在通过`import`来引入模块时会判断此属性来执行相应的规则，下文将详细介绍。
 
@@ -593,7 +593,7 @@ _my_module2['default'];
 
 `y`是通过`import y from './my_module'`来引入的，对`y`的访问被编译成了`_my_module2['default']`，所以`y`实际上是`export default`的输出。而`_my_module2 = _interopRequireDefault(require('./my_module'))`，函数`_interopRequireDefault()`对载入的非ES2015模块做了处理，会返回一个`default`属性指向该模块的新对象。
 
-当然模块系统的还有更复杂的语法规则，详细说明可参考：阮一峰所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)中[Module](http://es6.ruanyifeng.com/#docs/module)一章。
+当然模块系统的还有更复杂的语法规则，详细说明可参考：[阮一峰](http://www.ruanyifeng.com)所著的[「ECMAScript 6 入门」](http://es6.ruanyifeng.com/)中[「Module」](http://es6.ruanyifeng.com/#docs/module)一章。
 
 ### 4、封装模块
 
@@ -991,6 +991,8 @@ export default callbackify(function download(source, target, progress) {
 
 
 ## 后记
+
+本文的初稿在一个星期之前已经完成，一开始看到ES2015的新语法特性时眼前一亮，接着又觉得使用的时候有点繁琐，比如每次运行程序都有先使用babel编译，程序运行出错时定位的位置跟ES2015源码的位置不同等等。后来经过几天的摸索，发觉新的语法特性确实可以少打了很多代码，而且程序的表现力也更强了，与babel编译所耗的那几秒时间相比还是很值得的。
 
 本文的示例代码可通过 https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package 获得。
 
