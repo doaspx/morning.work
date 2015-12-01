@@ -784,7 +784,7 @@ src/utils.js -&gt; lib/utils.js
 <pre><code class="prettyprint json">{
   &quot;scripts&quot;: {
     &quot;compile&quot;: &quot;./node_modules/.bin/babel -d lib/ src/&quot;,
-    &quot;test&quot;: &quot;./node_modules/.bin/mocha --compilers js:babel-core/register&quot;
+    &quot;test&quot;: &quot;npm run compile &amp;&amp; ./node_modules/.bin/mocha --compilers js:babel-core/register&quot;
   }
 }
 </code></pre>
