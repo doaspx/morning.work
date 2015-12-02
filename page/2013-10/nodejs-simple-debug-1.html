@@ -86,6 +86,12 @@ td, th {
   border: 1px solid #CCC;
   padding: 4px 16px;
 }
+#title {
+  margin-bottom: 0;
+}
+#date {
+  font-size: 87.5%;
+}
 #nav {
   border-bottom: 2px solid #eee;
   font-size: 18px;
@@ -97,6 +103,7 @@ td, th {
 }
 #content {
   min-height: 200px;
+  margin-top: 4em;
 }
 #content img {
   display: block;
@@ -114,9 +121,14 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>《Node.js 入门系列》—— 一些简单的排错方法（一）</h1>
+
+  <h1 id="title">《Node.js 入门系列》—— 一些简单的排错方法（一）</h1>
+  <div id="date">
+              <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
+    创作于 2013-10-09    </div>
+
   <article id="content">
-    <p><h3>目录</h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_63">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_111">TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_134">检查变量是未赋值</a></li><li><a href="#_141">检查函数是否有返回值</a></li><li><a href="#_152">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_160">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
+    <p><h3>目录</h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_64">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112">TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_135">检查变量是未赋值</a></li><li><a href="#_142">检查函数是否有返回值</a></li><li><a href="#_153">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_161">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
 <p>俗话说“常在河边走，哪能不湿鞋”，只要动手写程序，总会时不时的冒出点问题来，
 很难一下子就写出完全正确运行的程序。哪怕只是拿别人的程序来运行，也不能保证其能
 适应各种各样的系统环境，不作任何修改就能使用。因此，学会一些简单的排错方法是很
@@ -172,7 +184,7 @@ ReferenceError: proceess is not defined
 </li>
 </ul>
 <p>记住这些常见的错误对象有助于更快速地理解出错信息。</p>
-<h2><a id="TypeError_undefined_is_not_a_function_63"></a>TypeError: undefined is not a function</h2>
+<h2><a id="TypeError_undefined_is_not_a_function_64"></a>TypeError: undefined is not a function</h2>
 <p>出现这种错误的原因是某个变量不是 <code>Function</code> 类型，却把它当函数来调用了。例如：</p>
 <p>帖子： <a href="http://cnodejs.org/topic/516acc466d38277306395c93">《node连接mysql出错》</a></p>
 <p>Node.js 代码：</p>
@@ -213,7 +225,7 @@ TypeError: undefined is not a function
 那么，应该是 <code>mysql</code> 这个模块并没有输出 <code>Client</code> 这个函数，我们可以执行
 <code>console.log(require('mysql'))</code> 来打印 <code>mysql</code> 模块的输出，也确定并没有 <code>Client</code>
 这一项，这时候就应该详细看一下 mysql 模块帮助文档以及其正确的使用方法了。</p>
-<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_111"></a>TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</h2>
+<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112"></a>TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</h2>
 <p>出现这种错误的原因是尝试读取一个值为 <code>undefined</code> 或 <code>null</code> 的变量的属性。比如如下代码：</p>
 <pre><code>var a = undefined;
 console.log(a.b);
@@ -232,12 +244,12 @@ console.log(a.b);
     at emitKey (readline.js:1095:12)
 </code></pre>
 <p>当出现这种情况时，我们可以通过以下方法来排查：</p>
-<h3><a id="_134"></a>检查变量是未赋值</h3>
+<h3><a id="_135"></a>检查变量是未赋值</h3>
 <p>假如只通过 <code>var a</code> 来声明了变量，但未赋值，此时变量的值为 <code>undefined</code> ，示例：</p>
 <pre><code>var a; // 没有赋值
 console.log(a.b);
 </code></pre>
-<h3><a id="_141"></a>检查函数是否有返回值</h3>
+<h3><a id="_142"></a>检查函数是否有返回值</h3>
 <p>当函数没有用 <code>return</code> 来返回一个值时，那么这个函数的返回值就是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f () {
@@ -246,13 +258,13 @@ console.log(a.b);
 var a = f();
 console.log(a.b);
 </code></pre>
-<h3><a id="_152"></a>检查变量是否引用了某个对象不存在的属性</h3>
+<h3><a id="_153"></a>检查变量是否引用了某个对象不存在的属性</h3>
 <p>当引用了某个对象一个不存在的属性时，其值就是 <code>undefined</code> ，示例：</p>
 <pre><code>var obj = {};
 var a = obj.c; // 引用了一个不存在的属性
 console.log(a.b);
 </code></pre>
-<h3><a id="_160"></a>检查调用函数时是否未该传递参数</h3>
+<h3><a id="_161"></a>检查调用函数时是否未该传递参数</h3>
 <p>当调用某个函数时没有按要求传递足够的参数，则在函数体内该参数的值是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f (a) {
@@ -269,7 +281,7 @@ f(); // 本来该函数需要1个参数
   </article>
 
   <p id="license">
-  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由<a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">老雷</a>创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由           <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>       创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
   </p>
 </body>
 </html>

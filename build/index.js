@@ -18,6 +18,7 @@ var md = new MarkdownIt({
   typography: true
 });
 md.use(require('markdown-it-toc'));
+var authors = require('./authors');
 
 
 var SOURCE_DIR = path.resolve(__dirname, '../source');
@@ -36,6 +37,7 @@ function readFile (f) {
     head = data.slice(0, i);
     body = data.slice(i);
   }
+
   var info = {};
   head.split('\n').forEach(function (line) {
     var i = line.indexOf(':');
@@ -53,6 +55,15 @@ function readFile (f) {
   }
   var url = f.slice(SOURCE_DIR.length);
   info.url = url.slice(0, -3) + '.html';
+
+  info.authors = (info.author || '').trim().split(/\s/).map(function (name) {
+    if (authors[name]) {
+      return authors[name][info.language] || authors[name].default;
+    } else {
+      return {name: name, link: 'http://morning.work', about: name};
+    }
+  });
+
   return info;
 }
 
@@ -80,7 +91,7 @@ function getPostList () {
     var bd = new Date(lastItem(b.date)).getTime();
     return bd - ad;
   }).filter(function (a) {
-    return !a.draft;
+    return !a.draft && !a.hide;
   });
 }
 

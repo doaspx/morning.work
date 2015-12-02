@@ -1,6 +1,10 @@
+```
 date:  2015-09-17
 title: Node.js 项目的配置文件
 link:  https://github.com/SuperID/super-config
+author: 老雷
+```
+
 
 在使用 Node.js 编写一个完整的项目时，程序中往往需要用到一些可配置的变量，从而使得程序能在不同的环境中运行。本文将介绍几种常见的方法。
 
@@ -86,7 +90,7 @@ var config = {
   name: 'Nodeclub', // 社区名字
   description: 'CNode：Node.js专业中文社区', // 社区的描述
   keywords: 'nodejs, node, express, connect, socket.io',
-  
+
   // 其他配置项...
 };
 module.exports = config;
@@ -216,19 +220,19 @@ children:
 
 ```json
 {
-  "age": 37, 
+  "age": 37,
   "spouse": {
-    "age": 25, 
+    "age": 25,
     "name": "Jane Smith"
-  }, 
-  "name": "John Smith", 
+  },
+  "name": "John Smith",
   "children": [
     {
-      "age": 15, 
+      "age": 15,
       "name": "Jimmy Smith"
-    }, 
+    },
     {
-      "age": 12, 
+      "age": 12,
       "name": "Jenny Smith"
     }
   ]

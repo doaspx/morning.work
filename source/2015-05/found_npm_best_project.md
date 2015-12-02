@@ -1,6 +1,11 @@
+```
 date:  2015-05-27 to 2015-05-31
 title: 创建npm.best项目
 link:  https://npm.best
+author: 老雷
+hide
+```
+
 
 已经能基本工作，搜索结果也比npmjs.org上的好，但是还有很多的优化空间，未来计划：
 

@@ -1,5 +1,9 @@
+```
 date: 2015-10-31
 title: Node.js定制REPL的妙用
+author: 老雷
+```
+
 
 相信在学习Node.js的时候，对Node.js的REPL并不陌生。我们可以在REPL里面输入JavaScript代码并立刻看到效果，常常用来试用一些新的模块，甚至直接把REPL当计算器来用。
 

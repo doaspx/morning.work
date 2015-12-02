@@ -86,6 +86,12 @@ td, th {
   border: 1px solid #CCC;
   padding: 4px 16px;
 }
+#title {
+  margin-bottom: 0;
+}
+#date {
+  font-size: 87.5%;
+}
 #nav {
   border-bottom: 2px solid #eee;
   font-size: 18px;
@@ -97,6 +103,7 @@ td, th {
 }
 #content {
   min-height: 200px;
+  margin-top: 4em;
 }
 #content img {
   display: block;
@@ -114,7 +121,12 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>在Node.js中读写大文件</h1>
+
+  <h1 id="title">在Node.js中读写大文件</h1>
+  <div id="date">
+              <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
+    创作于 2015-07-15 ~ 2015-07-16    </div>
+
   <article id="content">
     <p>前段时间偶然需要整理一个几百MB的文本文件，内容大概370W行，我要将每一行的数据简单格式化一下，并转存到一个新的文件中。</p>
 <p>在Node.js中，我们可以通过两种方式来读取文件：</p>
@@ -123,14 +135,14 @@ li > p {
 <li>使用<code>fs.createReadStream()</code>创建一个读文件流，这种方式可不受限于文件的大小；</li>
 </ul>
 <p>因此，我很顺理成章地选用了<code>fs.createReadStream()</code>来读取文件，自然在写文件时也使用对应的<code>fs.createWriteStream()</code>来做。</p>
-<p><h3>目录</h3><ul><ul><li><a href="#_14">按行读写流</a></li><ul><li><a href="#_18">安装模块</a></li><li><a href="#_26">按行读取流</a></li><li><a href="#_87">按行写流</a></li></ul><li><a href="#_126">控制读写速度</a></li><ul><li><a href="#_128">实验</a></li><li><a href="#_244">原理</a></li></ul><li><a href="#_364">优化写文件性能</a></li><ul><li><a href="#_366">实验</a></li><li><a href="#_515">原理</a></li></ul><li><a href="#_549">总结</a></li></ul></ul></p>
-<h2><a id="_14"></a>按行读写流</h2>
+<p><h3>目录</h3><ul><ul><li><a href="#_15">按行读写流</a></li><ul><li><a href="#_19">安装模块</a></li><li><a href="#_27">按行读取流</a></li><li><a href="#_88">按行写流</a></li></ul><li><a href="#_127">控制读写速度</a></li><ul><li><a href="#_129">实验</a></li><li><a href="#_245">原理</a></li></ul><li><a href="#_365">优化写文件性能</a></li><ul><li><a href="#_367">实验</a></li><li><a href="#_516">原理</a></li></ul><li><a href="#_550">总结</a></li></ul></ul></p>
+<h2><a id="_15"></a>按行读写流</h2>
 <p>由于要操作的是文本文件，并且文件中的内容每一行记录均使用换行符<code>\n</code>来分隔，我编写了一个模块用来按行从一个<code>stream</code>中读取内容，以及按行往一个<code>stream</code>中写入内容，下面将介绍这个模块的简单使用方法。</p>
-<h3><a id="_18"></a>安装模块</h3>
+<h3><a id="_19"></a>安装模块</h3>
 <p>执行以下命令安装</p>
 <pre><code class="prettyprint bash">$ npm install lei-stream --save
 </code></pre>
-<h3><a id="_26"></a>按行读取流</h3>
+<h3><a id="_27"></a>按行读取流</h3>
 <pre><code class="prettyprint javascript">var readLine = require('lei-stream').readLine;
 
 readLine('./myfile.txt').go(function (data, next) {
@@ -185,7 +197,7 @@ s.on('end', function () {
 <li>调用<code>s.next()</code>来读取下一行数据，如果在初始化<code>readLine()</code>时指定了<code>autoNext=true</code>，则可省略</li>
 <li>当到达流末尾时，所有数据已读取完毕，会触发<code>end</code>事件</li>
 </ul>
-<h3><a id="_87"></a>按行写流</h3>
+<h3><a id="_88"></a>按行写流</h3>
 <pre><code class="prettyprint javascript">var fs = require('fs');
 var writeLineStream = require('lei-stream').writeLine;
 
@@ -220,8 +232,8 @@ s.end(function () {
 <li>执行<code>s.write()</code>来写入一行数据</li>
 <li>执行<code>s.end()</code>来结束写入</li>
 </ul>
-<h2><a id="_126"></a>控制读写速度</h2>
-<h3><a id="_128"></a>实验</h3>
+<h2><a id="_127"></a>控制读写速度</h2>
+<h3><a id="_129"></a>实验</h3>
 <p>我们在使用<code>fs.createReadStream()</code>创建一个读文件流后，文件内容便源源不断地被读取出来，不断地触发<code>data</code>事件。然后在<code>ReadStream</code>的<code>data</code>事件里面处理，并写入到<code>WriteStream</code>中。然而，大多数情况下读文件的速度总比写文件的速度快，这样便导致大量的数据被积压在内存中，当要读取的文件很大时，甚至会导致因占用内存太多而导致整个Node.js进程崩溃。</p>
 <p>以下是我通过<code>lei-stream</code>编写的一个例子，按行读取数据并写入到另一个文件中（在写入文件时不等待写入完成即刻执行<code>next()</code>来读取下一行，用于模拟不限制读取速度）：</p>
 <pre><code class="prettyprint javascript">var readLine = require('lei-stream').readLine;
@@ -320,7 +332,7 @@ done. total 3722040 lines, spent 90S
 rss=62.54MB, heapTotal=45.16MB, heapUsed=16.80MB
 </code></pre>
 <p>虽然程序的执行时间由原来的80秒增加到90秒，但整个进程的内存占用稳定保持在<code>45MB</code>，因此即使要读取一个超大文件功能也不会受到影响。</p>
-<h3><a id="_244"></a>原理</h3>
+<h3><a id="_245"></a>原理</h3>
 <p><code>ReadAStream</code>提供了两个函数用于控制流：</p>
 <ul>
 <li><code>ReadStream.pause()</code>暂停读取 <a href="https://nodejs.org/api/stream.html#stream_readable_pause">参考文档</a></li>
@@ -431,8 +443,8 @@ end. total 134742016 bytes
 </code></pre>
 <p>从结果中可以看出，读取速度并不是固定的10MB/S，而是在这个范围内不断变化。其原因是程序在读取文件时，每次都会读取一定长度的内容（比如64KB，
 这个与系统设置的缓冲区大小有关），因此我们采用一种简单的方法来控制读取速度：每次触发<code>data</code>事件时，计算每秒的读取速度，如果超过预设的值则暂停读取，并每隔100ms检查一次，直到平均速度在预设的范围内再重新读取。</p>
-<h2><a id="_364"></a>优化写文件性能</h2>
-<h3><a id="_366"></a>实验</h3>
+<h2><a id="_365"></a>优化写文件性能</h2>
+<h3><a id="_367"></a>实验</h3>
 <p>前文中提到，『大多数情况下读文件的速度总比写文件的速度快，这样便导致大量的数据被积压在内存中，当要读取的文件很大时，甚至会导致因占用内存太多而导致整个Node.js进程崩溃』，那为什么我们在复制超大文件时程序又没问题呢？</p>
 <p>于是我编写了以下程序：</p>
 <pre><code class="prettyprint javascript">var fs = require('fs');
@@ -546,7 +558,7 @@ done. total 3722040 lines, spent 13S
 rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
 </code></pre>
 <p>由结果可以看出，程序执行时间从原来的90S下降到13S，并且内存占用仍然保持在45.16MB。</p>
-<h3><a id="_515"></a>原理</h3>
+<h3><a id="_516"></a>原理</h3>
 <p>首先看看Node.js源码中<code>fs.ReadStream</code>的<code>write()</code>里面是怎样的（<a href="https://github.com/joyent/node/blob/master/lib/fs.js#L1789">源码</a>）：</p>
 <pre><code class="prettyprint javascript">WriteStream.prototype._write = function(data, encoding, cb) {
   if (!util.isBuffer(data))
@@ -573,7 +585,7 @@ rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
 </code></pre>
 <p>由源码可以看出，每一次的<code>write()</code>实际上是直接调用<code>fs.write()</code>来写入文件的（<code>WriteStream</code>记录了当前文件的偏移量），当频繁调用<code>write()</code>来写入数据时，每一次都会创建用于<code>fs.write()</code>的回调函数，因此内存占用急剧升高和性能下降也就很合情合理了。</p>
 <p><strong>注意：<code>lei-stream</code>本身的设计是用于读写流，并不仅限于文件流，因此<code>cacheLines</code>选项并不总是能起到提升性能的作用，所以把<code>cacheLines</code>设计为需要手动开启</strong></p>
-<h2><a id="_549"></a>总结</h2>
+<h2><a id="_550"></a>总结</h2>
 <p>前几天在CNode论坛看到有人提问<a href="https://cnodejs.org/topic/55a4b5213ecc81b621bba8d0">『nodejs 如何加载大数据json文件比如2g ，3g，10g』</a>，其实这里的问题除了文件很大之外，重点还是在『读取JSON字符串里面的某部分内容』。</p>
 <p>一般情况下，在Node.js中读写大文件并没有什么高深的技术，主要注意以下几点：</p>
 <ul>
@@ -585,7 +597,7 @@ rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
   </article>
 
   <p id="license">
-  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由<a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">老雷</a>创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由           <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>       创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
   </p>
 </body>
 </html>

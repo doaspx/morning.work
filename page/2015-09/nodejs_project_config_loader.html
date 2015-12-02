@@ -86,6 +86,12 @@ td, th {
   border: 1px solid #CCC;
   padding: 4px 16px;
 }
+#title {
+  margin-bottom: 0;
+}
+#date {
+  font-size: 87.5%;
+}
 #nav {
   border-bottom: 2px solid #eee;
   font-size: 18px;
@@ -97,6 +103,7 @@ td, th {
 }
 #content {
   min-height: 200px;
+  margin-top: 4em;
 }
 #content img {
   display: block;
@@ -114,11 +121,16 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>Node.js 项目的配置文件</h1>
+
+  <h1 id="title">Node.js 项目的配置文件</h1>
+  <div id="date">
+              <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
+    创作于 2015-09-17    </div>
+
   <article id="content">
     <p>在使用 Node.js 编写一个完整的项目时，程序中往往需要用到一些可配置的变量，从而使得程序能在不同的环境中运行。本文将介绍几种常见的方法。</p>
-<p><h3>目录</h3><ul><ul><li><a href="#_6">通过环境变量指定配置</a></li><ul><li><a href="#_41">设置环境变量</a></li><li><a href="#_Nodejs__57">在 Node.js 中读取环境变量</a></li></ul><li><a href="#_74">通过配置文件指定配置</a></li><ul><li><a href="#_123">其他配置文件格式</a></li><ul><li><a href="#JSON_140">JSON格式</a></li><li><a href="#YAML_195">YAML格式</a></li></ul></ul><li><a href="#_250">根据运行环境选择不同的配置</a></li><ul><li><a href="#_254">使用单一配置文件名</a></li><li><a href="#_260">通过环境变量指定配置文件名</a></li></ul><li><a href="#_config__290">使用 config 模块来读取配置</a></li><li><a href="#_393">参考资料</a></li><li><a href="#_402">相关模块</a></li></ul></ul></p>
-<h2><a id="_6"></a>通过环境变量指定配置</h2>
+<p><h3>目录</h3><ul><ul><li><a href="#_7">通过环境变量指定配置</a></li><ul><li><a href="#_42">设置环境变量</a></li><li><a href="#_Nodejs__58">在 Node.js 中读取环境变量</a></li></ul><li><a href="#_75">通过配置文件指定配置</a></li><ul><li><a href="#_124">其他配置文件格式</a></li><ul><li><a href="#JSON_141">JSON格式</a></li><li><a href="#YAML_196">YAML格式</a></li></ul></ul><li><a href="#_251">根据运行环境选择不同的配置</a></li><ul><li><a href="#_255">使用单一配置文件名</a></li><li><a href="#_261">通过环境变量指定配置文件名</a></li></ul><li><a href="#_config__291">使用 config 模块来读取配置</a></li><li><a href="#_394">参考资料</a></li><li><a href="#_403">相关模块</a></li></ul></ul></p>
+<h2><a id="_7"></a>通过环境变量指定配置</h2>
 <p><a href="http://baike.baidu.com/view/95930.htm">环境变量（environment variables）</a> 一般是指在操作系统中用来指定操作系统运行环境的一些参数，如：临时文件夹位置和系统文件夹位置等。比如<code>HOME</code>表示当前用户的根目录，<code>TMPDIR</code>表示系统临时目录等，我们可以通过设置一些特定的环境变量，程序在启动时可以读取这些环境变量并做相应的初始化动作。</p>
 <p>在 Node.js 中可以通过<code>process.env</code>来访问当前的环境变量信息，比如：</p>
 <pre><code class="prettyprint javascript">{ PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
@@ -148,7 +160,7 @@ li > p {
   RUST_SRC_PATH: '/Users/glen/work/source/rust/src',
   _: '/usr/local/bin/node' }
 </code></pre>
-<h3><a id="_41"></a>设置环境变量</h3>
+<h3><a id="_42"></a>设置环境变量</h3>
 <p>环境变量的名字一般为大写，多个单词之间可通过下划线来连接。</p>
 <p>Windows 系统下可通过<code>set</code>命令来设置环境变量，比如：</p>
 <pre><code class="prettyprint bash">$ set HELLO_MSG=&quot;Hello, world!&quot;
@@ -156,7 +168,7 @@ li > p {
 <p>Linux 系统下可通过<code>export</code>命令来设置，比如：</p>
 <pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world!&quot;
 </code></pre>
-<h3><a id="_Nodejs__57"></a>在 Node.js 中读取环境变量</h3>
+<h3><a id="_Nodejs__58"></a>在 Node.js 中读取环境变量</h3>
 <p>创建文件<code>1.js</code>，代码如下：</p>
 <pre><code class="prettyprint javascript">console.log(process.env.HELLO_MSG);
 </code></pre>
@@ -164,7 +176,7 @@ li > p {
 <pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world&quot; &amp;&amp; node 1.js
 </code></pre>
 <p>控制台将输出<code>Hello, world</code>，即我们启动程序时给环境变量<code>HELLO_MSG</code>设置的值。</p>
-<h2><a id="_74"></a>通过配置文件指定配置</h2>
+<h2><a id="_75"></a>通过配置文件指定配置</h2>
 <p>一些规模较小的项目往往会通过单一的配置文件来存储其配置，比如 CNode 中文社区的开源项目 <a href="https://github.com/cnodejs/nodeclub">nodeclub</a> 在启动时会载入文件<code>config.js</code>，该文件的大概结构如下：</p>
 <pre><code class="prettyprint javascript">var config = {
   // debug 为 true 时，用于本地调试
@@ -173,7 +185,7 @@ li > p {
   name: 'Nodeclub', // 社区名字
   description: 'CNode：Node.js专业中文社区', // 社区的描述
   keywords: 'nodejs, node, express, connect, socket.io',
-  
+
   // 其他配置项...
 };
 module.exports = config;
@@ -205,7 +217,7 @@ app.listen(config.port, function () {
 });
 </code></pre>
 <p>使用配置文件与使用环境变量来指定配置相比，配置文件的可读性更强，可以表示一些更复杂的结构，而使用环境变量一般只限于<code>key=value</code>的形式。但在配置项数量较少时，使用环境变量会更简单，比如项目中只需要配置一个监听端口，可以简单使用<code>export PORT=3000 &amp;&amp; node app.js</code>命令来启动程序，而不需要单独创建一个配置文件。大多数时候往往会结合这两种方式来进行，下文讲详细讲解。</p>
-<h3><a id="_123"></a>其他配置文件格式</h3>
+<h3><a id="_124"></a>其他配置文件格式</h3>
 <p>一般为了方便，在 Node.js 项目中会习惯使用<code>.js</code>文件格式，它的好处是可以使用通过程序来动态生成一些配置项，比如 nodeclub 的其中一个配置项：</p>
 <pre><code class="prettyprint javascript">var config = {
   // 文件上传配置
@@ -217,7 +229,7 @@ app.listen(config.port, function () {
 }
 </code></pre>
 <p>其中使用到了<code>path.join()</code>和<code>__dirname</code>来生成<code>upload.path</code>。</p>
-<h4><a id="JSON_140"></a>JSON格式</h4>
+<h4><a id="JSON_141"></a>JSON格式</h4>
 <p>另外，我们也可以使用 <a href="http://json.org/">JSON</a> 格式的配置文件，比如文件<code>config.json</code>：</p>
 <pre><code class="prettyprint json">{
   &quot;debug&quot;: true,
@@ -258,7 +270,7 @@ function loadJSONFile (file) {
 var config = loadJSONFile('./config.json');
 console.log(config);
 </code></pre>
-<h4><a id="YAML_195"></a>YAML格式</h4>
+<h4><a id="YAML_196"></a>YAML格式</h4>
 <p><a href="http://yaml.org/">YAML</a> 是面向所有编程语言的对人类友好的数据序列化标准。其最大的优点是可读性较好，比如以下 YAML 格式的配置：</p>
 <pre><code class="prettyprint yaml">name: John Smith
 age: 37
@@ -273,19 +285,19 @@ children:
 </code></pre>
 <p>其对应的JSON结构如下：</p>
 <pre><code class="prettyprint json">{
-  &quot;age&quot;: 37, 
+  &quot;age&quot;: 37,
   &quot;spouse&quot;: {
-    &quot;age&quot;: 25, 
+    &quot;age&quot;: 25,
     &quot;name&quot;: &quot;Jane Smith&quot;
-  }, 
-  &quot;name&quot;: &quot;John Smith&quot;, 
+  },
+  &quot;name&quot;: &quot;John Smith&quot;,
   &quot;children&quot;: [
     {
-      &quot;age&quot;: 15, 
+      &quot;age&quot;: 15,
       &quot;name&quot;: &quot;Jimmy Smith&quot;
-    }, 
+    },
     {
-      &quot;age&quot;: 12, 
+      &quot;age&quot;: 12,
       &quot;name&quot;: &quot;Jenny Smith&quot;
     }
   ]
@@ -302,12 +314,12 @@ function loadYAMLFile (file) {
 var config = loadYAMLFile('./config.yaml');
 console.log(config);
 </code></pre>
-<h2><a id="_250"></a>根据运行环境选择不同的配置</h2>
+<h2><a id="_251"></a>根据运行环境选择不同的配置</h2>
 <p>大多数情况下，程序在本地开发环境和生产环境中的配置信息是不一样的，比如开发时连接到的数据库里面的数据是模拟出来的，而生产环境要连接到实际的数据库上，因此我们需要让程序能根据不同的运行环境来载入不同的配置文件。</p>
-<h3><a id="_254"></a>使用单一配置文件名</h3>
+<h3><a id="_255"></a>使用单一配置文件名</h3>
 <p>以 nodeclub 项目为例，其载入的配置文件名为<code>./config.js</code>，项目中有一个默认配置文件<code>./config.default.js</code>。要运行程序，首先需要复制一份默认配置文件，并保存为<code>./config.js</code>，再根据当前运行环境来修改<code>./config.js</code>。</p>
 <p>由于<code>./config.js</code>文件已经被添加到<code>.gitignore</code>文件中，因此我们<code>./config.js</code>文件的修改不会被纳入到项目的版本管理中，所以不同机器中的<code>./config.js</code>不会产生冲突，可以使用各自的配置来启动程序。</p>
-<h3><a id="_260"></a>通过环境变量指定配置文件名</h3>
+<h3><a id="_261"></a>通过环境变量指定配置文件名</h3>
 <p>我们可以通过环境变量来指定配置文件，比如：</p>
 <pre><code class="prettyprint bash">$ export CONFIG_FILE=&quot;./config/production.js&quot;
 </code></pre>
@@ -323,7 +335,7 @@ var config = require(path.resolve(process.env.CONFIG_FILE));
 var configFile = path.resolve('./config', process.env.NODE_ENV + '.js');
 var config = require(configFile);
 </code></pre>
-<h2><a id="_config__290"></a>使用 config 模块来读取配置</h2>
+<h2><a id="_config__291"></a>使用 config 模块来读取配置</h2>
 <p><a href="https://www.npmjs.com/package/config">config</a> 模块是 NPM 上下载量最高的 Node.js 配置文件管理模块，其实现原理与上文中介绍的方法大同小异，在实际开发中我们可以考虑使用这个现成的模块。下面将介绍此模块的简单使用方法。</p>
 <p><code>config</code>模块通过环境变量<code>NODE_CONFIG_DIR</code>来指定配置文件所在的目录，默认为<code>./config</code>（即当前运行目录下的<code>config</code>目录），通过环境变量<code>NODE_ENV</code>来指定当前的运行环境版本。</p>
 <p>配置文件使用 JSON 格式，模块加载后，会首先载入默认的配置文件<code>${NODE_CONFIG_DIR}/default.json</code>，再载入文件<code>${NODE_CONFIG_DIR}/${NODE_ENV}.json</code>，如果配置项有冲突则覆盖默认的配置。</p>
@@ -394,7 +406,7 @@ false
 </code></pre>
 <p>其中<code>get()</code>用来获取指定配置，可以使用诸如<code>Customer.dbConfig</code>这样的格式，如果配置项不存在则会抛出异常。<code>has()</code>用来检测指定配置项是否存在，如果存在则返回<code>true</code>。</p>
 <p>关于<code>config</code>模块的详细使用方法可阅读其帮助文档。</p>
-<h2><a id="_393"></a>参考资料</h2>
+<h2><a id="_394"></a>参考资料</h2>
 <ul>
 <li><a href="http://baike.baidu.com/view/95930.htm">百度百科：环境变量</a></li>
 <li><a href="http://yijiebuyi.com/blog/1bfcf43248a873b39a3471901e764b68.html">ENV 定制开发，测试，发布环境变量</a></li>
@@ -402,7 +414,7 @@ false
 <li><a href="http://aicode.cc/article/413.html">YAML 格式</a></li>
 <li><a href="http://segmentfault.com/a/1190000000522997">.gitignore 文件使用说明</a></li>
 </ul>
-<h2><a id="_402"></a>相关模块</h2>
+<h2><a id="_403"></a>相关模块</h2>
 <ul>
 <li><a href="https://www.npmjs.com/package/strip-json-comments">strip-json-comments</a> - 去掉JSON字符串中的备注</li>
 <li><a href="https://www.npmjs.com/package/yamljs">yamljs</a> - 解析YAML</li>
@@ -412,7 +424,7 @@ false
   </article>
 
   <p id="license">
-  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由<a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">老雷</a>创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由           <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>       创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
   </p>
 </body>
 </html>

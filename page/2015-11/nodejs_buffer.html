@@ -86,6 +86,12 @@ td, th {
   border: 1px solid #CCC;
   padding: 4px 16px;
 }
+#title {
+  margin-bottom: 0;
+}
+#date {
+  font-size: 87.5%;
+}
 #nav {
   border-bottom: 2px solid #eee;
   font-size: 18px;
@@ -97,6 +103,7 @@ td, th {
 }
 #content {
   min-height: 200px;
+  margin-top: 4em;
 }
 #content img {
   display: block;
@@ -114,10 +121,15 @@ li > p {
     <a href="http://morning.work">早起搬砖 morning.work</a>
   </nav>
 
-  <h1>Node.js的Buffer那些你可能不知道的用法</h1>
+
+  <h1 id="title">Node.js的Buffer那些你可能不知道的用法</h1>
+  <div id="date">
+              <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
+    创作于 2015-11-16    </div>
+
   <article id="content">
-    <p><h3>目录</h3><ul><ul><li><a href="#_4">前言</a></li><li><a href="#_113">操作结构化数据</a></li><li><a href="#leiproto_213">lei-proto模块介绍</a></li><li><a href="#_266">扩展阅读</a></li></ul></ul></p>
-<h2><a id="_4"></a>前言</h2>
+    <p><h3>目录</h3><ul><ul><li><a href="#_5">前言</a></li><li><a href="#_114">操作结构化数据</a></li><li><a href="#leiproto_214">lei-proto模块介绍</a></li><li><a href="#_267">扩展阅读</a></li></ul></ul></p>
+<h2><a id="_5"></a>前言</h2>
 <p>在大多数介绍Buffer的文章中，主要是围绕数据拼接和内存分配这两方面的。比如我们使用<code>fs</code>模块来读取文件内容的时候，返回的就是一个Buffer：</p>
 <pre><code class="prettyprint javascript">fs.readFile('filename', function (err, buf) {
   // &lt;Buffer 2f 2a 2a 0a 20 2a 20 53 75 ... &gt;
@@ -207,7 +219,7 @@ buf.readUIntBE(0, 6);
 </code></pre>
 <p>在使用Node.js编写一些底层功能时，比如一个网络通信模块、某个数据库的客户端模块，或者需要从文件中操作大量结构化数据时，以上Buffer对象提供的API都是必不可少的。</p>
 <p>接下来将演示一个使用Buffer对象操作结构化数据的例子。</p>
-<h2><a id="_113"></a>操作结构化数据</h2>
+<h2><a id="_114"></a>操作结构化数据</h2>
 <p>假设有一个学生考试成绩数据库，每条记录结构如下：</p>
 <table>
 <thead>
@@ -318,7 +330,7 @@ console.log(ret);
   { number: 100005, lesson: 1001, score: 55 } ]
 */
 </code></pre>
-<h2><a id="leiproto_213"></a>lei-proto模块介绍</h2>
+<h2><a id="leiproto_214"></a>lei-proto模块介绍</h2>
 <p>上面的例子中，当每一条记录的结构有变化时，我们需要修改<code>readRecord()</code>和<code>writeRecord()</code>，重新计算每一个字段在Buffer中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了<code>lei-proto</code>模块，它允许你通过简单定义每条记录的结构即可生成对应的<code>readRecord()</code>和`writeRecord()函数。</p>
 <p>首先执行以下命令安装此模块：</p>
 <pre><code class="prettyprint bash">$ npm install lei-proto --save
@@ -357,7 +369,7 @@ function writeList (list) {
 </code></pre>
 <p>关于<code>lei-proto</code>模块的详细使用方法可访问该模块的主页浏览：<a href="https://github.com/leizongmin/node-lei-proto">https://github.com/leizongmin/node-lei-proto</a></p>
 <p>对此感兴趣的读者也可研究一下其实现原理。</p>
-<h2><a id="_266"></a>扩展阅读</h2>
+<h2><a id="_267"></a>扩展阅读</h2>
 <ul>
 <li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer那些事儿</a></li>
 <li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c">浅析nodejs的buffer类</a></li>
@@ -371,7 +383,7 @@ function writeList (list) {
   </article>
 
   <p id="license">
-  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由<a xmlns:cc="http://creativecommons.org/ns#" href="http://morning.work" property="cc:attributionName" rel="cc:attributionURL">老雷</a>创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由           <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>       创作，采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
   </p>
 </body>
 </html>

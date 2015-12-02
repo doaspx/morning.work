@@ -1,6 +1,10 @@
+```
 date:  2015-07-15 to 2015-07-16
 title: 在Node.js中读写大文件
 link:  https://github.com/leizongmin/node-lei-stream
+author: 老雷
+```
+
 
 前段时间偶然需要整理一个几百MB的文本文件，内容大概370W行，我要将每一行的数据简单格式化一下，并转存到一个新的文件中。
 

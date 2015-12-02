@@ -1,7 +1,9 @@
+```
 title: Babel的配置与插件开发
 date: 2015-12-01
+author: 老雷
 draft
-
+```
 
 
 

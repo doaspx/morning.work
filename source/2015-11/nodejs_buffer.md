@@ -1,5 +1,9 @@
+```
 date: 2015-11-16
 title: Node.js的Buffer那些你可能不知道的用法
+author: 老雷
+```
+
 
 @[toc](目录)
 
@@ -45,7 +49,7 @@ console.log(new Buffer('68656c6c6f2c20776f726c6421', 'hex').toString());
 一般情况下，单个Node.js进程是有最大内存限制的，以下是来自官方文档中的说明：
 
 > [What is the memory limit on a node process?](https://github.com/nodejs/node-v0.x-archive/wiki/FAQ#what-is-the-memory-limit-on-a-node-process)
-> 
+>
 > Currently, by default v8 has a memory limit of 512MB on 32-bit systems, and 1.4GB on 64-bit systems. The limit can be raised by setting --max_old_space_size to a maximum of ~1024 (~1 GB) (32-bit) and ~4096 (~4GB) (64-bit), but it is recommended that you split your single process into several workers if you are hitting memory limits.
 
 由于Buffer对象占用的内存空间是不计算在Node.js进程内存空间限制上的，因此，我们也常常会使用Buffer来存储需要占用大量内存的数据：
