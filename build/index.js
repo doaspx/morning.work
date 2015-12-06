@@ -6,7 +6,6 @@
 
 import path from 'path';
 import fs from 'fs';
-import async from 'async';
 import rd from 'rd';
 import mkdirp from 'mkdirp';
 import tinyliquid from 'tinyliquid';
@@ -132,7 +131,7 @@ export function renderPost(item, callback, tplItem) {
 
 /******************************************************************************/
 
-function startBuild() {
+async function startBuild() {
   let list = getPostList();
 
   console.log('================================================================================');
@@ -140,19 +139,29 @@ function startBuild() {
   console.log('================================================================================');
   console.log('total %s', list.length);
 
-  async.eachSeries(list, (item, next) => {
+  try {
 
-    renderPost(item, next, TPL_ITEM);
+    for (let item of list) {
+      await new Promise((resolve, reject) => {
+        renderPost(item, err => {
+          err ? reject(err)
+              : resolve();
+        }, TPL_ITEM);
+      });
+    }
 
-  }, err => {
-    if (err) throw err;
+    await new Promise((resolve, reject) => {
+      renderPostList(list, err => {
+        err ? reject(err)
+            : resolve();
+      }, TPL_LIST);
+    });
 
-    renderPostList(list, err => {
-      if (err) throw err;
+  } catch (err) {
+    throw err;
+  }
 
-      console.log('done');
-    }, TPL_LIST);
-  });
+  console.log('done');
 }
 
 if (!module.parent) {
