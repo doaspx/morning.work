@@ -4,32 +4,32 @@
  * @author Zongmin Lei <leizongmin@gmail.com>
  */
 
-var path = require('path');
-var fs = require('fs');
-var async = require('async');
-var rd = require('rd');
-var mkdirp = require('mkdirp');
-var tinyliquid = require('tinyliquid');
-var MarkdownIt = require('markdown-it');
-var md = new MarkdownIt({
+import path from 'path';
+import fs from 'fs';
+import async from 'async';
+import rd from 'rd';
+import mkdirp from 'mkdirp';
+import tinyliquid from 'tinyliquid';
+import MarkdownIt from 'markdown-it';
+import authors from './authors';
+
+let md = new MarkdownIt({
   linkify: true,
   html: true,
   langPrefix: 'prettyprint ',
   typography: true
 });
 md.use(require('markdown-it-toc'));
-var authors = require('./authors');
 
+let SOURCE_DIR = path.resolve(__dirname, '../source');
+let TARGET_DIR = path.resolve(__dirname, '../page');
+let TPL_LIST = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
+let TPL_ITEM = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
 
-var SOURCE_DIR = path.resolve(__dirname, '../source');
-var TARGET_DIR = path.resolve(__dirname, '../page');
-var TPL_LIST = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
-var TPL_ITEM = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
-
-function readFile (f) {
-  var data = fs.readFileSync(f).toString().replace(/\r/g, '');
-  var i = data.indexOf('\n\n');
-  var head, body;
+function readFile(f) {
+  let data = fs.readFileSync(f).toString().replace(/\r/g, '');
+  let i = data.indexOf('\n\n');
+  let head, body;
   if (i === -1) {
     head = data;
     body = '';
@@ -38,9 +38,9 @@ function readFile (f) {
     body = data.slice(i);
   }
 
-  var info = {};
-  head.split('\n').forEach(function (line) {
-    var i = line.indexOf(':');
+  let info = {};
+  head.split('\n').forEach(line => {
+    let i = line.indexOf(':');
     if (i === -1) {
       info[line.trim()] = true;
     } else {
@@ -49,14 +49,12 @@ function readFile (f) {
   });
   info.content = md.render(body);
   if (typeof info.date === 'string') {
-    info.date = info.date.split(/\s+/).filter(function (v) {
-      return /\d{2,4}\-\d{1,2}\-\d{1,2}/.test(v);
-    });
+    info.date = info.date.split(/\s+/).filter(v => /\d{2,4}\-\d{1,2}\-\d{1,2}/.test(v));
   }
-  var url = f.slice(SOURCE_DIR.length);
+  let url = f.slice(SOURCE_DIR.length);
   info.url = url.slice(0, -3) + '.html';
 
-  info.authors = (info.author || '').trim().split(/\s/).map(function (name) {
+  info.authors = (info.author || '').trim().split(/\s/).map(name => {
     if (authors[name]) {
       return authors[name][info.language] || authors[name].default;
     } else {
@@ -67,47 +65,47 @@ function readFile (f) {
   return info;
 }
 
-function writeFile (f, d) {
+function writeFile(f, d) {
   mkdirp.sync(path.dirname(f));
   fs.writeFileSync(f, d);
 }
 
-function firstItem (arr) {
+function firstItem(arr) {
   return arr[0];
 }
 
-function lastItem (arr) {
+function lastItem(arr) {
   return arr[arr.length - 1];
 }
 
 /******************************************************************************/
 
-function getPostList () {
-  return rd.readFileFilterSync(SOURCE_DIR, /\.md$/).map(function (f, s) {
+function getPostList() {
+  return rd.readFileFilterSync(SOURCE_DIR, /\.md$/).map((f, s) => {
     console.log('read file: %s', f);
     return readFile(f);
-  }).sort(function (a, b) {
-    var ad = new Date(lastItem(a.date)).getTime();
-    var bd = new Date(lastItem(b.date)).getTime();
+  }).sort((a, b) => {
+    let ad = new Date(lastItem(a.date)).getTime();
+    let bd = new Date(lastItem(b.date)).getTime();
     return bd - ad;
-  }).filter(function (a) {
+  }).filter(a => {
     return !a.draft && !a.hide;
   });
 }
 
-function renderPostList (list, callback, TPL_LIST) {
+export function renderPostList(list, callback, tplList) {
   list = list || getPostList();
-  var TPL_LIST = TPL_LIST || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
-  var context = tinyliquid.newContext({locals: {list: list}});
-  tinyliquid.run(TPL_LIST, context, function (err) {
+  tplList = tplList || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
+  let context = tinyliquid.newContext({locals: {list: list}});
+  tinyliquid.run(tplList, context, err => {
     if (err) return callback(err);
 
-    var html = context.getBuffer();
-    var f = path.resolve(TARGET_DIR, 'index.html');
+    let html = context.getBuffer();
+    let f = path.resolve(TARGET_DIR, 'index.html');
     console.log('write to file: %s', f);
     writeFile(f, html);
 
-    var f2 = path.resolve(__dirname, '../index.html');
+    let f2 = path.resolve(__dirname, '../index.html');
     console.log('write to file: %s', f2);
     writeFile(f2, html);
 
@@ -115,16 +113,16 @@ function renderPostList (list, callback, TPL_LIST) {
   });
 }
 
-function renderPost (item, callback, TPL_ITEM) {
+export function renderPost(item, callback, tplItem) {
   if (typeof item === 'string') {
     item = readFile(item);
   }
-  var TPL_ITEM = TPL_ITEM || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
-  var context = tinyliquid.newContext({locals: item});
-  tinyliquid.run(TPL_ITEM, context, function (err) {
+  tplItem = tplItem || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
+  let context = tinyliquid.newContext({locals: item});
+  tinyliquid.run(tplItem, context, err => {
     if (!err) {
       item.html = context.getBuffer();
-      var f = path.resolve(TARGET_DIR, item.url.slice(1));
+      let f = path.resolve(TARGET_DIR, item.url.slice(1));
       console.log('write to file: %s', f);
       writeFile(f, item.html);
     }
@@ -132,29 +130,24 @@ function renderPost (item, callback, TPL_ITEM) {
   });
 }
 
-exports.renderPostList = renderPostList;
-exports.renderPost = renderPost;
-
 /******************************************************************************/
 
-function startBuild () {
-  var list = getPostList();
+function startBuild() {
+  let list = getPostList();
 
   console.log('================================================================================');
-  list.forEach(function (item) {
-    console.log('%s to %s:\t%s', firstItem(item.date), lastItem(item.date), item.title);
-  });
+  list.forEach(item => console.log('%s to %s:\t%s', firstItem(item.date), lastItem(item.date), item.title));
   console.log('================================================================================');
   console.log('total %s', list.length);
 
-  async.eachSeries(list, function (item, next) {
+  async.eachSeries(list, (item, next) => {
 
     renderPost(item, next, TPL_ITEM);
 
-  }, function (err) {
+  }, err => {
     if (err) throw err;
 
-    renderPostList(list, function (err) {
+    renderPostList(list, err => {
       if (err) throw err;
 
       console.log('done');
