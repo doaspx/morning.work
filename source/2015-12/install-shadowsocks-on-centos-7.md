@@ -77,18 +77,18 @@ $ systemctl status shadowsocks -l
 如果服务启动成功，则控制台显示的信息可能类似这样：
 
 ```
-● shadowsocks.service - Shadowsocks23
+● shadowsocks.service - Shadowsocks
    Loaded: loaded (/etc/systemd/system/shadowsocks.service; enabled; vendor preset: disabled)
    Active: active (running) since Mon 2015-12-21 23:51:48 CST; 11min ago
  Main PID: 19334 (ssserver)
    CGroup: /system.slice/shadowsocks.service
            └─19334 /usr/bin/python /usr/bin/ssserver -c /etc/shadowsocks.json
 
-Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks23.
-Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks23...
+Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks.
+Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks...
 Dec 21 23:51:48 morning.work ssserver[19334]: INFO: loading config from /etc/shadowsocks.json
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loading libcrypto from libcrypto.so.10
-Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:23
+Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8338
 ```
 
 ## 扩展阅读
