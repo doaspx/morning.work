@@ -143,13 +143,13 @@ li > p {
 <h2><a id="_pip_4"></a>安装 pip</h2>
 <p><a href="https://pip.pypa.io/en/stable/installing/">pip</a> 是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks ，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。</p>
 <p>在控制台执行以下命令安装 pip ：</p>
-<pre><code class="prettyprint bash">$ yum update -y
-$ yum install python-pip -y
+<pre><code class="prettyprint bash">$ curl &quot;https://bootstrap.pypa.io/get-pip.py&quot; -o &quot;get-pip.py&quot;
+$ python get-pip.py
 </code></pre>
 <h2><a id="_shadowsocks_15"></a>安装配置 shadowsocks</h2>
 <p>在控制台执行以下命令安装 shadowsocks ：</p>
-<pre><code class="prettyprint bash">$ curl &quot;https://bootstrap.pypa.io/get-pip.py&quot; -o &quot;get-pip.py&quot;
-$ python get-pip.py
+<pre><code class="prettyprint bash">$ pip install --upgrade pip
+$ pip install shadowsocks
 </code></pre>
 <p>安装完成后，需要创建配置文件 <code>/etc/shadowsocks.json</code> ，内容如下：</p>
 <pre><code class="prettyprint json">{

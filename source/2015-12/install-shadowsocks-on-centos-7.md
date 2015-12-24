@@ -13,8 +13,8 @@ CentOS 7 开始默认使用[Systemd](https://en.wikipedia.org/wiki/Systemd)作�
 在控制台执行以下命令安装pip：
 
 ```bash
-$ yum update -y
-$ yum install python-pip -y
+$ curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+$ python get-pip.py
 ```
 
 ## 安装配置shadowsocks
@@ -22,8 +22,8 @@ $ yum install python-pip -y
 在控制台执行以下命令安装shadowsocks：
 
 ```bash
-$ curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
-$ python get-pip.py
+$ pip install --upgrade pip
+$ pip install shadowsocks
 ```
 
 安装完成后，需要创建配置文件`/etc/shadowsocks.json`，内容如下：
