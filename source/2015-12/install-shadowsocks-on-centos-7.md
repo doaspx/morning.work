@@ -22,8 +22,8 @@ $ yum install python-pip -y
 在控制台执行以下命令安装shadowsocks：
 
 ```bash
-$ pip install --upgrade pip
-$ pip install shadowsocks
+$ curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+$ python get-pip.py
 ```
 
 安装完成后，需要创建配置文件`/etc/shadowsocks.json`，内容如下：
@@ -91,9 +91,112 @@ Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loadi
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8338
 ```
 
+## 一键安装脚本
+
+新建文件`install-shadowsocks.sh`，内容如下：
+
+```bash
+#!/bin/bash
+# Install Shadowsocks on CentOS 7
+
+echo "Installing Shadowsocks..."
+
+random-string()
+{
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1
+}
+
+CONFIG_FILE=/etc/shadowsocks.json
+SERVICE_FILE=/etc/systemd/system/shadowsocks.service
+SS_PASSWORD=$(random-string 32)
+SS_PORT=8338
+SS_METHOD=aes-256-cfb
+SS_IP=`ip route get 1 | awk '{print $NF;exit}'`
+GET_PIP_FILE=/tmp/get-pip.py
+
+# install pip
+curl "https://bootstrap.pypa.io/get-pip.py" -o "${GET_PIP_FILE}"
+python ${GET_PIP_FILE}
+
+# install shadowsocks
+pip install --upgrade pip
+pip install shadowsocks
+
+# create shadowsocls config
+cat <<EOF | sudo tee ${CONFIG_FILE}
+{
+  "server": "0.0.0.0",
+  "server_port": ${SS_PORT},
+  "password": "${SS_PASSWORD}",
+  "method": "${SS_METHOD}"
+}
+EOF
+
+# create service
+cat <<EOF | sudo tee ${SERVICE_FILE}
+[Unit]
+Description=Shadowsocks
+
+[Service]
+TimeoutStartSec=0
+ExecStart=/usr/bin/ssserver -c ${CONFIG_FILE}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# start service
+systemctl enable shadowsocks
+systemctl start shadowsocks
+
+# view service status
+sleep 5
+systemctl status shadowsocks -l
+
+echo "================================"
+echo ""
+echo "Congratulations! Shadowsocks has been installed on your system."
+echo "You shadowsocks connection info:"
+echo "--------------------------------"
+echo "server:      ${SS_IP}"
+echo "server_port: ${SS_PORT}"
+echo "password:    ${SS_PASSWORD}"
+echo "method:      ${SS_METHOD}"
+echo "--------------------------------"
+```
+
+执行以下命令一键安装：
+
+```bash
+$ chmod +x install-shadowsocks.sh
+$ ./install-shadowsocks.sh
+```
+
+也可以直接执行以下命令从GitHub下载安装脚本并执行：
+
+```bash
+$ bash <(curl -s https://raw.githubusercontent.com/leizongmin/morning.work/gh-pages/examples/2015-12/install-shadowsocks.sh)
+```
+
+安装完成后会自动打印出Shadowsocks的连接配置信息。比如：
+
+```
+Congratulations! Shadowsocks has been installed on your system.
+You shadowsocks connection info:
+--------------------------------
+server = 10.0.2.15
+server_port = 8338
+password = RaskAAcW0IQrVcA7n0QLCEphhng7K4Yc
+method = aes-256-cfb
+--------------------------------
+```
+
 ## 扩展阅读
 
 + [systemd详解](https://blog.linuxeye.com/400.html)
 + [Install pip](https://pip.pypa.io/en/stable/installing/)
++ [How to Install Pip on CentOS 7](http://www.liquidweb.com/kb/how-to-install-pip-on-centos-7/)
 + [How To Create a systemd Service in Linux (CentOS 7)](https://scottlinux.com/2014/12/08/how-to-create-a-systemd-service-in-linux-centos-7/)
 + [Getting Started with systemd](https://coreos.com/docs/launching-containers/launching/getting-started-with-systemd/)
++ [How to I get the primary IP address of the local machine on Linux and OS X?](http://stackoverflow.com/questions/13322485/how-to-i-get-the-primary-ip-address-of-the-local-machine-on-linux-and-os-x)
++ [Execute bash script from URL](http://stackoverflow.com/questions/5735666/execute-bash-script-from-url)
