@@ -10,6 +10,7 @@ import rd from 'rd';
 import mkdirp from 'mkdirp';
 import tinyliquid from 'tinyliquid';
 import MarkdownIt from 'markdown-it';
+import RSS from 'rss';
 import authors from './authors';
 
 let md = new MarkdownIt({
@@ -24,6 +25,19 @@ let SOURCE_DIR = path.resolve(__dirname, '../source');
 let TARGET_DIR = path.resolve(__dirname, '../page');
 let TPL_LIST = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
 let TPL_ITEM = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
+
+let baseTplContext = tinyliquid.newContext();
+baseTplContext.onInclude(function (filename, callback) {
+  fs.readFile(path.resolve(__dirname, filename), {encoding: 'utf8'}, (err, data) => {
+    var ast = null;
+    try {
+      ast = tinyliquid.parse(data.toString());
+    } catch (err) {
+      return callback(err);
+    }
+    callback(err, ast);
+  });
+});
 
 function readFile(f) {
   let data = fs.readFileSync(f).toString().replace(/\r/g, '');
@@ -51,6 +65,7 @@ function readFile(f) {
   if (typeof info.date === 'string') {
     info.date = info.date.split(/\s+/).filter(v => /\d{2,4}\-\d{1,2}\-\d{1,2}/.test(v));
   }
+  info.lastDate = info.date[info.date.length - 1];
   let url = f.slice(SOURCE_DIR.length);
   info.url = url.slice(0, -3) + '.html';
 
@@ -101,6 +116,7 @@ export function renderPostList(list, callback, tplList) {
   list = list || getPostList();
   tplList = tplList || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_list.html')).toString());
   let context = tinyliquid.newContext({locals: {list: list}});
+  context.from(baseTplContext);
   tinyliquid.run(tplList, context, err => {
     if (err) return callback(err);
 
@@ -123,6 +139,7 @@ export function renderPost(item, callback, tplItem) {
   }
   tplItem = tplItem || tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_item.html')).toString());
   let context = tinyliquid.newContext({locals: item});
+  context.from(baseTplContext);
   tinyliquid.run(tplItem, context, err => {
     if (!err) {
       item.html = context.getBuffer();
@@ -132,6 +149,35 @@ export function renderPost(item, callback, tplItem) {
     }
     callback(err);
   });
+}
+
+export function renderFeed(list, callback) {
+  list = list || getPostList();
+
+  var feed = new RSS({
+    title: '早起搬砖 morning.work',
+    feed_url: 'http://morning.work/rss.xml',
+    site_url: 'http://morning.work',
+    language: 'zh-CN,en',
+    ttl: '60',
+  });
+
+  for (let item of list) {
+    feed.item({
+      title: item.title,
+      description: item.content,
+      url: 'http://morning.work/page' + item.url,
+      author: item.author,
+      date: item.lastDate,
+    });
+  }
+
+  var xml = feed.xml();
+  let f = path.resolve(__dirname, '../rss.xml');
+  console.log('write to file: %s', f);
+  writeFile(f, xml);
+
+  callback(null);
 }
 
 /******************************************************************************/
@@ -160,6 +206,13 @@ async function startBuild() {
         err ? reject(err)
             : resolve();
       }, TPL_LIST);
+    });
+
+    await new Promise((resolve, reject) => {
+      renderFeed(list, err => {
+        err ? reject(err)
+            : resolve();
+      });
     });
 
   } catch (err) {
