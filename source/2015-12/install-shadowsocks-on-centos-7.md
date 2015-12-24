@@ -184,10 +184,10 @@ $ bash <(curl -s https://raw.githubusercontent.com/leizongmin/morning.work/gh-pa
 Congratulations! Shadowsocks has been installed on your system.
 You shadowsocks connection info:
 --------------------------------
-server = 10.0.2.15
-server_port = 8338
-password = RaskAAcW0IQrVcA7n0QLCEphhng7K4Yc
-method = aes-256-cfb
+server:      10.0.2.15
+server_port: 8338
+password:    RaskAAcW0IQrVcA7n0QLCEphhng7K4Yc
+method:      aes-256-cfb
 --------------------------------
 ```
 
