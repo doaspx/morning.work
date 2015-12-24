@@ -27,6 +27,7 @@ let TPL_ITEM = tinyliquid.parse(fs.readFileSync(path.resolve(__dirname, 'tpl_ite
 
 function readFile(f) {
   let data = fs.readFileSync(f).toString().replace(/\r/g, '');
+  data = formatContent(data);
   let i = data.indexOf('\n\n');
   let head, body;
   if (i === -1) {
@@ -75,6 +76,10 @@ function firstItem(arr) {
 
 function lastItem(arr) {
   return arr[arr.length - 1];
+}
+
+function formatContent(text) {
+  return text.replace(/([^\x00-\xff]+)/g, ' $1 ');
 }
 
 /******************************************************************************/

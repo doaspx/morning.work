@@ -2,9 +2,10 @@
 <html>
 <head>
 <meta charset="utf-8">
+<base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>在CentOS 7下安装配置shadowsocks - 早起搬砖 morning.work</title>
+<title>在 CentOS 7 下安装配置 shadowsocks - 早起搬砖 morning.work</title>
 <style>
 @media (min-width: 900px) {
   html {
@@ -125,29 +126,29 @@ li > p {
 <body>
 
   <nav id="nav">
-    <a href="http://morning.work">早起搬砖 morning.work</a>
+    <a href="http://morning.work" target="_self">早起搬砖 morning.work</a>
   </nav>
 
 
-  <h1 id="title">在CentOS 7下安装配置shadowsocks</h1>
+  <h1 id="title">在 CentOS 7 下安装配置 shadowsocks</h1>
   <div id="date">
               <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
     创作于 2015-12-22    </div>
 
   <article id="content">
-    <p>CentOS 7 开始默认使用<a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a>作为开启启动脚本的管理工具，<a href="https://github.com/shadowsocks/">Shadowsocks</a>则是当前比较受欢迎的科学上网工具，本文将介绍如何在CentOS下安装和配置Shadowsocks服务。</p>
-<h2><a id="pip_4"></a>安装pip</h2>
-<p><a href="https://pip.pypa.io/en/stable/installing/">pip</a>是python的包管理工具。在本文中将使用python版本的shadowsocks，此版本的shadowsocks已发布到pip上，因此我们需要通过pip命令来安装。</p>
-<p>在控制台执行以下命令安装pip：</p>
+    <p>CentOS 7  开始默认使用 <a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a> 作为开启启动脚本的管理工具， <a href="https://github.com/shadowsocks/">Shadowsocks</a> 则是当前比较受欢迎的科学上网工具，本文将介绍如何在 CentOS 下安装和配置 Shadowsocks 服务。</p>
+<h2><a id="_pip_4"></a>安装 pip</h2>
+<p><a href="https://pip.pypa.io/en/stable/installing/">pip</a> 是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks ，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。</p>
+<p>在控制台执行以下命令安装 pip ：</p>
 <pre><code class="prettyprint bash">$ yum update -y
 $ yum install python-pip -y
 </code></pre>
-<h2><a id="shadowsocks_15"></a>安装配置shadowsocks</h2>
-<p>在控制台执行以下命令安装shadowsocks：</p>
+<h2><a id="_shadowsocks_15"></a>安装配置 shadowsocks</h2>
+<p>在控制台执行以下命令安装 shadowsocks ：</p>
 <pre><code class="prettyprint bash">$ curl &quot;https://bootstrap.pypa.io/get-pip.py&quot; -o &quot;get-pip.py&quot;
 $ python get-pip.py
 </code></pre>
-<p>安装完成后，需要创建配置文件<code>/etc/shadowsocks.json</code>，内容如下：</p>
+<p>安装完成后，需要创建配置文件 <code>/etc/shadowsocks.json</code> ，内容如下：</p>
 <pre><code class="prettyprint json">{
   &quot;server&quot;: &quot;0.0.0.0&quot;,
   &quot;server_port&quot;: 8338,
@@ -157,13 +158,13 @@ $ python get-pip.py
 </code></pre>
 <p>说明：</p>
 <ul>
-<li><code>method</code>为加密方法，可选<code>aes-128-cfb, aes-192-cfb, aes-256-cfb, bf-cfb, cast5-cfb, des-cfb, rc4-md5, chacha20, salsa20, rc4, table</code></li>
-<li><code>server_port</code>为服务监听端口</li>
-<li><code>password</code>为密码，可使用<a href="http://ucdok.com/project/generate_password.html">密码生成工具</a>生成一个随机密码</li>
+<li><code>method</code> 为加密方法，可选 <code>aes-128-cfb, aes-192-cfb, aes-256-cfb, bf-cfb, cast5-cfb, des-cfb, rc4-md5, chacha20, salsa20, rc4, table</code></li>
+<li><code>server_port</code> 为服务监听端口</li>
+<li><code>password</code> 为密码，可使用 <a href="http://ucdok.com/project/generate_password.html"> 密码生成工具 </a> 生成一个随机密码</li>
 </ul>
-<p>以上三项信息在配置shadowsocks客户端时需要配置一致，具体说明可查看shadowsocks的帮助文档。</p>
+<p>以上三项信息在配置 shadowsocks 客户端时需要配置一致，具体说明可查看 shadowsocks 的帮助文档。</p>
 <h2><a id="_43"></a>配置自启动</h2>
-<p>新建启动脚本文件<code>/etc/systemd/system/shadowsocks.service</code>，内容如下：</p>
+<p>新建启动脚本文件 <code>/etc/systemd/system/shadowsocks.service</code> ，内容如下：</p>
 <pre><code>[Unit]
 Description=Shadowsocks
 
@@ -174,20 +175,20 @@ ExecStart=/usr/bin/ssserver -c /etc/shadowsocks.json
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-<p>执行以下命令启动shadowsocks服务：</p>
+<p>执行以下命令启动 shadowsocks 服务：</p>
 <pre><code class="prettyprint bash">$ systemctl enable shadowsocks
 $ systemctl start shadowsocks
 </code></pre>
-<p>为了检查shadowsocks服务是否已成功启动，可以执行以下命令查看服务的状态：</p>
+<p>为了检查 shadowsocks 服务是否已成功启动，可以执行以下命令查看服务的状态：</p>
 <pre><code class="prettyprint bash">$ systemctl status shadowsocks -l
 </code></pre>
 <p>如果服务启动成功，则控制台显示的信息可能类似这样：</p>
-<pre><code>● shadowsocks.service - Shadowsocks
+<pre><code> ●  shadowsocks.service - Shadowsocks
    Loaded: loaded (/etc/systemd/system/shadowsocks.service; enabled; vendor preset: disabled)
    Active: active (running) since Mon 2015-12-21 23:51:48 CST; 11min ago
  Main PID: 19334 (ssserver)
    CGroup: /system.slice/shadowsocks.service
-           └─19334 /usr/bin/python /usr/bin/ssserver -c /etc/shadowsocks.json
+            └─ 19334 /usr/bin/python /usr/bin/ssserver -c /etc/shadowsocks.json
 
 Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks.
 Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks...
@@ -196,7 +197,7 @@ Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loadi
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8338
 </code></pre>
 <h2><a id="_89"></a>一键安装脚本</h2>
-<p>新建文件<code>install-shadowsocks.sh</code>，内容如下：</p>
+<p>新建文件 <code>install-shadowsocks.sh</code> ，内容如下：</p>
 <pre><code class="prettyprint bash">#!/bin/bash
 # Install Shadowsocks on CentOS 7
 
@@ -269,10 +270,10 @@ echo &quot;--------------------------------&quot;
 <pre><code class="prettyprint bash">$ chmod +x install-shadowsocks.sh
 $ ./install-shadowsocks.sh
 </code></pre>
-<p>也可以直接执行以下命令从GitHub下载安装脚本并执行：</p>
+<p>也可以直接执行以下命令从 GitHub 下载安装脚本并执行：</p>
 <pre><code class="prettyprint bash">$ bash &lt;(curl -s https://raw.githubusercontent.com/leizongmin/morning.work/gh-pages/examples/2015-12/install-shadowsocks.sh)
 </code></pre>
-<p>安装完成后会自动打印出Shadowsocks的连接配置信息。比如：</p>
+<p>安装完成后会自动打印出 Shadowsocks 的连接配置信息。比如：</p>
 <pre><code>Congratulations! Shadowsocks has been installed on your system.
 You shadowsocks connection info:
 --------------------------------
@@ -284,7 +285,7 @@ method = aes-256-cfb
 </code></pre>
 <h2><a id="_189"></a>扩展阅读</h2>
 <ul>
-<li><a href="https://blog.linuxeye.com/400.html">systemd详解</a></li>
+<li><a href="https://blog.linuxeye.com/400.html">systemd 详解 </a></li>
 <li><a href="https://pip.pypa.io/en/stable/installing/">Install pip</a></li>
 <li><a href="http://www.liquidweb.com/kb/how-to-install-pip-on-centos-7/">How to Install Pip on CentOS 7</a></li>
 <li><a href="https://scottlinux.com/2014/12/08/how-to-create-a-systemd-service-in-linux-centos-7/">How To Create a systemd Service in Linux (CentOS 7)</a></li>
@@ -319,7 +320,7 @@ prettyPrint();
 
 
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2015-12/install-shadowsocks-on-centos-7.html" data-title="在CentOS 7下安装配置shadowsocks - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html"></div>
+<div class="ds-thread" data-thread-key="/2015-12/install-shadowsocks-on-centos-7.html" data-title="在 CentOS 7 下安装配置 shadowsocks - 早起搬砖 morning.work" data-url="http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
