@@ -100,7 +100,11 @@ function formatContent(text) {
 /******************************************************************************/
 
 function getPostList() {
-  return rd.readFileFilterSync(SOURCE_DIR, /\.md$/).map((f, s) => {
+  return rd
+  .readFileFilterSync(SOURCE_DIR, /\.md$/)
+  .filter(f => f.indexOf('node_modules') === -1)
+  .filter(f => !/README.md$/img.test(f))
+  .map((f, s) => {
     console.log('read file: %s', f);
     return readFile(f);
   }).sort((a, b) => {
