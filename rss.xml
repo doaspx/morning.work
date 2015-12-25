@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Thu, 24 Dec 2015 10:32:56 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[在 CentOS 7 下安装配置 shadowsocks]]></title><description><![CDATA[<p>CentOS 7  开始默认使用 <a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a> 作为开启启动脚本的管理工具， <a href="https://github.com/shadowsocks/">Shadowsocks</a> 则是当前比较受欢迎的科学上网工具，本文将介绍如何在 CentOS 下安装和配置 Shadowsocks 服务。</p>
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Fri, 25 Dec 2015 09:49:19 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[在 CentOS 7 下安装配置 shadowsocks]]></title><description><![CDATA[<p>CentOS 7  开始默认使用 <a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a> 作为开启启动脚本的管理工具， <a href="https://github.com/shadowsocks/">Shadowsocks</a> 则是当前比较受欢迎的科学上网工具，本文将介绍如何在 CentOS 下安装和配置 Shadowsocks 服务。</p>
 <h2><a id="_pip_4"></a>安装 pip</h2>
 <p><a href="https://pip.pypa.io/en/stable/installing/">pip</a> 是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks ，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。</p>
 <p>在控制台执行以下命令安装 pip ：</p>
@@ -13,7 +13,7 @@ $ pip install shadowsocks
 <p>安装完成后，需要创建配置文件 <code>/etc/shadowsocks.json</code> ，内容如下：</p>
 <pre><code class="prettyprint json">{
   &quot;server&quot;: &quot;0.0.0.0&quot;,
-  &quot;server_port&quot;: 8338,
+  &quot;server_port&quot;: 8388,
   &quot;password&quot;: &quot;uzon57jd0v869t7w&quot;,
   &quot;method&quot;: &quot;aes-256-cfb&quot;
 }
@@ -56,7 +56,7 @@ Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks.
 Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks...
 Dec 21 23:51:48 morning.work ssserver[19334]: INFO: loading config from /etc/shadowsocks.json
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loading libcrypto from libcrypto.so.10
-Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8338
+Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8388
 </code></pre>
 <h2><a id="_89"></a>一键安装脚本</h2>
 <p>新建文件 <code>install-shadowsocks.sh</code> ，内容如下：</p>
@@ -73,7 +73,7 @@ random-string()
 CONFIG_FILE=/etc/shadowsocks.json
 SERVICE_FILE=/etc/systemd/system/shadowsocks.service
 SS_PASSWORD=$(random-string 32)
-SS_PORT=8338
+SS_PORT=8388
 SS_METHOD=aes-256-cfb
 SS_IP=`ip route get 1 | awk '{print $NF;exit}'`
 GET_PIP_FILE=/tmp/get-pip.py
@@ -133,14 +133,14 @@ echo &quot;--------------------------------&quot;
 $ ./install-shadowsocks.sh
 </code></pre>
 <p>也可以直接执行以下命令从 GitHub 下载安装脚本并执行：</p>
-<pre><code class="prettyprint bash">$ bash &lt;(curl -s https://raw.githubusercontent.com/leizongmin/morning.work/gh-pages/examples/2015-12/install-shadowsocks.sh)
+<pre><code class="prettyprint bash">$ bash &lt;(curl -s http://morning.work/examples/2015-12/install-shadowsocks.sh)
 </code></pre>
 <p>安装完成后会自动打印出 Shadowsocks 的连接配置信息。比如：</p>
 <pre><code>Congratulations! Shadowsocks has been installed on your system.
 You shadowsocks connection info:
 --------------------------------
 server:      10.0.2.15
-server_port: 8338
+server_port: 8388
 password:    RaskAAcW0IQrVcA7n0QLCEphhng7K4Yc
 method:      aes-256-cfb
 --------------------------------
