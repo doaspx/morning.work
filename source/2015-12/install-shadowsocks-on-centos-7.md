@@ -31,7 +31,7 @@ $ pip install shadowsocks
 ```json
 {
   "server": "0.0.0.0",
-  "server_port": 8338,
+  "server_port": 8388,
   "password": "uzon57jd0v869t7w",
   "method": "aes-256-cfb"
 }
@@ -88,7 +88,7 @@ Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks.
 Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks...
 Dec 21 23:51:48 morning.work ssserver[19334]: INFO: loading config from /etc/shadowsocks.json
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loading libcrypto from libcrypto.so.10
-Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8338
+Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8388
 ```
 
 ## 一键安装脚本
@@ -109,7 +109,7 @@ random-string()
 CONFIG_FILE=/etc/shadowsocks.json
 SERVICE_FILE=/etc/systemd/system/shadowsocks.service
 SS_PASSWORD=$(random-string 32)
-SS_PORT=8338
+SS_PORT=8388
 SS_METHOD=aes-256-cfb
 SS_IP=`ip route get 1 | awk '{print $NF;exit}'`
 GET_PIP_FILE=/tmp/get-pip.py
@@ -175,7 +175,7 @@ $ ./install-shadowsocks.sh
 也可以直接执行以下命令从GitHub下载安装脚本并执行：
 
 ```bash
-$ bash <(curl -s https://raw.githubusercontent.com/leizongmin/morning.work/gh-pages/examples/2015-12/install-shadowsocks.sh)
+$ bash <(curl -s http://morning.work/examples/2015-12/install-shadowsocks.sh)
 ```
 
 安装完成后会自动打印出Shadowsocks的连接配置信息。比如：
@@ -185,7 +185,7 @@ Congratulations! Shadowsocks has been installed on your system.
 You shadowsocks connection info:
 --------------------------------
 server:      10.0.2.15
-server_port: 8338
+server_port: 8388
 password:    RaskAAcW0IQrVcA7n0QLCEphhng7K4Yc
 method:      aes-256-cfb
 --------------------------------
