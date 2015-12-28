@@ -45,7 +45,7 @@ blockquote {
   border-left: 4px solid #ddd;
 }
 code {
-  padding: 0 2px;
+  padding: 0 0.4em;
   font-size: 0.875em;
   word-break: break-word;
   color: #008;
@@ -139,13 +139,13 @@ li > p {
     创作于 2014-08-28    </div>
 
   <article id="content">
-    <p><h3>目录 </h3><ul><ul><li><a href="#_9">配置文件</a></li><li><a href="#_67">本地开发测试</a></li><li><a href="#_78">部署应用</a></li><li><a href="#_121">扩展阅读</a></li></ul></ul></p>
-<p><img src="../../images/2014-08/girl.jpg" alt=" 我的梦想是成为一名画家 "></p>
+    <p><h3>目录</h3><ul><ul><li><a href="#_9">配置文件</a></li><li><a href="#_67">本地开发测试</a></li><li><a href="#_78">部署应用</a></li><li><a href="#_121">扩展阅读</a></li></ul></ul></p>
+<p><img src="../../images/2014-08/girl.jpg" alt="我的梦想是成为一名画家"></p>
 <p>最近在部署 Node.js 程序时，写了段简单的脚本，发觉还挺简单的，忍不住想与大家分享。</p>
 <h2><a id="_9"></a>配置文件</h2>
 <p>首先，本地测试环境和生产环境的数据库连接这些配置信息是不一样的，需要将其分开为两个文件存储
-到 <code>config</code> 目录下，比如：</p>
-<p>开发环境配置文件 <code>config/development.js</code> ：</p>
+到<code>config</code>目录下，比如：</p>
+<p>开发环境配置文件<code>config/development.js</code>：</p>
 <pre><code class="prettyprint javascript">module.exports = {
   port:  3001,
   mysql: {
@@ -153,7 +153,7 @@ li > p {
   }
 };
 </code></pre>
-<p>生产环境配置文件 <code>config/production.js</code>:</p>
+<p>生产环境配置文件<code>config/production.js</code>:</p>
 <pre><code class="prettyprint javascript">module.exports = {
   port: 80,
   mysql: {
@@ -162,14 +162,14 @@ li > p {
   }
 };
 </code></pre>
-<p>另外还要建立一个程序自动载入相应环境的配置，文件 <code>config/index.js</code> ：</p>
+<p>另外还要建立一个程序自动载入相应环境的配置，文件<code>config/index.js</code>：</p>
 <pre><code class="prettyprint javascript">var path = require('path');
 
-//  通过 NODE_ENV 来设置环境变量，如果没有指定则默认为生产环境 
+// 通过 NODE_ENV 来设置环境变量，如果没有指定则默认为生产环境
 var env = process.env.NODE_ENV || 'production';
 env = env.toLowerCase();
 
-//  载入配置文件 
+// 载入配置文件
 var file = path.resolve(__dirname, env);
 try {
   var config = module.exports = require(file);
@@ -179,21 +179,21 @@ try {
   throw err;
 }
 </code></pre>
-<p>假设应用的入口文件是 <code>app.js</code> ，可通过以下方法载入配置：</p>
+<p>假设应用的入口文件是<code>app.js</code>，可通过以下方法载入配置：</p>
 <pre><code class="prettyprint javascript">var config = require('./config');
 
 console.log('listen on port %s', config.port);
-//  如果是开发环境，将输出  listen on port 3001
-//  如果是生产环境，将输出  listen on port 80
+// 如果是开发环境，将输出 listen on port 3001
+// 如果是生产环境，将输出 listen on port 80
 </code></pre>
 <h2><a id="_67"></a>本地开发测试</h2>
-<p>为了方便，我新建一个脚本文件 <code>run</code> ，代码如下：</p>
+<p>为了方便，我新建一个脚本文件<code>run</code>，代码如下：</p>
 <pre><code class="prettyprint bash">export NODE_ENV=development
 node app
 </code></pre>
-<p>要启动程序，直接在命令行下执行 <code>./run</code> 即可。</p>
+<p>要启动程序，直接在命令行下执行<code>./run</code>即可。</p>
 <h2><a id="_78"></a>部署应用</h2>
-<p>新建部署脚本文件 <code>deploy</code> ，代码如下：</p>
+<p>新建部署脚本文件<code>deploy</code>，代码如下：</p>
 <pre><code class="prettyprint bash">git reset --hard
 git pull origin HEAD
 npm install
@@ -206,24 +206,24 @@ pm2 start app.js -n myapp
 需要先将代码 clone 到服务器端，比如：</p>
 <pre><code class="prettyprint bash">git clone git@github.com:leizongmin/node-uc-server.git ~/myapp
 </code></pre>
-<p>应用在服务器端运行时使用 <code>pm2</code> 工具来管理进程，所以还需要先在服务器上安装此工具：</p>
+<p>应用在服务器端运行时使用<code>pm2</code>工具来管理进程，所以还需要先在服务器上安装此工具：</p>
 <pre><code class="prettyprint bash">npm install pm2 -g
 </code></pre>
-<p>完成以上准备工作后，我们就可以通过 <code>deploy</code> 脚本来实现自动更新代码：</p>
+<p>完成以上准备工作后，我们就可以通过<code>deploy</code>脚本来实现自动更新代码：</p>
 <ul>
 <li>将本地修改提交到远程 git 仓库</li>
-<li>登录服务器，进入 <code>~/myapp</code> 目录</li>
-<li>执行 <code>./deploy</code></li>
+<li>登录服务器，进入<code>~/myapp</code>目录</li>
+<li>执行<code>./deploy</code></li>
 </ul>
 <hr>
-<p>以上程序执行的环境为 Linux ，如果开发环境是 Windows ，需要将 <code>run</code> 文件改为以下代码：</p>
+<p>以上程序执行的环境为 Linux，如果开发环境是 Windows，需要将<code>run</code>文件改为以下代码：</p>
 <pre><code class="prettyprint bash">set NODE_ENV=development
 node app
 </code></pre>
 <h2><a id="_121"></a>扩展阅读</h2>
 <ul>
-<li><a href="http://www.oschina.net/translate/goodbye-node-forever-hello-pm2"> 告别 node-forever, 拥抱 PM2</a></li>
-<li><a href="http://blog.segmentfault.com/pengedy/1190000000514886">Git 入门指引 </a></li>
+<li><a href="http://www.oschina.net/translate/goodbye-node-forever-hello-pm2">告别 node-forever,拥抱 PM2</a></li>
+<li><a href="http://blog.segmentfault.com/pengedy/1190000000514886">Git 入门指引</a></li>
 </ul>
 
   </article>
@@ -269,16 +269,4 @@ var duoshuoQuery = {
 })();
 </script>
 <!-- 多说公共JS代码 end -->
-<!-- 百度自动推送URL start -->
-<script>
-(function(){
-  if (window.location.hostname === 'morning.work') {
-    var bp = document.createElement('script');
-    bp.src = '//push.zhanzhang.baidu.com/push.js';
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-  }
-})();
-</script>
-<!-- 百度自动推送URL end -->
 

@@ -45,7 +45,7 @@ blockquote {
   border-left: 4px solid #ddd;
 }
 code {
-  padding: 0 2px;
+  padding: 0 0.4em;
   font-size: 0.875em;
   word-break: break-word;
   color: #008;
@@ -139,35 +139,35 @@ li > p {
     创作于 2015-11-16    </div>
 
   <article id="content">
-    <p><h3>目录 </h3><ul><ul><li><a href="#_5">前言</a></li><li><a href="#_114">操作结构化数据</a></li><li><a href="#leiproto__214">lei-proto 模块介绍</a></li><li><a href="#_267">扩展阅读</a></li></ul></ul></p>
+    <p><h3>目录</h3><ul><ul><li><a href="#_5">前言</a></li><li><a href="#_114">操作结构化数据</a></li><li><a href="#leiproto__214">lei-proto 模块介绍</a></li><li><a href="#_267">扩展阅读</a></li></ul></ul></p>
 <h2><a id="_5"></a>前言</h2>
-<p>在大多数介绍 Buffer 的文章中，主要是围绕数据拼接和内存分配这两方面的。比如我们使用 <code>fs</code> 模块来读取文件内容的时候，返回的就是一个 Buffer ：</p>
+<p>在大多数介绍 Buffer 的文章中，主要是围绕数据拼接和内存分配这两方面的。比如我们使用<code>fs</code>模块来读取文件内容的时候，返回的就是一个 Buffer：</p>
 <pre><code class="prettyprint javascript">fs.readFile('filename', function (err, buf) {
   // &lt;Buffer 2f 2a 2a 0a 20 2a 20 53 75 ... &gt;
 });
 </code></pre>
-<p>在使用 <code>net</code> 或 <code>http</code> 模块来接收网络数据时， <code>data</code> 事件的参数也是一个 Buffer ，这时我们还需要使用 <code>Buffer.concat()</code> 来做数据拼接：</p>
+<p>在使用<code>net</code>或<code>http</code>模块来接收网络数据时，<code>data</code>事件的参数也是一个 Buffer，这时我们还需要使用<code>Buffer.concat()</code>来做数据拼接：</p>
 <pre><code class="prettyprint javascript">var bufs = [];
 conn.on('data', function (buf) {
   bufs.push(buf);
 });
 conn.on('end', function () {
-  //  接收数据结束后，拼接所有收到的 Buffer 对象 
+  // 接收数据结束后，拼接所有收到的 Buffer 对象
   var buf = Buffer.concat(bufs);
 });
 </code></pre>
-<p>还可以利用 <code>Buffer.toString()</code> 来做转换 <code>base64</code> 或十六进制字符的转换，比如：</p>
+<p>还可以利用<code>Buffer.toString()</code>来做转换<code>base64</code>或十六进制字符的转换，比如：</p>
 <pre><code class="prettyprint javascript">console.log(new Buffer('hello, world!').toString('base64'));
-//  转换成 base64 字符串： aGVsbG8sIHdvcmxkIQ==
+// 转换成 base64 字符串：aGVsbG8sIHdvcmxkIQ==
 
 console.log(new Buffer('aGVsbG8sIHdvcmxkIQ==', 'base64').toString());
-//  还原 base64 字符串： hello, world!
+// 还原 base64 字符串：hello, world!
 
 console.log(new Buffer('hello, world!').toString('hex'));
-//  转换成十六进制字符串： 68656c6c6f2c20776f726c6421
+// 转换成十六进制字符串：68656c6c6f2c20776f726c6421
 
 console.log(new Buffer('68656c6c6f2c20776f726c6421', 'hex').toString());
-//  还原十六进制字符串： hello, world!
+// 还原十六进制字符串：hello, world!
 </code></pre>
 <p>一般情况下，单个 Node.js 进程是有最大内存限制的，以下是来自官方文档中的说明：</p>
 <blockquote>
@@ -175,11 +175,11 @@ console.log(new Buffer('68656c6c6f2c20776f726c6421', 'hex').toString());
 <p>Currently, by default v8 has a memory limit of 512MB on 32-bit systems, and 1.4GB on 64-bit systems. The limit can be raised by setting --max_old_space_size to a maximum of ~1024 (~1 GB) (32-bit) and ~4096 (~4GB) (64-bit), but it is recommended that you split your single process into several workers if you are hitting memory limits.</p>
 </blockquote>
 <p>由于 Buffer 对象占用的内存空间是不计算在 Node.js 进程内存空间限制上的，因此，我们也常常会使用 Buffer 来存储需要占用大量内存的数据：</p>
-<pre><code class="prettyprint javascript">//  分配一个 2G-1 字节的数据 
-//  单次分配内存超过此值会抛出异常  RangeError: Invalid typed array length
+<pre><code class="prettyprint javascript">// 分配一个 2G-1 字节的数据
+// 单次分配内存超过此值会抛出异常 RangeError: Invalid typed array length
 var buf = new Buffer(1024 * 1024 * 1024 - 1);
 </code></pre>
-<p>以上便是 Buffer 的几种常见用法。然而，阅读 Buffer 的 API 文档时，我们会发现更多的是 <code>readXXX()</code> 和 <code>writeXXX()</code> 开头的 API ，具体如下：</p>
+<p>以上便是 Buffer 的几种常见用法。然而，阅读 Buffer 的 API 文档时，我们会发现更多的是<code>readXXX()</code>和<code>writeXXX()</code>开头的 API，具体如下：</p>
 <ul>
 <li>buf.readUIntLE(offset, byteLength[, noAssert])</li>
 <li>buf.readUIntBE(offset, byteLength[, noAssert])</li>
@@ -219,7 +219,7 @@ var buf = new Buffer(1024 * 1024 * 1024 - 1);
 <li>buf.writeDoubleLE(value, offset[, noAssert])</li>
 <li>buf.writeDoubleBE(value, offset[, noAssert])</li>
 </ul>
-<p>这些 API 为在 Node.js 中操作数据提供了极大的便利。假设我们要将一个整形数值存储到文件中，比如当前时间戳为 <code>1447656645380</code> ，如果将其当作一个字符串存储时，需要占用 11 字节的空间，而将其转换为二进制存储时仅需 6 字节空间即可：</p>
+<p>这些 API 为在 Node.js 中操作数据提供了极大的便利。假设我们要将一个整形数值存储到文件中，比如当前时间戳为<code>1447656645380</code>，如果将其当作一个字符串存储时，需要占用 11 字节的空间，而将其转换为二进制存储时仅需 6 字节空间即可：</p>
 <pre><code class="prettyprint javascript">var buf = new Buffer(6);
 
 buf.writeUIntBE(1447656645380, 0, 6);
@@ -271,10 +271,10 @@ buf.readUIntBE(0, 6);
 </tr>
 </tbody>
 </table>
-<p>每一条记录仅需要 6 字节的空间即可，仅仅是使用文本存储的 40% ！下面是用来操作这些记录的程序：</p>
-<pre><code class="prettyprint javascript">//  读取一条记录 
-// buf    Buffer 对象 
-// offset  本条记录在 Buffer 对象的开始位置 
+<p>每一条记录仅需要 6 字节的空间即可，仅仅是使用文本存储的 40%！下面是用来操作这些记录的程序：</p>
+<pre><code class="prettyprint javascript">// 读取一条记录
+// buf    Buffer 对象
+// offset 本条记录在 Buffer 对象的开始位置
 // data   {number, lesson, score}
 function writeRecord (buf, offset, data) {
   buf.writeUIntBE(data.number, offset, 3);
@@ -282,9 +282,9 @@ function writeRecord (buf, offset, data) {
   buf.writeInt8(data.score, offset + 5);
 }
 
-//  写入一条记录 
-// buf    Buffer 对象 
-// offset  本条记录在 Buffer 对象的开始位置 
+// 写入一条记录
+// buf    Buffer 对象
+// offset 本条记录在 Buffer 对象的开始位置
 function readRecord (buf, offset) {
   return {
     number: buf.readUIntBE(offset, 3),
@@ -293,8 +293,8 @@ function readRecord (buf, offset) {
   };
 }
 
-//  写入记录列表 
-// list   记录列表，每一条包含  {number, lesson, score}
+// 写入记录列表
+// list  记录列表，每一条包含 {number, lesson, score}
 function writeList (list) {
   var buf = new Buffer(list.length * 6);
   var offset = 0;
@@ -305,8 +305,8 @@ function writeList (list) {
   return buf;
 }
 
-//  读取记录列表 
-// buf  Buffer 对象 
+// 读取记录列表
+// buf  Buffer 对象
 function readList (buf) {
   var offset = 0;
   var list = [];
@@ -329,11 +329,11 @@ console.log(list);
 
 var buf = writeList(list);
 console.log(buf);
-//  输出  &lt;Buffer 01 86 a1 03 e9 63 01 86 a2 03 e9 58 01 86 a3 03 e9 4d 01 86 a4 03 e9 42 01 86 a5 03 e9 37&gt;
+// 输出 &lt;Buffer 01 86 a1 03 e9 63 01 86 a2 03 e9 58 01 86 a3 03 e9 4d 01 86 a4 03 e9 42 01 86 a5 03 e9 37&gt;
 
 var ret = readList(buf);
 console.log(ret);
-/*  输出 
+/* 输出
 [ { number: 100001, lesson: 1001, score: 99 },
   { number: 100002, lesson: 1001, score: 88 },
   { number: 100003, lesson: 1001, score: 77 },
@@ -342,14 +342,14 @@ console.log(ret);
 */
 </code></pre>
 <h2><a id="leiproto__214"></a>lei-proto 模块介绍</h2>
-<p>上面的例子中，当每一条记录的结构有变化时，我们需要修改 <code>readRecord()</code> 和 <code>writeRecord()</code> ，重新计算每一个字段在 Buffer 中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了 <code>lei-proto</code> 模块，它允许你通过简单定义每条记录的结构即可生成对应的 <code>readRecord()</code> 和 `writeRecord() 函数。</p>
+<p>上面的例子中，当每一条记录的结构有变化时，我们需要修改<code>readRecord()</code>和<code>writeRecord()</code>，重新计算每一个字段在 Buffer 中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了<code>lei-proto</code>模块，它允许你通过简单定义每条记录的结构即可生成对应的<code>readRecord()</code>和`writeRecord()函数。</p>
 <p>首先执行以下命令安装此模块：</p>
 <pre><code class="prettyprint bash">$ npm install lei-proto --save
 </code></pre>
-<p>使用 <code>lei-proto</code> 模块后，前文的例子可以改为这样：</p>
+<p>使用<code>lei-proto</code>模块后，前文的例子可以改为这样：</p>
 <pre><code class="prettyprint javascript">var parsePorto = require('lei-proto');
 
-//  生成指定记录结构的数据编码 / 解码器 
+// 生成指定记录结构的数据编码/解码器
 var record = parsePorto([
   ['number', 'uint', 3],
   ['lesson', 'uint', 2],
@@ -378,13 +378,13 @@ function writeList (list) {
   { number: 100004, lesson: 1001, score: 66 },
   { number: 100005, lesson: 1001, score: 55 } ]
 </code></pre>
-<p>关于 <code>lei-proto</code> 模块的详细使用方法可访问该模块的主页浏览： <a href="https://github.com/leizongmin/node-lei-proto">https://github.com/leizongmin/node-lei-proto</a></p>
+<p>关于<code>lei-proto</code>模块的详细使用方法可访问该模块的主页浏览：<a href="https://github.com/leizongmin/node-lei-proto">https://github.com/leizongmin/node-lei-proto</a></p>
 <p>对此感兴趣的读者也可研究一下其实现原理。</p>
 <h2><a id="_267"></a>扩展阅读</h2>
 <ul>
-<li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer 那些事儿 </a></li>
-<li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c"> 浅析 nodejs 的 buffer 类 </a></li>
-<li><a href="https://cnodejs.org/topic/4faf65852e8fb5bc65113403"> 小心 buffer 的拼接问题 </a></li>
+<li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer 那些事儿</a></li>
+<li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c">浅析 nodejs 的 buffer 类</a></li>
+<li><a href="https://cnodejs.org/topic/4faf65852e8fb5bc65113403">小心 buffer 的拼接问题</a></li>
 <li><a href="http://blog.fens.me/nodejs-buffer/">Node.js 缓冲模块 Buffer</a></li>
 <li><a href="http://www.tutorialspoint.com/nodejs/nodejs_buffers.htm">Node.js - Buffers</a></li>
 <li><a href="https://docs.nodejitsu.com/articles/advanced/buffers/how-to-use-buffers">How to Use Buffers in Node.js</a></li>
@@ -434,16 +434,4 @@ var duoshuoQuery = {
 })();
 </script>
 <!-- 多说公共JS代码 end -->
-<!-- 百度自动推送URL start -->
-<script>
-(function(){
-  if (window.location.hostname === 'morning.work') {
-    var bp = document.createElement('script');
-    bp.src = '//push.zhanzhang.baidu.com/push.js';
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-  }
-})();
-</script>
-<!-- 百度自动推送URL end -->
 

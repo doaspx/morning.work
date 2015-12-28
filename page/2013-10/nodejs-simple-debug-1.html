@@ -5,7 +5,7 @@
 <base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>《 Node.js  入门系列》——   一些简单的排错方法（一） - 早起搬砖 morning.work</title>
+<title>《Node.js 入门系列》—— 一些简单的排错方法（一） - 早起搬砖 morning.work</title>
 <style>
 @media (min-width: 900px) {
   html {
@@ -45,7 +45,7 @@ blockquote {
   border-left: 4px solid #ddd;
 }
 code {
-  padding: 0 2px;
+  padding: 0 0.4em;
   font-size: 0.875em;
   word-break: break-word;
   color: #008;
@@ -133,18 +133,18 @@ li > p {
   </nav>
 
 
-  <h1 id="title">《 Node.js  入门系列》——   一些简单的排错方法（一）</h1>
+  <h1 id="title">《Node.js 入门系列》—— 一些简单的排错方法（一）</h1>
   <div id="date">
               <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
     创作于 2013-10-09    </div>
 
   <article id="content">
-    <p><h3>目录 </h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_64">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined____TypeError_Cannot_read_property_xxx_of_null_112">TypeError: Cannot read property 'xxx' of undefined  或者  TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_135">检查变量是未赋值</a></li><li><a href="#_142">检查函数是否有返回值</a></li><li><a href="#_153">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_161">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
+    <p><h3>目录</h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_64">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112">TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_135">检查变量是未赋值</a></li><li><a href="#_142">检查函数是否有返回值</a></li><li><a href="#_153">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_161">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
 <p>俗话说“常在河边走，哪能不湿鞋”，只要动手写程序，总会时不时的冒出点问题来，
 很难一下子就写出完全正确运行的程序。哪怕只是拿别人的程序来运行，也不能保证其能
 适应各种各样的系统环境，不作任何修改就能使用。因此，学会一些简单的排错方法是很
 有必要的。</p>
-<p>在  Node.js  程序运行过程中，当出现没有被捕捉到的异常时，程序会打印出相应的出错
+<p>在 Node.js 程序运行过程中，当出现没有被捕捉到的异常时，程序会打印出相应的出错
 信息，并终止运行。比如以下出错信息：</p>
 <pre><code>f:\tmp\2013-10-7\t.js:3
 proceess.nextTick(function () {
@@ -159,46 +159,46 @@ ReferenceError: proceess is not defined
     at startup (node.js:119:16)
     at node.js:901:3
 </code></pre>
-<p>出错信息的第 1 行  <code>f:\tmp\2013-10-7\t.js:3</code>  指明了在文件  <code>f:\tmp\2013-10-7\t.js</code>
+<p>出错信息的第 1 行 <code>f:\tmp\2013-10-7\t.js:3</code> 指明了在文件 <code>f:\tmp\2013-10-7\t.js</code>
 的第 3 行出错了；</p>
-<p>出错信息的第 2 行是相应的源程序  <code>proceess.nextTick(function () {</code>  ；</p>
-<p>出错信息的第 3 行的  <code>^</code>  指明了在该行的具体位置  <code>proceess</code>  ；</p>
-<p>出错信息的第 4 行是具体的出错信息  <code>ReferenceError: proceess is not defined</code>  ，后面
-还有几行以  <code>at</code>  开头的内容是详细的调用堆栈信息，可以以此来追踪到整个程序的
+<p>出错信息的第 2 行是相应的源程序 <code>proceess.nextTick(function () {</code> ；</p>
+<p>出错信息的第 3 行的 <code>^</code> 指明了在该行的具体位置 <code>proceess</code> ；</p>
+<p>出错信息的第 4 行是具体的出错信息 <code>ReferenceError: proceess is not defined</code> ，后面
+还有几行以 <code>at</code> 开头的内容是详细的调用堆栈信息，可以以此来追踪到整个程序的
 执行流程。</p>
 <p>当遇到这样的出错信息时，我们首先应该看第 4 行的
-<code>ReferenceError: proceess is not defined</code>  ，前面的  <code>ReferenceError</code>  是错误对象，
-表示这是一个“非法引用”错误，其后便相应的提示信息，大概意思是“  <code>proceess</code>  未定义”
-（看不懂可以用软件翻译一下，比如  <a href="http://dict.youdao.com/"> 有道词典 </a> ），
-这时候我们再往上看原来的程序是怎么写的： <code>proceess.nextTick(function () {</code>  。
-从这个程序可以看出来，要调用的应该是  <code>process.nextTick()</code>  ，
-此处不小心把  <code>process</code>  写成了  <code>proceess</code>  ，程序自然就报错“  <code>proceess</code>  未定义”了。</p>
+<code>ReferenceError: proceess is not defined</code> ，前面的 <code>ReferenceError</code> 是错误对象，
+表示这是一个“非法引用”错误，其后便相应的提示信息，大概意思是“ <code>proceess</code> 未定义”
+（看不懂可以用软件翻译一下，比如 <a href="http://dict.youdao.com/">有道词典</a>），
+这时候我们再往上看原来的程序是怎么写的：<code>proceess.nextTick(function () {</code> 。
+从这个程序可以看出来，要调用的应该是 <code>process.nextTick()</code> ，
+此处不小心把 <code>process</code> 写成了 <code>proceess</code> ，程序自然就报错“ <code>proceess</code> 未定义”了。</p>
 <p>常见的错误对象有以下这些：</p>
 <ul>
 <li>
-<p><strong>EvalError</strong> :  错误发生在  <code>eval()</code>  函数中，一般是要使用  <code>eval()</code>  执行的代码有语法错误</p>
+<p><strong>EvalError</strong> : 错误发生在 <code>eval()</code> 函数中，一般是要使用 <code>eval()</code> 执行的代码有语法错误</p>
 </li>
 <li>
-<p><strong>RangeError</strong> :  数字的值超过 javascript 可表示的范围</p>
+<p><strong>RangeError</strong> : 数字的值超过 javascript 可表示的范围</p>
 </li>
 <li>
-<p><strong>ReferenceError</strong> :  使用了非法的引用，一般是引用了一个未定义的变量或者函数</p>
+<p><strong>ReferenceError</strong> : 使用了非法的引用，一般是引用了一个未定义的变量或者函数</p>
 </li>
 <li>
-<p><strong>SyntaxError</strong> :  在 eval() 函数调用中发生了语法错误</p>
+<p><strong>SyntaxError</strong> : 在 eval()函数调用中发生了语法错误</p>
 </li>
 <li>
-<p><strong>TypeError</strong> :  变量的类型不是预期所需的</p>
+<p><strong>TypeError</strong> : 变量的类型不是预期所需的</p>
 </li>
 <li>
-<p><strong>URIError</strong> :  在 encodeURI() 或者 decodeURI() 函数中发生的错误</p>
+<p><strong>URIError</strong> : 在 encodeURI()或者 decodeURI()函数中发生的错误</p>
 </li>
 </ul>
 <p>记住这些常见的错误对象有助于更快速地理解出错信息。</p>
 <h2><a id="TypeError_undefined_is_not_a_function_64"></a>TypeError: undefined is not a function</h2>
-<p>出现这种错误的原因是某个变量不是  <code>Function</code>  类型，却把它当函数来调用了。例如：</p>
-<p>帖子：  <a href="http://cnodejs.org/topic/516acc466d38277306395c93"> 《 node 连接 mysql 出错》 </a></p>
-<p>Node.js  代码：</p>
+<p>出现这种错误的原因是某个变量不是 <code>Function</code> 类型，却把它当函数来调用了。例如：</p>
+<p>帖子： <a href="http://cnodejs.org/topic/516acc466d38277306395c93">《node 连接 mysql 出错》</a></p>
+<p>Node.js 代码：</p>
 <pre><code>var Client = require('mysql').Client;
 var client = new Client();
 client.host = 'localhost';
@@ -230,14 +230,14 @@ TypeError: undefined is not a function
     at startup (node.js:119:16)
     at node.js:901:3
 </code></pre>
-<p>由出错信息可以看出，在执行  <code>new Client()</code>  时出错了，
-<code>TypeError: undefined is not a function</code>  ，也就是说，此时  <code>Client</code>  的值是
-<code>undefined</code>  。我们再往上看，可以看到  <code>var Client = require('mysql').Client</code>
-那么，应该是  <code>mysql</code>  这个模块并没有输出  <code>Client</code>  这个函数，我们可以执行
-<code>console.log(require('mysql'))</code>  来打印  <code>mysql</code>  模块的输出，也确定并没有  <code>Client</code>
-这一项，这时候就应该详细看一下  mysql  模块帮助文档以及其正确的使用方法了。</p>
-<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined____TypeError_Cannot_read_property_xxx_of_null_112"></a>TypeError: Cannot read property 'xxx' of undefined  或者  TypeError: Cannot read property 'xxx' of null</h2>
-<p>出现这种错误的原因是尝试读取一个值为  <code>undefined</code>  或  <code>null</code>  的变量的属性。比如如下代码：</p>
+<p>由出错信息可以看出，在执行 <code>new Client()</code> 时出错了，
+<code>TypeError: undefined is not a function</code> ，也就是说，此时 <code>Client</code> 的值是
+<code>undefined</code> 。我们再往上看，可以看到 <code>var Client = require('mysql').Client</code>
+那么，应该是 <code>mysql</code> 这个模块并没有输出 <code>Client</code> 这个函数，我们可以执行
+<code>console.log(require('mysql'))</code> 来打印 <code>mysql</code> 模块的输出，也确定并没有 <code>Client</code>
+这一项，这时候就应该详细看一下 mysql 模块帮助文档以及其正确的使用方法了。</p>
+<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112"></a>TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</h2>
+<p>出现这种错误的原因是尝试读取一个值为 <code>undefined</code> 或 <code>null</code> 的变量的属性。比如如下代码：</p>
 <pre><code>var a = undefined;
 console.log(a.b);
 </code></pre>
@@ -256,37 +256,37 @@ console.log(a.b);
 </code></pre>
 <p>当出现这种情况时，我们可以通过以下方法来排查：</p>
 <h3><a id="_135"></a>检查变量是未赋值</h3>
-<p>假如只通过  <code>var a</code>  来声明了变量，但未赋值，此时变量的值为  <code>undefined</code>  ，示例：</p>
-<pre><code>var a; //  没有赋值 
+<p>假如只通过 <code>var a</code> 来声明了变量，但未赋值，此时变量的值为 <code>undefined</code> ，示例：</p>
+<pre><code>var a; // 没有赋值
 console.log(a.b);
 </code></pre>
 <h3><a id="_142"></a>检查函数是否有返回值</h3>
-<p>当函数没有用  <code>return</code>  来返回一个值时，那么这个函数的返回值就是  <code>undefined</code>  ，
+<p>当函数没有用 <code>return</code> 来返回一个值时，那么这个函数的返回值就是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f () {
-  //  没有返回值 
+  // 没有返回值
 }
 var a = f();
 console.log(a.b);
 </code></pre>
 <h3><a id="_153"></a>检查变量是否引用了某个对象不存在的属性</h3>
-<p>当引用了某个对象一个不存在的属性时，其值就是  <code>undefined</code>  ，示例：</p>
+<p>当引用了某个对象一个不存在的属性时，其值就是 <code>undefined</code> ，示例：</p>
 <pre><code>var obj = {};
-var a = obj.c; //  引用了一个不存在的属性 
+var a = obj.c; // 引用了一个不存在的属性
 console.log(a.b);
 </code></pre>
 <h3><a id="_161"></a>检查调用函数时是否未该传递参数</h3>
-<p>当调用某个函数时没有按要求传递足够的参数，则在函数体内该参数的值是  <code>undefined</code>  ，
+<p>当调用某个函数时没有按要求传递足够的参数，则在函数体内该参数的值是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f (a) {
   console.log(a.b);
 }
-f(); //  本来该函数需要 1 个参数 
+f(); // 本来该函数需要 1 个参数
 </code></pre>
 <hr>
 <p>扩展阅读：</p>
 <ul>
-<li><a href="http://www.cnblogs.com/aqbyygyyga/archive/2011/10/29/2228824.html">javascript 异常处理 </a></li>
+<li><a href="http://www.cnblogs.com/aqbyygyyga/archive/2011/10/29/2228824.html">javascript 异常处理</a></li>
 </ul>
 
   </article>
@@ -315,7 +315,7 @@ prettyPrint();
 
 
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="/2013-10/nodejs-simple-debug-1.html" data-title="《 Node.js  入门系列》——   一些简单的排错方法（一） - 早起搬砖 morning.work" data-url="http://morning.work/page/2013-10/nodejs-simple-debug-1.html"></div>
+<div class="ds-thread" data-thread-key="/2013-10/nodejs-simple-debug-1.html" data-title="《Node.js 入门系列》—— 一些简单的排错方法（一） - 早起搬砖 morning.work" data-url="http://morning.work/page/2013-10/nodejs-simple-debug-1.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -332,16 +332,4 @@ var duoshuoQuery = {
 })();
 </script>
 <!-- 多说公共JS代码 end -->
-<!-- 百度自动推送URL start -->
-<script>
-(function(){
-  if (window.location.hostname === 'morning.work') {
-    var bp = document.createElement('script');
-    bp.src = '//push.zhanzhang.baidu.com/push.js';
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-  }
-})();
-</script>
-<!-- 百度自动推送URL end -->
 

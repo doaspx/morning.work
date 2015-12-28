@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Fri, 25 Dec 2015 09:49:19 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[在 CentOS 7 下安装配置 shadowsocks]]></title><description><![CDATA[<p>CentOS 7  开始默认使用 <a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a> 作为开启启动脚本的管理工具， <a href="https://github.com/shadowsocks/">Shadowsocks</a> 则是当前比较受欢迎的科学上网工具，本文将介绍如何在 CentOS 下安装和配置 Shadowsocks 服务。</p>
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Mon, 28 Dec 2015 13:41:29 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[在 CentOS 7 下安装配置 shadowsocks]]></title><description><![CDATA[<p>CentOS 7 开始默认使用<a href="https://en.wikipedia.org/wiki/Systemd">Systemd</a>作为开启启动脚本的管理工具，<a href="https://github.com/shadowsocks/">Shadowsocks</a>则是当前比较受欢迎的科学上网工具，本文将介绍如何在 CentOS 下安装和配置 Shadowsocks 服务。</p>
 <h2><a id="_pip_4"></a>安装 pip</h2>
-<p><a href="https://pip.pypa.io/en/stable/installing/">pip</a> 是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks ，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。</p>
-<p>在控制台执行以下命令安装 pip ：</p>
+<p><a href="https://pip.pypa.io/en/stable/installing/">pip</a>是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。</p>
+<p>在控制台执行以下命令安装 pip：</p>
 <pre><code class="prettyprint bash">$ curl &quot;https://bootstrap.pypa.io/get-pip.py&quot; -o &quot;get-pip.py&quot;
 $ python get-pip.py
 </code></pre>
 <h2><a id="_shadowsocks_15"></a>安装配置 shadowsocks</h2>
-<p>在控制台执行以下命令安装 shadowsocks ：</p>
+<p>在控制台执行以下命令安装 shadowsocks：</p>
 <pre><code class="prettyprint bash">$ pip install --upgrade pip
 $ pip install shadowsocks
 </code></pre>
-<p>安装完成后，需要创建配置文件 <code>/etc/shadowsocks.json</code> ，内容如下：</p>
+<p>安装完成后，需要创建配置文件<code>/etc/shadowsocks.json</code>，内容如下：</p>
 <pre><code class="prettyprint json">{
   &quot;server&quot;: &quot;0.0.0.0&quot;,
   &quot;server_port&quot;: 8388,
@@ -20,13 +20,13 @@ $ pip install shadowsocks
 </code></pre>
 <p>说明：</p>
 <ul>
-<li><code>method</code> 为加密方法，可选 <code>aes-128-cfb, aes-192-cfb, aes-256-cfb, bf-cfb, cast5-cfb, des-cfb, rc4-md5, chacha20, salsa20, rc4, table</code></li>
-<li><code>server_port</code> 为服务监听端口</li>
-<li><code>password</code> 为密码，可使用 <a href="http://ucdok.com/project/generate_password.html"> 密码生成工具 </a> 生成一个随机密码</li>
+<li><code>method</code>为加密方法，可选<code>aes-128-cfb, aes-192-cfb, aes-256-cfb, bf-cfb, cast5-cfb, des-cfb, rc4-md5, chacha20, salsa20, rc4, table</code></li>
+<li><code>server_port</code>为服务监听端口</li>
+<li><code>password</code>为密码，可使用<a href="http://ucdok.com/project/generate_password.html">密码生成工具</a>生成一个随机密码</li>
 </ul>
 <p>以上三项信息在配置 shadowsocks 客户端时需要配置一致，具体说明可查看 shadowsocks 的帮助文档。</p>
 <h2><a id="_43"></a>配置自启动</h2>
-<p>新建启动脚本文件 <code>/etc/systemd/system/shadowsocks.service</code> ，内容如下：</p>
+<p>新建启动脚本文件<code>/etc/systemd/system/shadowsocks.service</code>，内容如下：</p>
 <pre><code>[Unit]
 Description=Shadowsocks
 
@@ -45,12 +45,12 @@ $ systemctl start shadowsocks
 <pre><code class="prettyprint bash">$ systemctl status shadowsocks -l
 </code></pre>
 <p>如果服务启动成功，则控制台显示的信息可能类似这样：</p>
-<pre><code> ●  shadowsocks.service - Shadowsocks
+<pre><code>● shadowsocks.service - Shadowsocks
    Loaded: loaded (/etc/systemd/system/shadowsocks.service; enabled; vendor preset: disabled)
    Active: active (running) since Mon 2015-12-21 23:51:48 CST; 11min ago
  Main PID: 19334 (ssserver)
    CGroup: /system.slice/shadowsocks.service
-            └─ 19334 /usr/bin/python /usr/bin/ssserver -c /etc/shadowsocks.json
+           └─19334 /usr/bin/python /usr/bin/ssserver -c /etc/shadowsocks.json
 
 Dec 21 23:51:48 morning.work systemd[1]: Started Shadowsocks.
 Dec 21 23:51:48 morning.work systemd[1]: Starting Shadowsocks...
@@ -59,7 +59,7 @@ Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     loadi
 Dec 21 23:51:48 morning.work ssserver[19334]: 2015-12-21 23:51:48 INFO     starting server at 0.0.0.0:8388
 </code></pre>
 <h2><a id="_89"></a>一键安装脚本</h2>
-<p>新建文件 <code>install-shadowsocks.sh</code> ，内容如下：</p>
+<p>新建文件<code>install-shadowsocks.sh</code>，内容如下：</p>
 <pre><code class="prettyprint bash">#!/bin/bash
 # Install Shadowsocks on CentOS 7
 
@@ -147,7 +147,7 @@ method:      aes-256-cfb
 </code></pre>
 <h2><a id="_189"></a>扩展阅读</h2>
 <ul>
-<li><a href="https://blog.linuxeye.com/400.html">systemd 详解 </a></li>
+<li><a href="https://blog.linuxeye.com/400.html">systemd 详解</a></li>
 <li><a href="https://pip.pypa.io/en/stable/installing/">Install pip</a></li>
 <li><a href="http://www.liquidweb.com/kb/how-to-install-pip-on-centos-7/">How to Install Pip on CentOS 7</a></li>
 <li><a href="https://scottlinux.com/2014/12/08/how-to-create-a-systemd-service-in-linux-centos-7/">How To Create a systemd Service in Linux (CentOS 7)</a></li>
@@ -155,22 +155,22 @@ method:      aes-256-cfb
 <li><a href="http://stackoverflow.com/questions/13322485/how-to-i-get-the-primary-ip-address-of-the-local-machine-on-linux-and-os-x">How to I get the primary IP address of the local machine on Linux and OS X?</a></li>
 <li><a href="http://stackoverflow.com/questions/5735666/execute-bash-script-from-url">Execute bash script from URL</a></li>
 </ul>
-]]></description><link>http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html</link><guid isPermaLink="true">http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Tue, 22 Dec 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[ES2015 & babel  实战：开发 NPM 模块]]></title><description><![CDATA[<h2><a id="_3"></a>前言</h2>
-<p>近一年来， JavaScript 界关于 ES6 （ ECMAScript 6 ，本文简称 ES6 ）的讨论越来激烈，作为未来要统一全宇宙的语言（ **PHP 是世界上最好的语言，但 JavaScript 终将统一全宇宙 ** ）， JavaScript 的运行环境众多，对 ECMAScript 标准的支持程度不一，所以对于 ES6 我一直处于观望状态。</p>
-<p>前不久 ES6 标准正式发布，而 Node.js 也在最近刚刚发布了 5.1.0 版本，对 ES6 标准的支持也越来越完善， babel （一个将 ES6/ES7 写的代码转换为 ES5 代码的编译器）也发布了 6.0 版本，近期也涌现出了不少好文章（比如 <a href="http://lifemap.in/"> 小问 </a> 写的 <a href="http://gank.io/post/564151c1f1df1210001c9161"> 「给  JavaScript  初心者的  ES2015  实战」 </a> ），种种迹象表明 ES6 真的要火了，而我也终于按耐不住了……</p>
-<p>这几天正在写一个 <a href="https://github.com/leizongmin/node-lei-download"> 方便下载文件的模块 </a> （可以得到下载进度信息），正好可以使用 ES6 新语法特性来改写，作为我写下的第一个使用 ES6 语法的 NPM 模块。本文内容将分为以下几部分：</p>
+]]></description><link>http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html</link><guid isPermaLink="true">http://morning.work/page/2015-12/install-shadowsocks-on-centos-7.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Tue, 22 Dec 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[ES2015 & babel 实战：开发 NPM 模块]]></title><description><![CDATA[<h2><a id="_3"></a>前言</h2>
+<p>近一年来，JavaScript 界关于 ES6（ECMAScript 6，本文简称 ES6）的讨论越来激烈，作为未来要统一全宇宙的语言（<strong>PHP 是世界上最好的语言，但 JavaScript 终将统一全宇宙</strong>），JavaScript 的运行环境众多，对 ECMAScript 标准的支持程度不一，所以对于 ES6 我一直处于观望状态。</p>
+<p>前不久 ES6 标准正式发布，而 Node.js 也在最近刚刚发布了 5.1.0 版本，对 ES6 标准的支持也越来越完善，babel（一个将 ES6/ES7 写的代码转换为 ES5 代码的编译器）也发布了 6.0 版本，近期也涌现出了不少好文章（比如<a href="http://lifemap.in/">小问</a>写的<a href="http://gank.io/post/564151c1f1df1210001c9161">「给 JavaScript 初心者的 ES2015 实战」</a>），种种迹象表明 ES6 真的要火了，而我也终于按耐不住了……</p>
+<p>这几天正在写一个<a href="https://github.com/leizongmin/node-lei-download">方便下载文件的模块</a>（可以得到下载进度信息），正好可以使用 ES6 新语法特性来改写，作为我写下的第一个使用 ES6 语法的 NPM 模块。本文内容将分为以下几部分：</p>
 <ul>
 <li>配置 babel 编译环境</li>
 <li>编写模块</li>
 <li>单元测试</li>
 <li>发布模块</li>
 </ul>
-<p>本文的重点是介绍借助 babel 开发 Node.js 项目的基本方法，同时会简略介绍文中出现的 ES2015 新语法，具体介绍可阅读 <a href="http://www.ruanyifeng.com"> 阮一峰 </a> 所著的 <a href="http://es6.ruanyifeng.com/"> 「 ECMAScript 6  入门」 </a> 或 babel 官方文档中的 <a href="http://babeljs.io/docs/learn-es2015/"> 「 Learn ES2015 」 </a> 。</p>
-<p>babel 官方提供了一个 <a href="http://babeljs.io/repl"> 在线 REPL</a> ，可以实时输出转换后的 JavaScript 代码，并且看到其运行结果，对于初学者尤为有用。访问网址 <a href="http://babeljs.io/repl">http://babeljs.io/repl</a>  ，其界面如下：</p>
+<p>本文的重点是介绍借助 babel 开发 Node.js 项目的基本方法，同时会简略介绍文中出现的 ES2015 新语法，具体介绍可阅读<a href="http://www.ruanyifeng.com">阮一峰</a>所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>或 babel 官方文档中的<a href="http://babeljs.io/docs/learn-es2015/">「Learn ES2015」</a>。</p>
+<p>babel 官方提供了一个<a href="http://babeljs.io/repl">在线 REPL</a>，可以实时输出转换后的 JavaScript 代码，并且看到其运行结果，对于初学者尤为有用。访问网址 <a href="http://babeljs.io/repl">http://babeljs.io/repl</a> ，其界面如下：</p>
 <p><img src="../../images/2015-11/babel_online_repl.jpg" alt="babel online repl"></p>
-<p>说明：使用时勾选左边的 <code>Experimental</code> 可使用最新的语法特性。</p>
+<p>说明：使用时勾选左边的<code>Experimental</code>可使用最新的语法特性。</p>
 <h2><a id="_25"></a>软件环境</h2>
-<p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步 ** 准确无误 ** 地运行下去，以下列出在编写本文时所用到的软件和模块的版本：</p>
+<p>由于相关软件和模块正处于高速发展期，无法保证你阅读这篇文章的时候还能照着一步一步<strong>准确无误</strong>地运行下去，以下列出在编写本文时所用到的软件和模块的版本：</p>
 <ul>
 <li><strong>Node.js</strong> <code>v5.1.0</code></li>
 <li><strong>npm</strong> <code>3.3.12</code></li>
@@ -178,29 +178,29 @@ method:      aes-256-cfb
 <li><strong>mocha</strong> <code>2.3.4</code></li>
 </ul>
 <h2><a id="_babel__34"></a>配置 babel 编译环境</h2>
-<h3><a id="1__babel_36"></a>1 、安装 babel</h3>
+<h3><a id="1_babel_36"></a>1、安装 babel</h3>
 <blockquote>
 <p>Babel is a JavaScript compiler. Use next generation JavaScript, today</p>
 </blockquote>
-<p>目前最新版的 Node.js （ v5.1.0 ）还未完全支持 ES2015 的新语法特性，而且我们编写的模块可能要在 Node v0.12.x 或更低版本下运行，因此需要借助 babel 将 ES2015 标准的 JavaScript 程序转换成 ES5 标准的。</p>
-<p>执行以下命令安装 babel ：</p>
+<p>目前最新版的 Node.js（v5.1.0）还未完全支持 ES2015 的新语法特性，而且我们编写的模块可能要在 Node v0.12.x 或更低版本下运行，因此需要借助 babel 将 ES2015 标准的 JavaScript 程序转换成 ES5 标准的。</p>
+<p>执行以下命令安装 babel：</p>
 <pre><code class="prettyprint bash">$ npm i -g babel-cli
 </code></pre>
-<p>由于 babel 依赖的模块比较多，可能会花费比较长的时间甚至安装不成功，可以尝试使用 cnpmjs 的 NPM 镜像，比如（简单在安装命令末尾添加 <code>--registry=http://registry.npm.taobao.org</code> ）：</p>
+<p>由于 babel 依赖的模块比较多，可能会花费比较长的时间甚至安装不成功，可以尝试使用 cnpmjs 的 NPM 镜像，比如（简单在安装命令末尾添加<code>--registry=http://registry.npm.taobao.org</code>）：</p>
 <pre><code class="prettyprint bash">$ npm i -g babel-cli --registry=http://registry.npm.taobao.org
 </code></pre>
-<p><a href="http://cnpmjs.org/">cnpmjs</a> 镜像的详细介绍可访问其官网： <a href="http://cnpmjs.org/">http://cnpmjs.org/</a></p>
+<p><a href="http://cnpmjs.org/">cnpmjs</a>镜像的详细介绍可访问其官网：<a href="http://cnpmjs.org/">http://cnpmjs.org/</a></p>
 <p>安装完成后，系统将获得以下两个命令：</p>
 <ul>
-<li><code>babel</code>  编译器</li>
-<li><code>babel-node</code>  可以直接运行 ES2015 程序的 Node 命令</li>
+<li><code>babel</code> 编译器</li>
+<li><code>babel-node</code> 可以直接运行 ES2015 程序的 Node 命令</li>
 </ul>
-<p><code>babel-cli</code> 的详细用法可以参考其文档： <a href="https://babeljs.io/docs/usage/cli/">https://babeljs.io/docs/usage/cli/</a></p>
-<h3><a id="2__63"></a>2 、初始化项目</h3>
-<p>执行以下命令初始化项目（执行 <code>npm init</code> 时需要按提示输入相应信息，可直接按回车跳过）：</p>
+<p><code>babel-cli</code>的详细用法可以参考其文档：<a href="https://babeljs.io/docs/usage/cli/">https://babeljs.io/docs/usage/cli/</a></p>
+<h3><a id="2_63"></a>2、初始化项目</h3>
+<p>执行以下命令初始化项目（执行<code>npm init</code>时需要按提示输入相应信息，可直接按回车跳过）：</p>
 <pre><code class="prettyprint bash">$ mkdir es2015_demo &amp;&amp; cd es2015_demo &amp;&amp; git init &amp;&amp; npm init
 </code></pre>
-<p>现在我们新建一个文件 <code>test.js</code> 试试是否能正常运行：</p>
+<p>现在我们新建一个文件<code>test.js</code>试试是否能正常运行：</p>
 <pre><code class="prettyprint javascript">function sleep(ms = 0) {
   return new Promise((resolve, reject) =&gt; setTimeout(resolve, ms));
 }
@@ -214,7 +214,7 @@ async function test() {
 
 test().then(() =&gt; console.log('done'));
 </code></pre>
-<p>执行以下命令运行 <code>test.js</code> ：</p>
+<p>执行以下命令运行<code>test.js</code>：</p>
 <pre><code class="prettyprint bash">$ babel-node test.js
 </code></pre>
 <p>在我本机的环境下显示以下错误信息：</p>
@@ -233,17 +233,17 @@ SyntaxError: /private/tmp/es2015_demo/test.js: Unexpected token (5:6)
 
 ...
 </code></pre>
-<p>由提示信息可判断出，应该是不支持 <code>async function</code> 导致的，因为这是 ES7 标准中定义的新语法，需要配置相应的 babel 插件才能支持它。本文为了方面使用最新的 JavaScript 语法，暂时不考虑 babel 的编译性能，直接开启所有可能用到的插件，具体可以自行研究 babel 的官方文档。</p>
-<p>新建文件 <code>.babelrc</code> ：</p>
+<p>由提示信息可判断出，应该是不支持<code>async function</code>导致的，因为这是 ES7 标准中定义的新语法，需要配置相应的 babel 插件才能支持它。本文为了方面使用最新的 JavaScript 语法，暂时不考虑 babel 的编译性能，直接开启所有可能用到的插件，具体可以自行研究 babel 的官方文档。</p>
+<p>新建文件<code>.babelrc</code>：</p>
 <pre><code class="prettyprint json">{
   &quot;presets&quot;: [&quot;es2015&quot;, &quot;stage-0&quot;]
 }
 </code></pre>
-<p><code>.babelrc</code> 为 babel 的配置文件，保存在项目的根目录下，其中 <code>presets</code> 用于设置开启的语法特性集合，详细介绍可参考官方文档： <a href="https://babeljs.io/docs/usage/babelrc/">https://babeljs.io/docs/usage/babelrc/</a>  和  <a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
-<p>接下来我们还需要安装插件依赖的模块，执行以下命令安装并保存到 <code>package.json</code> 的 <code>devDependencies</code> 中：</p>
+<p><code>.babelrc</code>为 babel 的配置文件，保存在项目的根目录下，其中<code>presets</code>用于设置开启的语法特性集合，详细介绍可参考官方文档：<a href="https://babeljs.io/docs/usage/babelrc/">https://babeljs.io/docs/usage/babelrc/</a> 和 <a href="http://babeljs.io/docs/plugins/#presets">http://babeljs.io/docs/plugins/#presets</a></p>
+<p>接下来我们还需要安装插件依赖的模块，执行以下命令安装并保存到<code>package.json</code>的<code>devDependencies</code>中：</p>
 <pre><code class="prettyprint bash">$ npm i babel-preset-es2015 babel-preset-stage-0 --save-dev
 </code></pre>
-<p>现在再重新执行 <code>test.js</code> ，可看到控制台每隔 500ms 打印出一行，直到输出 <code>done</code> 时结束：</p>
+<p>现在再重新执行<code>test.js</code>，可看到控制台每隔 500ms 打印出一行，直到输出<code>done</code>时结束：</p>
 <pre><code class="prettyprint bash">$ babel-node test.js
 
 i=0
@@ -258,11 +258,11 @@ i=8
 i=9
 done
 </code></pre>
-<h3><a id="3__149"></a>3 、编译程序</h3>
+<h3><a id="3_149"></a>3、编译程序</h3>
 <p>在发布项目时，要求可以在不依赖 babel 编译器的环境下运行，因此我们需要将 ES2015 的程序编译成 ES5 的：</p>
 <pre><code class="prettyprint bash">$ babel test.js --out-file test.compiled.js
 </code></pre>
-<p>执行上面的命令后，生成了编译后的文件 <code>test.compiled.js</code> ，我们尝试执行它看看：</p>
+<p>执行上面的命令后，生成了编译后的文件<code>test.compiled.js</code>，我们尝试执行它看看：</p>
 <pre><code class="prettyprint bash">$ node test.compiled.js
 </code></pre>
 <p>在我的系统环境下提示以下出错信息：</p>
@@ -275,44 +275,44 @@ ReferenceError: regeneratorRuntime is not defined
 
 ...
 </code></pre>
-<p>经阅读官方文档可知，编译后的 JavaScript 程序有时候需要依赖一些运行时 <code>polyfill</code> ，通过安装 <code>babel-polyfill</code> 模块来获得：</p>
+<p>经阅读官方文档可知，编译后的 JavaScript 程序有时候需要依赖一些运行时<code>polyfill</code>，通过安装<code>babel-polyfill</code>模块来获得：</p>
 <pre><code class="prettyprint bash">$ npm i babel-polyfill --save
 </code></pre>
-<p>然后，我们需要修改编译后的文件 <code>test.compiled.js</code> ，在其首行加上以下代码来载入 <code>babel-polyfill</code> ：</p>
+<p>然后，我们需要修改编译后的文件<code>test.compiled.js</code>，在其首行加上以下代码来载入<code>babel-polyfill</code>：</p>
 <pre><code class="prettyprint javascript">require('babel-polyfill');
 </code></pre>
-<p>再次执行 <code>test.compiled.js</code> 便可看到与 <code>$ babel-node test.js</code> 一样的结果。</p>
-<p><code>polyfill</code> 的详细介绍可参考官方文档： <a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
+<p>再次执行<code>test.compiled.js</code>便可看到与<code>$ babel-node test.js</code>一样的结果。</p>
+<p><code>polyfill</code>的详细介绍可参考官方文档：<a href="http://babeljs.io/docs/usage/polyfill/">http://babeljs.io/docs/usage/polyfill/</a></p>
 <p>至此，我们已经配置了一个能使用 ES2015 语法的 Node.js 运行环境了。</p>
 <h2><a id="_195"></a>编写模块</h2>
-<h3><a id="1__197"></a>1 、功能描述</h3>
-<p>本文以 <a href="https://github.com/leizongmin/node-lei-download">lei-download</a> 模块为例，该模块是一个主要功能是根据一个 URL 来下载文件到本地，或者本地直接文件的复制，同时提供下载 / 复制进度信息。其使用方法如下：</p>
+<h3><a id="1_197"></a>1、功能描述</h3>
+<p>本文以<a href="https://github.com/leizongmin/node-lei-download">lei-download</a>模块为例，该模块是一个主要功能是根据一个 URL 来下载文件到本地，或者本地直接文件的复制，同时提供下载/复制进度信息。其使用方法如下：</p>
 <pre><code class="prettyprint javascript">let download = require('lei-download');
 
-let source = ' 一个 URL 或者本地文件名 ';
-let target = ' 要存储到的本地位置， null|false|undefined 表示自动生成一个临时文件 ';
-//  用于获取进度通知的函数，可以省略 
-let progress = (size, total) =&gt; console.log(` 进度： ${size}/${total}`);
+let source = '一个 URL 或者本地文件名';
+let target = '要存储到的本地位置，null|false|undefined 表示自动生成一个临时文件';
+// 用于获取进度通知的函数，可以省略
+let progress = (size, total) =&gt; console.log(`进度：${size}/${total}`);
 
 download(source, target, progress)
-  .then(filename =&gt; console.log(` 已保存到： ${filename}`))
-  .catch(err =&gt; console.log(` 出错： ${err}`));
+  .then(filename =&gt; console.log(`已保存到：${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 
-//  也可以使用 callback 模式 
+// 也可以使用 callback 模式
 download(source, target, progress, (err, filename) =&gt; {
-  if (err) console.log(` 出错： ${err}`);
-  else console.log(` 已保存到： ${filename}`);
+  if (err) console.log(`出错：${err}`);
+  else console.log(`已保存到：${filename}`);
 });
 </code></pre>
 <p>在编写模块时，我们首先要实现以下两个函数的功能：</p>
 <ul>
-<li><code>downloadFile(source, target, progress)</code>  从一个 URL 下载文件并保存到本地</li>
-<li><code>copyFile(source, target, progress)</code>  复制一个本地文件</li>
+<li><code>downloadFile(source, target, progress)</code> 从一个 URL 下载文件并保存到本地</li>
+<li><code>copyFile(source, target, progress)</code> 复制一个本地文件</li>
 </ul>
-<p>然后再编写一个 <code>download()</code> 函数来判断 <code>source</code> 参数，并选择使用 <code>downloadFile()</code> 或者 <code>copyFile()</code> 来完成请求。</p>
-<h3><a id="2__227"></a>2 、编写程序</h3>
-<p>在本项目中，所有的 ES2015 源程序均保存在 <code>src</code> 目录下，发布项目时会执行相应的命令将其编译并输出到 <code>lib</code> 目录，具体方法在 ** 「发布模块」 ** 小节中介绍。</p>
-<p>实现 <code>copyFile()</code> 函数，新建文件 <code>src/copy.js</code> ：</p>
+<p>然后再编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
+<h3><a id="2_227"></a>2、编写程序</h3>
+<p>在本项目中，所有的 ES2015 源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
+<p>实现<code>copyFile()</code>函数，新建文件<code>src/copy.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
 
 export default function copyFile(source, target, progress) {
@@ -342,23 +342,23 @@ export default function copyFile(source, target, progress) {
 </code></pre>
 <p>说明：</p>
 <ul>
-<li><code>import fs from 'fs'</code> 为 ES2015 模块系统加载模块的方式，可理解为 <code>var fs = require('fs')</code> ，具体在下文「模块系统」一节中介绍。</li>
-<li>通过 <code>fs.createReadStream(source)</code> 和 <code>fs.createWriteStream(target)</code> 来创建读取文件流和写入文件流，并监听读取文件流的 <code>data</code> 事件获得当前进度信息。</li>
-<li><code>export default function copyFile() {}</code> 将函数 <code>copyFile()</code> 作为模块输出，相当于 <code>module.exports = function copyFile() {}</code> ，具体在下文「模块系统」一节中介绍。</li>
-<li>函数执行后返回一个 <code>Promise</code> 对象，通过其 <code>.then()</code> 和 <code>.catch()</code> 来获取执行结果，关于 Promise 的详细介绍可阅读 <a href="http://www.ruanyifeng.com"> 阮一峰 </a> 所著的 <a href="http://es6.ruanyifeng.com/"> 「 ECMAScript 6  入门   」 </a> 中 <a href="http://es6.ruanyifeng.com/#docs/promise"> 「  Promise 对象」 </a> 一章。</li>
+<li><code>import fs from 'fs'</code>为 ES2015 模块系统加载模块的方式，可理解为<code>var fs = require('fs')</code>，具体在下文「模块系统」一节中介绍。</li>
+<li>通过<code>fs.createReadStream(source)</code>和<code>fs.createWriteStream(target)</code>来创建读取文件流和写入文件流，并监听读取文件流的<code>data</code>事件获得当前进度信息。</li>
+<li><code>export default function copyFile() {}</code>将函数<code>copyFile()</code>作为模块输出，相当于<code>module.exports = function copyFile() {}</code>，具体在下文「模块系统」一节中介绍。</li>
+<li>函数执行后返回一个<code>Promise</code>对象，通过其<code>.then()</code>和<code>.catch()</code>来获取执行结果，关于 Promise 的详细介绍可阅读<a href="http://www.ruanyifeng.com">阮一峰</a>所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门 」</a>中<a href="http://es6.ruanyifeng.com/#docs/promise">「 Promise 对象」</a>一章。</li>
 </ul>
 <p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
-<pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(` 进度 ${size}/${total}`))
-  .then(filename =&gt; console.log(` 已保存到 ${filename}`))
-  .catch(err =&gt; console.log(` 出错： ${err}`));
+<pre><code class="prettyprint javascript">copyFile(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
-<p>以上程序的作用是将当前 JavaScript 文件复制到 <code>/tmp/copy.js</code> ，使用 <code>babel-node</code> 执行该文件将得到以下结果：</p>
+<p>以上程序的作用是将当前 JavaScript 文件复制到<code>/tmp/copy.js</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
 <pre><code class="prettyprint bash">$ babel-node src/copy.js
 
- 进度 749/749
- 已保存到 /tmp/copy.js
+进度 749/749
+已保存到/tmp/copy.js
 </code></pre>
-<p>实现 <code>downloadFile()</code> 函数，新建文件 <code>src/download.js</code> ：</p>
+<p>实现<code>downloadFile()</code>函数，新建文件<code>src/download.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
 import request from 'request';
 
@@ -394,22 +394,22 @@ export default function downloadFile(url, target, progress) {
 </code></pre>
 <p>说明：</p>
 <ul>
-<li>程序使用 <code>request</code> 模块来下载 URL 的内容，使用时执行命令 <code>$ npm i request --save</code> 安装该模块。</li>
-<li>通过 <code>request</code> 模块的 <code>pipe()</code> 方法将收到的数据写入到 <code>fs.createWriteStream(target)</code> 创建的写入文件流中， <code>request</code> 模块的详细使用方法可参考其文档： <a href="https://www.npmjs.com/package/request">https://www.npmjs.com/package/request</a></li>
+<li>程序使用<code>request</code>模块来下载 URL 的内容，使用时执行命令<code>$ npm i request --save</code>安装该模块。</li>
+<li>通过<code>request</code>模块的<code>pipe()</code>方法将收到的数据写入到<code>fs.createWriteStream(target)</code>创建的写入文件流中，<code>request</code>模块的详细使用方法可参考其文档：<a href="https://www.npmjs.com/package/request">https://www.npmjs.com/package/request</a></li>
 </ul>
 <p>为了测试该代码能否正常工作，可在文件末尾增加以下测试程序（在编写单元测试时将删除）：</p>
 <pre><code class="prettyprint javascript">let url = 'http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg';
-downloadFile(url, '/tmp/avatar.jpg', (size, total) =&gt; console.log(` 进度 ${size}/${total}`))
-  .then(filename =&gt; console.log(` 已保存到 ${filename}`))
-  .catch(err =&gt; console.log(` 出错： ${err}`));
+downloadFile(url, '/tmp/avatar.jpg', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
-<p>以上程序的作用是将 URL 为 <code>http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg</code> 的文件复制到 <code>/tmp/avatar.jpg</code> ，使用 <code>babel-node</code> 执行该文件将得到以下结果：</p>
+<p>以上程序的作用是将 URL 为<code>http://dn-cnodestatic.qbox.me/public/images/cnodejs_light.svg</code>的文件复制到<code>/tmp/avatar.jpg</code>，使用<code>babel-node</code>执行该文件将得到以下结果：</p>
 <pre><code class="prettyprint bash">$ babel-node src/download.js
 
- 进度 5944/5944
- 已保存到 /tmp/avatar.jpg
+进度 5944/5944
+已保存到/tmp/avatar.jpg
 </code></pre>
-<p>实现 <code>download()</code> 函数，新建文件 <code>src/index.js</code> ：</p>
+<p>实现<code>download()</code>函数，新建文件<code>src/index.js</code>：</p>
 <pre><code class="prettyprint javascript">import os from 'os';
 import path from 'path';
 import mkdirp from 'mkdirp';
@@ -457,23 +457,23 @@ export function noop() { }
 </code></pre>
 <p>说明：</p>
 <ul>
-<li><code>import copyFile from './copy'</code> 用于载入模块，相当于 <code>var copyFile = require('./copy')</code> 。</li>
-<li><code>download(...args)</code> 函数中的 <code>...args</code> 相当于 <code>var args = Array.prototype.call(arguments);</code> 。</li>
-<li>程序使用 <code>mkdirp</code> 模块来创建目标文件的上级目录，使用时执行命令 <code>$ npm i mkdirp --save</code> 安装该模块。</li>
-<li><code>getTmpDir()</code> 函数用于取得当前系统的临时目录，通过 <code>os.tmpDir()</code> 获得。</li>
-<li><code>randomString(size)</code> 函数用于生成指定长度的随机字符串。</li>
-<li><code>randomFilename(tmpDir)</code> 用于生成临时文件名，默认存储在系统临时目录下，可通过 <code>tmpDir</code> 参数指定。</li>
-<li><code>isURL(url)</code> 函数用于判断参数是否为一个 URL 。</li>
+<li><code>import copyFile from './copy'</code>用于载入模块，相当于<code>var copyFile = require('./copy')</code>。</li>
+<li><code>download(...args)</code>函数中的<code>...args</code>相当于<code>var args = Array.prototype.call(arguments);</code>。</li>
+<li>程序使用<code>mkdirp</code>模块来创建目标文件的上级目录，使用时执行命令<code>$ npm i mkdirp --save</code>安装该模块。</li>
+<li><code>getTmpDir()</code>函数用于取得当前系统的临时目录，通过<code>os.tmpDir()</code>获得。</li>
+<li><code>randomString(size)</code>函数用于生成指定长度的随机字符串。</li>
+<li><code>randomFilename(tmpDir)</code>用于生成临时文件名，默认存储在系统临时目录下，可通过<code>tmpDir</code>参数指定。</li>
+<li><code>isURL(url)</code>函数用于判断参数是否为一个 URL。</li>
 </ul>
-<p>为了验证程序是否正确，我们可以将上文的 <code>src/copy.js</code> 和 <code>src/download.js</code> 中的测试程序放到 <code>src/index.js</code> 文件的末尾并执行（需要将旧的程序程序删除），比如：</p>
-<pre><code class="prettyprint javascript">download(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(` 进度 ${size}/${total}`))
-  .then(filename =&gt; console.log(` 已保存到 ${filename}`))
-  .catch(err =&gt; console.log(` 出错： ${err}`));
+<p>为了验证程序是否正确，我们可以将上文的<code>src/copy.js</code>和<code>src/download.js</code>中的测试程序放到<code>src/index.js</code>文件的末尾并执行（需要将旧的程序程序删除），比如：</p>
+<pre><code class="prettyprint javascript">download(__filename, '/tmp/copy.js', (size, total) =&gt; console.log(`进度${size}/${total}`))
+  .then(filename =&gt; console.log(`已保存到${filename}`))
+  .catch(err =&gt; console.log(`出错：${err}`));
 </code></pre>
 <p>正常情况下，其执行结果应该跟上文中的结果是一致的。</p>
-<h3><a id="3__415"></a>3 、模块系统</h3>
-<p>Node.js 使用的是 CommonJS 模块系统，模块的输出我们一般通过给 <code>exports</code> 对象设置属性来做：</p>
-<pre><code class="prettyprint javascript">//  输出变量或函数 
+<h3><a id="3_415"></a>3、模块系统</h3>
+<p>Node.js 使用的是 CommonJS 模块系统，模块的输出我们一般通过给<code>exports</code>对象设置属性来做：</p>
+<pre><code class="prettyprint javascript">// 输出变量或函数
 exports.x = 123;
 exports.y = function () {
   console.log('hello');
@@ -485,7 +485,7 @@ exports.y = function () {
 console.log(mod.x);
 mod.y();
 </code></pre>
-<p>也可以通过覆盖 <code>module.exports</code> 来输出一个函数或者其他数据类型：</p>
+<p>也可以通过覆盖<code>module.exports</code>来输出一个函数或者其他数据类型：</p>
 <pre><code class="prettyprint javascript">module.exports = function () {
   console.log('hello');
 };
@@ -495,35 +495,35 @@ mod.y();
 
 fn();
 </code></pre>
-<p>而在 ES2015 中，模块通过 <code>export</code> 语句来输出：</p>
-<pre><code class="prettyprint javascript">//  普通输出，相当于  exports.x = y;
+<p>而在 ES2015 中，模块通过<code>export</code>语句来输出：</p>
+<pre><code class="prettyprint javascript">// 普通输出，相当于 exports.x = y;
 export const a = 123;
 export var b = 456;
 export function c() { }
 export class d { }
 
-//  默认输出，相当于  module.exports = z;
+// 默认输出，相当于 module.exports = z;
 export default function y() { }
 </code></pre>
-<p>通过 <code>import</code> 语句来引入模块，不同的引入方式其含义是不一样的，比如：</p>
-<pre><code class="prettyprint javascript">//  操作  export var x = y  方式的输出 
+<p>通过<code>import</code>语句来引入模块，不同的引入方式其含义是不一样的，比如：</p>
+<pre><code class="prettyprint javascript">// 操作 export var x = y 方式的输出
 import {a, b, c, d} from './my_module';
-//  通过相应的变量名称  a, b, c, d  来操作 
+// 通过相应的变量名称 a, b, c, d 来操作
 
-//  或者将所有输出指向一个对象 
+// 或者将所有输出指向一个对象
 import * as mod from './my_module';
-//  通过  mod.a, mod.b, mod.c, mod.d  来操作 
+// 通过 mod.a, mod.b, mod.c, mod.d 来操作
 
-//  操作  export default x  方式的输出 
+// 操作 export default x 方式的输出
 import y from './my_module';
 </code></pre>
-<p>对于非 ES2015 程序输出的模块， <code>import * as mod</code> 和 <code>import mod</code> 其结果是一样的，比如：</p>
+<p>对于非 ES2015 程序输出的模块，<code>import * as mod</code>和<code>import mod</code>其结果是一样的，比如：</p>
 <pre><code>import * as fs1 from 'fs';
 import fs2 from 'fs';
 
-// fs1.readFile()  和  fs2.readFile()  是一样的 
+// fs1.readFile() 和 fs2.readFile() 是一样的
 </code></pre>
-<p>为了更容易理解 ES2015 的模块系统原理，我们可以通过阅读编译后的 JavaScript 程序来了解。访问 <a href="http://babeljs.io/repl/">babel 的在线 REPL</a> 或将程序保存到本地，并执行 <code>babel file.js</code> 来查看编译后的程序。</p>
+<p>为了更容易理解 ES2015 的模块系统原理，我们可以通过阅读编译后的 JavaScript 程序来了解。访问<a href="http://babeljs.io/repl/">babel 的在线 REPL</a>或将程序保存到本地，并执行<code>babel file.js</code>来查看编译后的程序。</p>
 <p>以下 ES2015 代码：</p>
 <pre><code class="prettyprint javascript">export const a = 123;
 export var b = 456;
@@ -562,8 +562,8 @@ exports.d = d;
 
 function y() {}
 </code></pre>
-<p>由上面的代码可以看出， <code>export var b = 456</code> 这样的输出方式，实际上相当于 <code>var b = exports.b = 456</code> ，即直接设置 <code>exports</code> 对象的属性来完成。而 <code>export default y</code> 则是设置 <code>exports</code> 对象的 <code>default</code> 属性。</p>
-<p>另外，还设置了 <code>exports.__esModule = true</code> 来标记这是一个 ES2015 输出的模块，在通过 <code>import</code> 来引入模块时会判断此属性来执行相应的规则，下文将详细介绍。</p>
+<p>由上面的代码可以看出，<code>export var b = 456</code>这样的输出方式，实际上相当于<code>var b = exports.b = 456</code>，即直接设置<code>exports</code>对象的属性来完成。而<code>export default y</code>则是设置<code>exports</code>对象的<code>default</code>属性。</p>
+<p>另外，还设置了<code>exports.__esModule = true</code>来标记这是一个 ES2015 输出的模块，在通过<code>import</code>来引入模块时会判断此属性来执行相应的规则，下文将详细介绍。</p>
 <p>再看看以下的 ES2015 代码：</p>
 <pre><code class="prettyprint javascript">import {a, b, c, d} from './my_module';
 import * as mod from './my_module';
@@ -607,13 +607,13 @@ _my_module.a;
 mod.a;
 _my_module2['default'];
 </code></pre>
-<p>首先， <code>a</code> 是通过 <code>import {a} from './my_module'</code> 来引入的，编译后的代码中访问 <code>a</code> 使用的是 <code>_my_module.a</code> ，而 <code>_my_module = require('./my_module')</code> ，所以其对应的是 <code>export var a = 123</code> 这样的输出。</p>
-<p><code>mod</code> 是通过 <code>import * as mod from './my_module'</code> 来引入的，其编译后的代码为 <code>_interopRequireWildcard(require('./my_module'))</code> 。在 <code>_interopRequireWildcard()</code> 函数中，如果载入的模块是由 ES2015 输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其 <code>default</code> 属性为自身。</p>
-<p><code>y</code> 是通过 <code>import y from './my_module'</code> 来引入的，对 <code>y</code> 的访问被编译成了 <code>_my_module2['default']</code> ，所以 <code>y</code> 实际上是 <code>export default</code> 的输出。而 <code>_my_module2 = _interopRequireDefault(require('./my_module'))</code> ，函数 <code>_interopRequireDefault()</code> 对载入的非 ES2015 模块做了处理，会返回一个 <code>default</code> 属性指向该模块的新对象。</p>
-<p>当然模块系统的还有更复杂的语法规则，详细说明可参考： <a href="http://www.ruanyifeng.com"> 阮一峰 </a> 所著的 <a href="http://es6.ruanyifeng.com/"> 「 ECMAScript 6  入门」 </a> 中 <a href="http://es6.ruanyifeng.com/#docs/module"> 「 Module 」 </a> 一章。</p>
-<h3><a id="4__596"></a>4 、封装模块</h3>
-<p>上文例子中的 <code>download()</code> 函数所在的文件 <code>src/index.js</code> 中用到 <code>randomFilename()</code> 和 <code>isURL()</code> 这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到 <code>src/utils.js</code> 中。</p>
-<p>新建文件 <code>src/utils.js</code> ：</p>
+<p>首先，<code>a</code>是通过<code>import {a} from './my_module'</code>来引入的，编译后的代码中访问<code>a</code>使用的是<code>_my_module.a</code>，而<code>_my_module = require('./my_module')</code>，所以其对应的是<code>export var a = 123</code>这样的输出。</p>
+<p><code>mod</code>是通过<code>import * as mod from './my_module'</code>来引入的，其编译后的代码为<code>_interopRequireWildcard(require('./my_module'))</code>。在<code>_interopRequireWildcard()</code>函数中，如果载入的模块是由 ES2015 输出的，那么不做任何处理，否则会生成一个输入模块的拷贝，并且设置其<code>default</code>属性为自身。</p>
+<p><code>y</code>是通过<code>import y from './my_module'</code>来引入的，对<code>y</code>的访问被编译成了<code>_my_module2['default']</code>，所以<code>y</code>实际上是<code>export default</code>的输出。而<code>_my_module2 = _interopRequireDefault(require('./my_module'))</code>，函数<code>_interopRequireDefault()</code>对载入的非 ES2015 模块做了处理，会返回一个<code>default</code>属性指向该模块的新对象。</p>
+<p>当然模块系统的还有更复杂的语法规则，详细说明可参考：<a href="http://www.ruanyifeng.com">阮一峰</a>所著的<a href="http://es6.ruanyifeng.com/">「ECMAScript 6 入门」</a>中<a href="http://es6.ruanyifeng.com/#docs/module">「Module」</a>一章。</p>
+<h3><a id="4_596"></a>4、封装模块</h3>
+<p>上文例子中的<code>download()</code>函数所在的文件<code>src/index.js</code>中用到<code>randomFilename()</code>和<code>isURL()</code>这两个函数，为了使得代码结构更清晰，我们尝试把这些工具函数转移到<code>src/utils.js</code>中。</p>
+<p>新建文件<code>src/utils.js</code>：</p>
 <pre><code class="prettyprint javascript">import path from 'path';
 import os from 'os';
 
@@ -641,13 +641,13 @@ export function isURL (url) {
 
 export function noop() { }
 </code></pre>
-<p>说明： <code>getTmpDir()</code> 和 <code>randomString()</code> 仅在函数 <code>randomFilename()</code> 函数中用到，所以不需要使用 <code>export</code> 输出。</p>
-<p>修改文件 <code>src/index.js</code> ，将相应的代码删掉，并在文件首部 <code>import</code> 语句后面增加以下代码：</p>
+<p>说明：<code>getTmpDir()</code>和<code>randomString()</code>仅在函数<code>randomFilename()</code>函数中用到，所以不需要使用<code>export</code>输出。</p>
+<p>修改文件<code>src/index.js</code>，将相应的代码删掉，并在文件首部<code>import</code>语句后面增加以下代码：</p>
 <pre><code class="prettyprint javascript">import {randomFilename, isURL, noop} from './utils';
 </code></pre>
 <h2><a id="_640"></a>单元测试</h2>
-<p>本文将以 <code>mocha</code> 测试框架为例，单元测试程序也将使用 ES2015 来写。</p>
-<p>首先执行以下命令安装 <code>mocha</code> ：</p>
+<p>本文将以<code>mocha</code>测试框架为例，单元测试程序也将使用 ES2015 来写。</p>
+<p>首先执行以下命令安装<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i -g mocha
 </code></pre>
 <p>安装完成后可执行以下命令验证是否安装成功：</p>
@@ -655,18 +655,18 @@ export function noop() { }
 
 2.3.4
 </code></pre>
-<p>通过阅读 <code>babel</code> 的官方文档（访问 <a href="http://babeljs.io/docs/setup/#mocha">http://babeljs.io/docs/setup/#mocha</a>  ）可知，为了让 Node.js 中的 <code>require()</code> 函数能直接载入 ES2015 程序，需要依赖 <code>babel-core</code> 模块，执行以下命令安装：</p>
+<p>通过阅读<code>babel</code>的官方文档（访问 <a href="http://babeljs.io/docs/setup/#mocha">http://babeljs.io/docs/setup/#mocha</a> ）可知，为了让 Node.js 中的<code>require()</code>函数能直接载入 ES2015 程序，需要依赖<code>babel-core</code>模块，执行以下命令安装：</p>
 <pre><code class="prettyprint bash">$ npm i babel-core mocha --save-dev
 </code></pre>
-<p>运行 <code>mocha</code> 命令的时候，需要增加额外的参数 <code>--compilers js:babel-core/register</code> 让其使用 <code>babel</code> 来载入 JavaScript 程序。为了方便，我们可以修改 <code>package.json</code> 文件，增加以下内容：</p>
+<p>运行<code>mocha</code>命令的时候，需要增加额外的参数<code>--compilers js:babel-core/register</code>让其使用<code>babel</code>来载入 JavaScript 程序。为了方便，我们可以修改<code>package.json</code>文件，增加以下内容：</p>
 <pre><code class="prettyprint json">{
   &quot;scripts&quot;: {
     &quot;test&quot;: &quot;mocha --compilers js:babel-core/register&quot;
   }
 }
 </code></pre>
-<p>说明：我们通过 <code>npm init</code> 命令生成 <code>package.json</code> 文件时，已经自动生成了 <code>test</code> 命令，其默认值为 <code>echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1</code> ，直接将其改为 <code>mocha --compilers js:babel-core/register</code> 即可。</p>
-<p>以上准备工作完成后，便可以开始写单元测试程序了。新建文件 <code>test/test.js</code> ：</p>
+<p>说明：我们通过<code>npm init</code>命令生成<code>package.json</code>文件时，已经自动生成了<code>test</code>命令，其默认值为<code>echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1</code>，直接将其改为<code>mocha --compilers js:babel-core/register</code>即可。</p>
+<p>以上准备工作完成后，便可以开始写单元测试程序了。新建文件<code>test/test.js</code>：</p>
 <pre><code class="prettyprint javascript">import assert from 'assert';
 import path from 'path';
 import fs from 'fs';
@@ -678,7 +678,7 @@ let getFileSize = f =&gt; fs.statSync(f).size;
 
 describe('es2015_demo', () =&gt; {
 
-  it(' 复制本地文件成功 ', done =&gt; {
+  it('复制本地文件成功', done =&gt; {
 
     let source = __filename;
     let target = randomFilename();
@@ -705,8 +705,8 @@ describe('es2015_demo', () =&gt; {
 
 });
 </code></pre>
-<p>说明：本文只为了演示如何配置 <code>mocha</code> 和编写单元测试程序，所以没有给 <code>download()</code> 函数编写完整的单元测试，仅编写一个测试用例作为演示。</p>
-<p>好了，现在执行 <code>$ npm test</code> 命令看看：</p>
+<p>说明：本文只为了演示如何配置<code>mocha</code>和编写单元测试程序，所以没有给<code>download()</code>函数编写完整的单元测试，仅编写一个测试用例作为演示。</p>
+<p>好了，现在执行<code>$ npm test</code>命令看看：</p>
 <pre><code class="prettyprint bash">$ npm test
 
 &gt; es2015_demo@1.0.0 test /private/tmp/es2015_demo
@@ -715,25 +715,25 @@ describe('es2015_demo', () =&gt; {
 
 
   es2015_demo
-     ✓   复制本地文件成功 
+    ✓ 复制本地文件成功
 
 
   1 passing (51ms)
 
 </code></pre>
-<p>至此，我们已经完成了使用 ES2015 编写模块，并使用 <code>mocha</code> 来进行单元测试，下文将介绍如何通过 <code>babel</code> 编译程序，并发布模块。</p>
+<p>至此，我们已经完成了使用 ES2015 编写模块，并使用<code>mocha</code>来进行单元测试，下文将介绍如何通过<code>babel</code>编译程序，并发布模块。</p>
 <h2><a id="_741"></a>发布模块</h2>
-<h3><a id="1__743"></a>1 、编译</h3>
-<p>上文已提到，为了让使用 ES2015 编写的代码能在 Node.js 上正常运行，需要先将其编译成 ES5 标准的代码，然后还需要在程序入口载入 <code>babel-polyfill</code> 模块。</p>
-<p>我们可以修改文件 <code>package.json</code> ，为其增加 <code>compile</code> 命令：</p>
+<h3><a id="1_743"></a>1、编译</h3>
+<p>上文已提到，为了让使用 ES2015 编写的代码能在 Node.js 上正常运行，需要先将其编译成 ES5 标准的代码，然后还需要在程序入口载入<code>babel-polyfill</code>模块。</p>
+<p>我们可以修改文件<code>package.json</code>，为其增加<code>compile</code>命令：</p>
 <pre><code class="prettyprint json">{
   &quot;scripts&quot;: {
     &quot;compile&quot;: &quot;babel -d lib/ src/&quot;
   }
 }
 </code></pre>
-<p>说明： <code>$ babel -d lib/ src/</code> 命令表示 <code>lib</code> 目录下的所有文件，并保存到 <code>src</code> 目录下。</p>
-<p>配置完成后，可以执行 <code>$ npm run compile</code> 命令编译试试：</p>
+<p>说明：<code>$ babel -d lib/ src/</code>命令表示<code>lib</code>目录下的所有文件，并保存到<code>src</code>目录下。</p>
+<p>配置完成后，可以执行<code>$ npm run compile</code>命令编译试试：</p>
 <pre><code class="prettyprint bash">$ npm run compile
 
 &gt; @isnc/es2015_demo@1.0.0 compile /Users/glen/work/tmp/es2015_demo
@@ -744,19 +744,19 @@ src/download.js -&gt; lib/download.js
 src/index.js -&gt; lib/index.js
 src/utils.js -&gt; lib/utils.js
 </code></pre>
-<p>此时，我们还不能直接载入 <code>lib/index.js</code> 文件，因为在此之前需要载入 <code>babel-polyfill</code> 模块。编辑文件 <code>package.json</code> ，设置模块入口文件：</p>
+<p>此时，我们还不能直接载入<code>lib/index.js</code>文件，因为在此之前需要载入<code>babel-polyfill</code>模块。编辑文件<code>package.json</code>，设置模块入口文件：</p>
 <pre><code class="prettyprint json">{
   &quot;main&quot;: &quot;index.js&quot;
 }
 </code></pre>
-<p>说明：使用 <code>$ npm init</code> 生成 <code>package.json</code> 文件时， <code>main</code> 的默认值即为 <code>index.js</code> ，可无需修改。</p>
-<p>新建文件 <code>index.js</code> ：</p>
+<p>说明：使用<code>$ npm init</code>生成<code>package.json</code>文件时，<code>main</code>的默认值即为<code>index.js</code>，可无需修改。</p>
+<p>新建文件<code>index.js</code>：</p>
 <pre><code class="prettyprint javascript">require('babel-polyfill');
 module.exports = require('./lib').default;
 </code></pre>
-<p>说明：在 <code>src/index.js</code> 中 <code>download()</code> 函数使用的是 <code>export default</code> 输出，所以在 Node.js 中需要读取模块输出的 <code>default</code> 属性。</p>
-<p>上文中我们的测试程序是直接载入 <code>src</code> 目录下的程序，但模块最终发布的却是编译后的程序，为了避免因 babel 的 Bug 而导致编译后的程序与源程序功能有差异，我们的单元测试需要改用编译后的代码。</p>
-<p>编辑文件 <code>test/test.js</code> ，将引入 <code>src</code> 目录的模块：</p>
+<p>说明：在<code>src/index.js</code>中<code>download()</code>函数使用的是<code>export default</code>输出，所以在 Node.js 中需要读取模块输出的<code>default</code>属性。</p>
+<p>上文中我们的测试程序是直接载入<code>src</code>目录下的程序，但模块最终发布的却是编译后的程序，为了避免因 babel 的 Bug 而导致编译后的程序与源程序功能有差异，我们的单元测试需要改用编译后的代码。</p>
+<p>编辑文件<code>test/test.js</code>，将引入<code>src</code>目录的模块：</p>
 <pre><code>import download from '../src';
 import {randomFilename} from '../src/utils';
 </code></pre>
@@ -764,14 +764,14 @@ import {randomFilename} from '../src/utils';
 <pre><code class="prettyprint javascript">import download from '../';
 import {randomFilename} from '../lib/utils';
 </code></pre>
-<p>在编辑 <code>package.json</code> 文件，将 <code>test</code> 命令改为先执行 <code>compile</code> 编译代码后再执行 <code>mocha</code> 测试：</p>
+<p>在编辑<code>package.json</code>文件，将<code>test</code>命令改为先执行<code>compile</code>编译代码后再执行<code>mocha</code>测试：</p>
 <pre><code>{
   &quot;scripts&quot;: {
     &quot;test&quot;: &quot;npm run compile &amp;&amp; mocha --compilers js:babel-core/register&quot;
   }
 }
 </code></pre>
-<p>重新执行 <code>$ npm test</code> 可看到如下结果：</p>
+<p>重新执行<code>$ npm test</code>可看到如下结果：</p>
 <pre><code>$ npm test
 
 &gt; es2015_demo@1.0.0 test /private/tmp/es2015_demo
@@ -788,29 +788,29 @@ src/utils.js -&gt; lib/utils.js
 
 
   es2015_demo
-     ✓   复制本地文件成功 
+    ✓ 复制本地文件成功
 
 
   1 passing (42ms)
 
 </code></pre>
-<h3><a id="2__844"></a>2 、发布</h3>
-<p>在开发项目时，一般都会使用 Git 这样的源代码版本管理工具。上文例子中， <code>lib</code> 目录的文件是编译生成的，可以不需要纳入到版本管理中。 Node.js 项目在安装模块时会将其保存到 <code>node_modules</code> 目录下，这些内容也是不应该纳入版本管理的。可以添加文件 <code>.gitignore</code> 来将其排除：</p>
+<h3><a id="2_844"></a>2、发布</h3>
+<p>在开发项目时，一般都会使用 Git 这样的源代码版本管理工具。上文例子中，<code>lib</code>目录的文件是编译生成的，可以不需要纳入到版本管理中。Node.js 项目在安装模块时会将其保存到<code>node_modules</code>目录下，这些内容也是不应该纳入版本管理的。可以添加文件<code>.gitignore</code>来将其排除：</p>
 <pre><code>*.log
 node_modules
 lib
 </code></pre>
-<p>如果要将模块发布到 NPM 上， ES2015 编写的源程序也是不需要的，可以添加文件 <code>.npmignore</code> 来将其排除：</p>
+<p>如果要将模块发布到 NPM 上，ES2015 编写的源程序也是不需要的，可以添加文件<code>.npmignore</code>来将其排除：</p>
 <pre><code>src
 </code></pre>
-<p>在使用 <code>$ npm publish</code> 命令发布模块时，可以设置 <code>prepublish</code> 命令来让其自动执行编译。编辑文件 <code>package.json</code> ，增加以下内容：</p>
+<p>在使用<code>$ npm publish</code>命令发布模块时，可以设置<code>prepublish</code>命令来让其自动执行编译。编辑文件<code>package.json</code>，增加以下内容：</p>
 <pre><code class="prettyprint json">{
   &quot;scripts&quot;: {
     &quot;prepublish&quot;: &quot;npm run compile&quot;
   }
 }
 </code></pre>
-<p>现在我们执行 <code>$ npm publish</code> 就可以发布模块了：</p>
+<p>现在我们执行<code>$ npm publish</code>就可以发布模块了：</p>
 <pre><code>$ npm publish
 
 &gt; @leizongmin/es2015_demo@1.0.0 prepublish /Users/glen/work/tmp/es2015_demo
@@ -826,12 +826,12 @@ src/index.js -&gt; lib/index.js
 src/utils.js -&gt; lib/utils.js
 + @leizongmin/es2015_demo@1.0.0
 </code></pre>
-<h3><a id="3__889"></a>3 、善后</h3>
-<p>上文例子中需要依赖 <code>mocha</code> 和 <code>babel</code> 两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖 <code>babel</code> 的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的 <code>babel</code> 版本。</p>
-<p>首先执行以下命令安装 <code>babel-cli</code> 和 <code>mocha</code> ：</p>
+<h3><a id="3_889"></a>3、善后</h3>
+<p>上文例子中需要依赖<code>mocha</code>和<code>babel</code>两个工具，当我们开发多个项目或将其作为开源项目发布出去时，可能不同的项目所依赖<code>babel</code>的版本是不一样的，为了开发环境一致，一般我们需要在当前项目中执行其开发时所指定的<code>babel</code>版本。</p>
+<p>首先执行以下命令安装<code>babel-cli</code>和<code>mocha</code>：</p>
 <pre><code class="prettyprint bash">$ npm i babel-cli mocha --save-dev
 </code></pre>
-<p>安装完成后，对于上文中使用的 <code>babel</code> 和 <code>mocha</code> 命令，可以使用 <code>./node_modules/.bin/babel</code> 和 <code>./node_modules/.bin/mocha</code> 来执行。编辑 <code>package.json</code> 文件，更改 <code>compile</code> 和 <code>test</code> 命令：</p>
+<p>安装完成后，对于上文中使用的<code>babel</code>和<code>mocha</code>命令，可以使用<code>./node_modules/.bin/babel</code>和<code>./node_modules/.bin/mocha</code>来执行。编辑<code>package.json</code>文件，更改<code>compile</code>和<code>test</code>命令：</p>
 <pre><code class="prettyprint json">{
   &quot;scripts&quot;: {
     &quot;compile&quot;: &quot;./node_modules/.bin/babel -d lib/ src/&quot;,
@@ -839,8 +839,8 @@ src/utils.js -&gt; lib/utils.js
   }
 }
 </code></pre>
-<p>本文示例模块输出的 <code>download()</code> 函数使用的是 Promise 的异步模式，对于习惯使用 callback 模式的用户，我们也可以通过简单的修改来使其支持 callback 模式。</p>
-<p>编辑文件 <code>src/utils.js</code> ，增加 <code>callbackify()</code> 函数：</p>
+<p>本文示例模块输出的<code>download()</code>函数使用的是 Promise 的异步模式，对于习惯使用 callback 模式的用户，我们也可以通过简单的修改来使其支持 callback 模式。</p>
+<p>编辑文件<code>src/utils.js</code>，增加<code>callbackify()</code>函数：</p>
 <pre><code class="prettyprint javascript">export function callbackify(fn) {
   let argc = fn.length;
   return (...args) =&gt; {
@@ -858,7 +858,7 @@ src/utils.js -&gt; lib/utils.js
   }
 }
 </code></pre>
-<p>编辑文件 <code>src/index.js</code> ，将其改为以下内容：</p>
+<p>编辑文件<code>src/index.js</code>，将其改为以下内容：</p>
 <pre><code class="prettyprint javascript">import path from 'path';
 import mkdirp from 'mkdirp';
 import copyFile from './copy';
@@ -880,9 +880,9 @@ export default callbackify(function download(source, target, progress) {
   });
 });
 </code></pre>
-<p>说明： <code>callbackify()</code> 函数的作用是返回一个新的函数，这个函数可以支持原函数的 Promise 模式，同时支持 callback 模式。</p>
-<p>现在再给 <code>test/test.js</code> 增加一个测试用例：</p>
-<pre><code class="prettyprint javascript">  it(' 复制本地文件成功  callback', done =&gt; {
+<p>说明：<code>callbackify()</code>函数的作用是返回一个新的函数，这个函数可以支持原函数的 Promise 模式，同时支持 callback 模式。</p>
+<p>现在再给<code>test/test.js</code>增加一个测试用例：</p>
+<pre><code class="prettyprint javascript">  it('复制本地文件成功 callback', done =&gt; {
 
     let source = __filename;
     let target = randomFilename();
@@ -906,15 +906,15 @@ export default callbackify(function download(source, target, progress) {
     });
   });
 </code></pre>
-<p>如无意外，重新执行 <code>$ npm test</code> 是可以测试通过的。</p>
+<p>如无意外，重新执行<code>$ npm test</code>是可以测试通过的。</p>
 <h2><a id="_991"></a>后记</h2>
 <p>本文的初稿在一个星期之前已经完成，一开始看到 ES2015 的新语法特性时眼前一亮，接着又觉得使用的时候有点繁琐，比如每次运行程序都有先使用 babel 编译，程序运行出错时定位的位置跟 ES2015 源码的位置不同等等。后来经过几天的摸索，发觉新的语法特性确实可以少打了很多代码，而且程序的表现力也更强了，与 babel 编译所耗的那几秒时间相比还是很值得的。</p>
-<p>本文的示例代码可通过  <a href="https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package">https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package</a>  获得。</p>
+<p>本文的示例代码可通过 <a href="https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package">https://github.com/leizongmin/morning.work/blob/gh-pages/demo/es2015_npm_package</a> 获得。</p>
 <h2><a id="_998"></a>扩展阅读</h2>
 <ul>
-<li><a href="http://gank.io/post/564151c1f1df1210001c9161"> 给  JavaScript  初心者的  ES2015  实战 </a></li>
-<li><a href="http://es6.ruanyifeng.com/">ECMAScript 6  入门 </a></li>
-<li><a href="https://blog.leancloud.cn/3910/"> 「大概可能也许是」目前最好的  JavaScript  异步方案  async/await</a></li>
+<li><a href="http://gank.io/post/564151c1f1df1210001c9161">给 JavaScript 初心者的 ES2015 实战</a></li>
+<li><a href="http://es6.ruanyifeng.com/">ECMAScript 6 入门</a></li>
+<li><a href="https://blog.leancloud.cn/3910/">「大概可能也许是」目前最好的 JavaScript 异步方案 async/await</a></li>
 <li><a href="http://babeljs.io/docs/learn-es2015/">Learn ES2015 - A detailed overview of ECMAScript 6 features</a></li>
 <li><a href="http://mammal.io/articles/using-es6-today/">Using ES6 with npm today</a></li>
 <li><a href="http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/">Using ES6 and ES7 in the Browser, with Babel 6 and Webpack</a></li>
@@ -922,35 +922,35 @@ export default callbackify(function download(source, target, progress) {
 <li><a href="http://info.meteor.com/blog/set-up-sublime-text-for-meteor-es6-es2015-and-jsx-syntax-and-linting">Set up Sublime Text for Meteor ES6 (ES2015) and JSX Syntax and Linting</a></li>
 <li><a href="http://exploringjs.com/es6/ch_modules.html">Exploring ES6 - Modules</a></li>
 </ul>
-]]></description><link>http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html</link><guid isPermaLink="true">http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Mon, 30 Nov 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Node.js 的 Buffer 那些你可能不知道的用法]]></title><description><![CDATA[<p><h3>目录 </h3><ul><ul><li><a href="#_5">前言</a></li><li><a href="#_114">操作结构化数据</a></li><li><a href="#leiproto__214">lei-proto 模块介绍</a></li><li><a href="#_267">扩展阅读</a></li></ul></ul></p>
+]]></description><link>http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html</link><guid isPermaLink="true">http://morning.work/page/2015-11/es6-es7-develop-npm-module-using-babel.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Mon, 30 Nov 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Node.js 的 Buffer 那些你可能不知道的用法]]></title><description><![CDATA[<p><h3>目录</h3><ul><ul><li><a href="#_5">前言</a></li><li><a href="#_114">操作结构化数据</a></li><li><a href="#leiproto__214">lei-proto 模块介绍</a></li><li><a href="#_267">扩展阅读</a></li></ul></ul></p>
 <h2><a id="_5"></a>前言</h2>
-<p>在大多数介绍 Buffer 的文章中，主要是围绕数据拼接和内存分配这两方面的。比如我们使用 <code>fs</code> 模块来读取文件内容的时候，返回的就是一个 Buffer ：</p>
+<p>在大多数介绍 Buffer 的文章中，主要是围绕数据拼接和内存分配这两方面的。比如我们使用<code>fs</code>模块来读取文件内容的时候，返回的就是一个 Buffer：</p>
 <pre><code class="prettyprint javascript">fs.readFile('filename', function (err, buf) {
   // &lt;Buffer 2f 2a 2a 0a 20 2a 20 53 75 ... &gt;
 });
 </code></pre>
-<p>在使用 <code>net</code> 或 <code>http</code> 模块来接收网络数据时， <code>data</code> 事件的参数也是一个 Buffer ，这时我们还需要使用 <code>Buffer.concat()</code> 来做数据拼接：</p>
+<p>在使用<code>net</code>或<code>http</code>模块来接收网络数据时，<code>data</code>事件的参数也是一个 Buffer，这时我们还需要使用<code>Buffer.concat()</code>来做数据拼接：</p>
 <pre><code class="prettyprint javascript">var bufs = [];
 conn.on('data', function (buf) {
   bufs.push(buf);
 });
 conn.on('end', function () {
-  //  接收数据结束后，拼接所有收到的 Buffer 对象 
+  // 接收数据结束后，拼接所有收到的 Buffer 对象
   var buf = Buffer.concat(bufs);
 });
 </code></pre>
-<p>还可以利用 <code>Buffer.toString()</code> 来做转换 <code>base64</code> 或十六进制字符的转换，比如：</p>
+<p>还可以利用<code>Buffer.toString()</code>来做转换<code>base64</code>或十六进制字符的转换，比如：</p>
 <pre><code class="prettyprint javascript">console.log(new Buffer('hello, world!').toString('base64'));
-//  转换成 base64 字符串： aGVsbG8sIHdvcmxkIQ==
+// 转换成 base64 字符串：aGVsbG8sIHdvcmxkIQ==
 
 console.log(new Buffer('aGVsbG8sIHdvcmxkIQ==', 'base64').toString());
-//  还原 base64 字符串： hello, world!
+// 还原 base64 字符串：hello, world!
 
 console.log(new Buffer('hello, world!').toString('hex'));
-//  转换成十六进制字符串： 68656c6c6f2c20776f726c6421
+// 转换成十六进制字符串：68656c6c6f2c20776f726c6421
 
 console.log(new Buffer('68656c6c6f2c20776f726c6421', 'hex').toString());
-//  还原十六进制字符串： hello, world!
+// 还原十六进制字符串：hello, world!
 </code></pre>
 <p>一般情况下，单个 Node.js 进程是有最大内存限制的，以下是来自官方文档中的说明：</p>
 <blockquote>
@@ -958,11 +958,11 @@ console.log(new Buffer('68656c6c6f2c20776f726c6421', 'hex').toString());
 <p>Currently, by default v8 has a memory limit of 512MB on 32-bit systems, and 1.4GB on 64-bit systems. The limit can be raised by setting --max_old_space_size to a maximum of ~1024 (~1 GB) (32-bit) and ~4096 (~4GB) (64-bit), but it is recommended that you split your single process into several workers if you are hitting memory limits.</p>
 </blockquote>
 <p>由于 Buffer 对象占用的内存空间是不计算在 Node.js 进程内存空间限制上的，因此，我们也常常会使用 Buffer 来存储需要占用大量内存的数据：</p>
-<pre><code class="prettyprint javascript">//  分配一个 2G-1 字节的数据 
-//  单次分配内存超过此值会抛出异常  RangeError: Invalid typed array length
+<pre><code class="prettyprint javascript">// 分配一个 2G-1 字节的数据
+// 单次分配内存超过此值会抛出异常 RangeError: Invalid typed array length
 var buf = new Buffer(1024 * 1024 * 1024 - 1);
 </code></pre>
-<p>以上便是 Buffer 的几种常见用法。然而，阅读 Buffer 的 API 文档时，我们会发现更多的是 <code>readXXX()</code> 和 <code>writeXXX()</code> 开头的 API ，具体如下：</p>
+<p>以上便是 Buffer 的几种常见用法。然而，阅读 Buffer 的 API 文档时，我们会发现更多的是<code>readXXX()</code>和<code>writeXXX()</code>开头的 API，具体如下：</p>
 <ul>
 <li>buf.readUIntLE(offset, byteLength[, noAssert])</li>
 <li>buf.readUIntBE(offset, byteLength[, noAssert])</li>
@@ -1002,7 +1002,7 @@ var buf = new Buffer(1024 * 1024 * 1024 - 1);
 <li>buf.writeDoubleLE(value, offset[, noAssert])</li>
 <li>buf.writeDoubleBE(value, offset[, noAssert])</li>
 </ul>
-<p>这些 API 为在 Node.js 中操作数据提供了极大的便利。假设我们要将一个整形数值存储到文件中，比如当前时间戳为 <code>1447656645380</code> ，如果将其当作一个字符串存储时，需要占用 11 字节的空间，而将其转换为二进制存储时仅需 6 字节空间即可：</p>
+<p>这些 API 为在 Node.js 中操作数据提供了极大的便利。假设我们要将一个整形数值存储到文件中，比如当前时间戳为<code>1447656645380</code>，如果将其当作一个字符串存储时，需要占用 11 字节的空间，而将其转换为二进制存储时仅需 6 字节空间即可：</p>
 <pre><code class="prettyprint javascript">var buf = new Buffer(6);
 
 buf.writeUIntBE(1447656645380, 0, 6);
@@ -1054,10 +1054,10 @@ buf.readUIntBE(0, 6);
 </tr>
 </tbody>
 </table>
-<p>每一条记录仅需要 6 字节的空间即可，仅仅是使用文本存储的 40% ！下面是用来操作这些记录的程序：</p>
-<pre><code class="prettyprint javascript">//  读取一条记录 
-// buf    Buffer 对象 
-// offset  本条记录在 Buffer 对象的开始位置 
+<p>每一条记录仅需要 6 字节的空间即可，仅仅是使用文本存储的 40%！下面是用来操作这些记录的程序：</p>
+<pre><code class="prettyprint javascript">// 读取一条记录
+// buf    Buffer 对象
+// offset 本条记录在 Buffer 对象的开始位置
 // data   {number, lesson, score}
 function writeRecord (buf, offset, data) {
   buf.writeUIntBE(data.number, offset, 3);
@@ -1065,9 +1065,9 @@ function writeRecord (buf, offset, data) {
   buf.writeInt8(data.score, offset + 5);
 }
 
-//  写入一条记录 
-// buf    Buffer 对象 
-// offset  本条记录在 Buffer 对象的开始位置 
+// 写入一条记录
+// buf    Buffer 对象
+// offset 本条记录在 Buffer 对象的开始位置
 function readRecord (buf, offset) {
   return {
     number: buf.readUIntBE(offset, 3),
@@ -1076,8 +1076,8 @@ function readRecord (buf, offset) {
   };
 }
 
-//  写入记录列表 
-// list   记录列表，每一条包含  {number, lesson, score}
+// 写入记录列表
+// list  记录列表，每一条包含 {number, lesson, score}
 function writeList (list) {
   var buf = new Buffer(list.length * 6);
   var offset = 0;
@@ -1088,8 +1088,8 @@ function writeList (list) {
   return buf;
 }
 
-//  读取记录列表 
-// buf  Buffer 对象 
+// 读取记录列表
+// buf  Buffer 对象
 function readList (buf) {
   var offset = 0;
   var list = [];
@@ -1112,11 +1112,11 @@ console.log(list);
 
 var buf = writeList(list);
 console.log(buf);
-//  输出  &lt;Buffer 01 86 a1 03 e9 63 01 86 a2 03 e9 58 01 86 a3 03 e9 4d 01 86 a4 03 e9 42 01 86 a5 03 e9 37&gt;
+// 输出 &lt;Buffer 01 86 a1 03 e9 63 01 86 a2 03 e9 58 01 86 a3 03 e9 4d 01 86 a4 03 e9 42 01 86 a5 03 e9 37&gt;
 
 var ret = readList(buf);
 console.log(ret);
-/*  输出 
+/* 输出
 [ { number: 100001, lesson: 1001, score: 99 },
   { number: 100002, lesson: 1001, score: 88 },
   { number: 100003, lesson: 1001, score: 77 },
@@ -1125,14 +1125,14 @@ console.log(ret);
 */
 </code></pre>
 <h2><a id="leiproto__214"></a>lei-proto 模块介绍</h2>
-<p>上面的例子中，当每一条记录的结构有变化时，我们需要修改 <code>readRecord()</code> 和 <code>writeRecord()</code> ，重新计算每一个字段在 Buffer 中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了 <code>lei-proto</code> 模块，它允许你通过简单定义每条记录的结构即可生成对应的 <code>readRecord()</code> 和 `writeRecord() 函数。</p>
+<p>上面的例子中，当每一条记录的结构有变化时，我们需要修改<code>readRecord()</code>和<code>writeRecord()</code>，重新计算每一个字段在 Buffer 中的偏移量，当记录的字段比较复杂时很容易出错。为此我编写了<code>lei-proto</code>模块，它允许你通过简单定义每条记录的结构即可生成对应的<code>readRecord()</code>和`writeRecord()函数。</p>
 <p>首先执行以下命令安装此模块：</p>
 <pre><code class="prettyprint bash">$ npm install lei-proto --save
 </code></pre>
-<p>使用 <code>lei-proto</code> 模块后，前文的例子可以改为这样：</p>
+<p>使用<code>lei-proto</code>模块后，前文的例子可以改为这样：</p>
 <pre><code class="prettyprint javascript">var parsePorto = require('lei-proto');
 
-//  生成指定记录结构的数据编码 / 解码器 
+// 生成指定记录结构的数据编码/解码器
 var record = parsePorto([
   ['number', 'uint', 3],
   ['lesson', 'uint', 2],
@@ -1161,70 +1161,70 @@ function writeList (list) {
   { number: 100004, lesson: 1001, score: 66 },
   { number: 100005, lesson: 1001, score: 55 } ]
 </code></pre>
-<p>关于 <code>lei-proto</code> 模块的详细使用方法可访问该模块的主页浏览： <a href="https://github.com/leizongmin/node-lei-proto">https://github.com/leizongmin/node-lei-proto</a></p>
+<p>关于<code>lei-proto</code>模块的详细使用方法可访问该模块的主页浏览：<a href="https://github.com/leizongmin/node-lei-proto">https://github.com/leizongmin/node-lei-proto</a></p>
 <p>对此感兴趣的读者也可研究一下其实现原理。</p>
 <h2><a id="_267"></a>扩展阅读</h2>
 <ul>
-<li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer 那些事儿 </a></li>
-<li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c"> 浅析 nodejs 的 buffer 类 </a></li>
-<li><a href="https://cnodejs.org/topic/4faf65852e8fb5bc65113403"> 小心 buffer 的拼接问题 </a></li>
+<li><a href="http://www.infoq.com/cn/articles/nodejs-about-buffer">Buffer 那些事儿</a></li>
+<li><a href="https://cnodejs.org/topic/5189ff4f63e9f8a54207f60c">浅析 nodejs 的 buffer 类</a></li>
+<li><a href="https://cnodejs.org/topic/4faf65852e8fb5bc65113403">小心 buffer 的拼接问题</a></li>
 <li><a href="http://blog.fens.me/nodejs-buffer/">Node.js 缓冲模块 Buffer</a></li>
 <li><a href="http://www.tutorialspoint.com/nodejs/nodejs_buffers.htm">Node.js - Buffers</a></li>
 <li><a href="https://docs.nodejitsu.com/articles/advanced/buffers/how-to-use-buffers">How to Use Buffers in Node.js</a></li>
 <li><a href="https://nodejs.org/api/buffer.html">Node.js API Documentation - Buffer</a></li>
 </ul>
 ]]></description><link>http://morning.work/page/2015-11/nodejs_buffer.html</link><guid isPermaLink="true">http://morning.work/page/2015-11/nodejs_buffer.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Mon, 16 Nov 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Node.js 定制 REPL 的妙用]]></title><description><![CDATA[<p>相信在学习 Node.js 的时候，对 Node.js 的 REPL 并不陌生。我们可以在 REPL 里面输入 JavaScript 代码并立刻看到效果，常常用来试用一些新的模块，甚至直接把 REPL 当计算器来用。</p>
-<p>最近在修改以前使用 Node.js 写的 <a href="https://github.com/leizongmin/node-segment"> 中文分词模块 </a> 时，想要看到代码修改后的效果，但是又不方便马上写测试代码，自然想到使用 REPL 来测试。比如执行以下命令启动 Node.js 的 REPL 界面：</p>
+<p>最近在修改以前使用 Node.js 写的<a href="https://github.com/leizongmin/node-segment">中文分词模块</a>时，想要看到代码修改后的效果，但是又不方便马上写测试代码，自然想到使用 REPL 来测试。比如执行以下命令启动 Node.js 的 REPL 界面：</p>
 <pre><code class="prettyprint bash">$ node
 </code></pre>
-<p>然后在控制台界面中输入要测试的代码（其中 <code>&gt;</code> 开头的行是手工输入并按回车的代码，其他部分为 REPL 的输出结果）：</p>
+<p>然后在控制台界面中输入要测试的代码（其中<code>&gt;</code>开头的行是手工输入并按回车的代码，其他部分为 REPL 的输出结果）：</p>
 <pre><code>&gt; var Segment = require('./')
 undefined
 &gt; var s = new Segment()
 undefined
 &gt; s.useDefault(); 1
 1
-&gt; s.doSegment(' 神奇的 REPL')
-[ { w: ' 神奇的 ', p: 1073741824 }, { w: 'REPL', p: 16 } ]
+&gt; s.doSegment('神奇的 REPL')
+[ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
 &gt;
 </code></pre>
-<p>但当我修改了模块的代码后，要看效果时又要重复输入上面的代码，这种 ** 做重复无意义工作的行为绝非是一名有理想的程序员想要的 ** 。于是，我决定自己 ** 定制一个 REPL** ，这样就可以预先执行一些初始化代码，一启动程序就可以进入主题了。</p>
-<p>看了一下 <a href="https://nodejs.org/api/repl.html">REPL 模块的文档 </a> 之后，大概搞清了怎么个用法，接下来开始写代码了。</p>
-<p>首先在项目的根目录下新建名为 <code>repl</code> 的文件，代码如下：</p>
+<p>但当我修改了模块的代码后，要看效果时又要重复输入上面的代码，这种<strong>做重复无意义工作的行为绝非是一名有理想的程序员想要的</strong>。于是，我决定自己<strong>定制一个 REPL</strong>，这样就可以预先执行一些初始化代码，一启动程序就可以进入主题了。</p>
+<p>看了一下<a href="https://nodejs.org/api/repl.html">REPL 模块的文档</a>之后，大概搞清了怎么个用法，接下来开始写代码了。</p>
+<p>首先在项目的根目录下新建名为<code>repl</code>的文件，代码如下：</p>
 <pre><code class="prettyprint javascript">#!/usr/bin/env node
 
 var repl = require('repl');
 
-//  创建一个 REPL
+// 创建一个 REPL
 var r = repl.start('&gt; ');
-// context 即为 REPL 中的上下文环境 
+// context 即为 REPL 中的上下文环境
 var c = r.context;
 
-//  测试用的初始化代码 
-//  在 REPL 中可以通过 Segment 和 segment 来访问以下两个变量 
+// 测试用的初始化代码
+// 在 REPL 中可以通过 Segment 和 segment 来访问以下两个变量
 c.Segment = require('./');
 c.segment = new c.Segment();
 c.segment.useDefault();
 
-//  精简函数名，方便手工输入，在 REPL 中可以通过 s 来访问此函数 
+// 精简函数名，方便手工输入，在 REPL 中可以通过 s 来访问此函数
 c.s = function () {
   return c.segment.doSegment.apply(c.segment, arguments);
 };
 </code></pre>
-<p>文件第一行的 <code>#!/usr/bin/env node</code> 表示这是一个脚本文件，使用 <code>node</code> 命令来执行它，所以还要给这个文件加上可执行权限：</p>
+<p>文件第一行的<code>#!/usr/bin/env node</code>表示这是一个脚本文件，使用<code>node</code>命令来执行它，所以还要给这个文件加上可执行权限：</p>
 <pre><code class="prettyprint bash">$ chmod +x repl
 </code></pre>
 <p>现在就可以试试这个定制的 REPL 了：</p>
 <pre><code>$ ./repl
-&gt; s(' 神奇的 REPL')
-[ { w: ' 神奇的 ', p: 1073741824 }, { w: 'REPL', p: 16 } ]
+&gt; s('神奇的 REPL')
+[ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
 &gt;
 </code></pre>
-<p>之后每次更改了代码，只要按两下 <code>CTRL+C</code> 来退出当前 REPL ，再执行 <code>./repl</code> 来启动程序，然后输入 <code>s(' 神奇的 REPL')</code> 就可以看到分词的效果了，如果要执行其他函数，也可以直接操作 <code>segment</code> 变量来做。</p>
-<p>** 但是，一名有理想的程序员绝不会满足于此的。 **</p>
+<p>之后每次更改了代码，只要按两下<code>CTRL+C</code>来退出当前 REPL，再执行<code>./repl</code>来启动程序，然后输入<code>s('神奇的 REPL')</code>就可以看到分词的效果了，如果要执行其他函数，也可以直接操作<code>segment</code>变量来做。</p>
+<p><strong>但是，一名有理想的程序员绝不会满足于此的。</strong></p>
 <p>当我修改了模块代码，为什么要重启 REPL 呢，难道不能重新加载一次这个模块，然后该干嘛还干嘛？</p>
-<p>从 <a href="https://nodejs.org/api/modules.html#modules_caching">Node.js 的模块系统文档 </a> 可知，在使用 <code>require()</code> 来加载模块后，相关的文件内容会被缓存到 <code>require.cache[filename]</code> 中，当再次 <code>require()</code> 此文件的时候并不会重新加载。所以要想在不重启进程的情况下重新加载模块，我们就要清理这个模块相关的所有缓存。</p>
-<p>把 <code>repl</code> 文件改成以下代码：</p>
+<p>从<a href="https://nodejs.org/api/modules.html#modules_caching">Node.js 的模块系统文档</a>可知，在使用<code>require()</code>来加载模块后，相关的文件内容会被缓存到<code>require.cache[filename]</code>中，当再次<code>require()</code>此文件的时候并不会重新加载。所以要想在不重启进程的情况下重新加载模块，我们就要清理这个模块相关的所有缓存。</p>
+<p>把<code>repl</code>文件改成以下代码：</p>
 <pre><code class="prettyprint javascript">#!/usr/bin/env node
 
 var fs = require('fs');
@@ -1235,7 +1235,7 @@ var repl = require('repl');
 var r = repl.start('&gt; ');
 var c = r.context;
 
-//  原来的初始化代码放到此函数内 
+// 原来的初始化代码放到此函数内
 c._load = function () {
   c.Segment = require('./');
   c.segment = new c.Segment();
@@ -1245,11 +1245,11 @@ c._load = function () {
   };
 };
 
-//  在 REPL 中执行 reload() 可重新加载模块 
+// 在 REPL 中执行 reload()可重新加载模块
 c.reload = function () {
   var t = Date.now();
 
-  //  清空当前项目根目录下所有文件的缓存 
+  // 清空当前项目根目录下所有文件的缓存
   var dir = path.resolve(__dirname) + path.sep;
   for (var i in require.cache) {
     if (i.indexOf(dir) === 0) {
@@ -1257,19 +1257,19 @@ c.reload = function () {
     }
   }
 
-  //  重新执行初始化 
+  // 重新执行初始化
   c._load();
   console.log('OK. (spent %sms)', Date.now() - t);
 }
 
 c._load();
 </code></pre>
-<p>好了，在修改了模块的代码后，只要在 REPL 中执行 <code>reload()</code> 函数就能重新载入最新的代码了：</p>
+<p>好了，在修改了模块的代码后，只要在 REPL 中执行<code>reload()</code>函数就能重新载入最新的代码了：</p>
 <pre><code>&gt; reload()
 OK. (spent 458ms)
 undefined
-&gt; s(' 神奇的 REPL')
-[ { w: ' 神奇的 ', p: 1073741824 }, { w: 'REPL', p: 16 } ]
+&gt; s('神奇的 REPL')
+[ { w: '神奇的', p: 1073741824 }, { w: 'REPL', p: 16 } ]
 &gt;
 </code></pre>
 <h2><a id="_131"></a>总结</h2>
@@ -1283,14 +1283,14 @@ undefined
 <ul>
 <li><a href="http://segmentfault.com/a/1190000002673137">Node.js 之 REPL</a></li>
 <li><a href="http://derickbailey.com/2014/07/02/build-your-own-app-specific-repl-for-your-nodejs-app/">Build Your Own App Specific REPL For Your NodeJS App</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">Node.js 命令行程序开发教程 </a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">Node.js 命令行程序开发教程</a></li>
 <li><a href="https://cnodejs.org/topic/55c2ba865965fe2c74f478ac">Node.js 里的 REPL</a></li>
 </ul>
-]]></description><link>http://morning.work/page/2015-10/node_repl_module.html</link><guid isPermaLink="true">http://morning.work/page/2015-10/node_repl_module.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Sat, 31 Oct 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Node.js  项目的配置文件]]></title><description><![CDATA[<p>在使用  Node.js  编写一个完整的项目时，程序中往往需要用到一些可配置的变量，从而使得程序能在不同的环境中运行。本文将介绍几种常见的方法。</p>
-<p><h3>目录 </h3><ul><ul><li><a href="#_7">通过环境变量指定配置</a></li><ul><li><a href="#_42">设置环境变量</a></li><li><a href="#__Nodejs___58">在  Node.js  中读取环境变量</a></li></ul><li><a href="#_75">通过配置文件指定配置</a></li><ul><li><a href="#_124">其他配置文件格式</a></li><ul><li><a href="#JSON__141">JSON 格式</a></li><li><a href="#YAML__196">YAML 格式</a></li></ul></ul><li><a href="#_251">根据运行环境选择不同的配置</a></li><ul><li><a href="#_255">使用单一配置文件名</a></li><li><a href="#_261">通过环境变量指定配置文件名</a></li></ul><li><a href="#__config___291">使用  config  模块来读取配置</a></li><li><a href="#_394">参考资料</a></li><li><a href="#_403">相关模块</a></li></ul></ul></p>
+]]></description><link>http://morning.work/page/2015-10/node_repl_module.html</link><guid isPermaLink="true">http://morning.work/page/2015-10/node_repl_module.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Sat, 31 Oct 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[Node.js 项目的配置文件]]></title><description><![CDATA[<p>在使用 Node.js 编写一个完整的项目时，程序中往往需要用到一些可配置的变量，从而使得程序能在不同的环境中运行。本文将介绍几种常见的方法。</p>
+<p><h3>目录</h3><ul><ul><li><a href="#_7">通过环境变量指定配置</a></li><ul><li><a href="#_42">设置环境变量</a></li><li><a href="#_Nodejs__58">在 Node.js 中读取环境变量</a></li></ul><li><a href="#_75">通过配置文件指定配置</a></li><ul><li><a href="#_124">其他配置文件格式</a></li><ul><li><a href="#JSON__141">JSON 格式</a></li><li><a href="#YAML__196">YAML 格式</a></li></ul></ul><li><a href="#_251">根据运行环境选择不同的配置</a></li><ul><li><a href="#_255">使用单一配置文件名</a></li><li><a href="#_261">通过环境变量指定配置文件名</a></li></ul><li><a href="#_config__291">使用 config 模块来读取配置</a></li><li><a href="#_394">参考资料</a></li><li><a href="#_403">相关模块</a></li></ul></ul></p>
 <h2><a id="_7"></a>通过环境变量指定配置</h2>
-<p><a href="http://baike.baidu.com/view/95930.htm"> 环境变量（ environment variables ） </a>  一般是指在操作系统中用来指定操作系统运行环境的一些参数，如：临时文件夹位置和系统文件夹位置等。比如 <code>HOME</code> 表示当前用户的根目录， <code>TMPDIR</code> 表示系统临时目录等，我们可以通过设置一些特定的环境变量，程序在启动时可以读取这些环境变量并做相应的初始化动作。</p>
-<p>在  Node.js  中可以通过 <code>process.env</code> 来访问当前的环境变量信息，比如：</p>
+<p><a href="http://baike.baidu.com/view/95930.htm">环境变量（environment variables）</a> 一般是指在操作系统中用来指定操作系统运行环境的一些参数，如：临时文件夹位置和系统文件夹位置等。比如<code>HOME</code>表示当前用户的根目录，<code>TMPDIR</code>表示系统临时目录等，我们可以通过设置一些特定的环境变量，程序在启动时可以读取这些环境变量并做相应的初始化动作。</p>
+<p>在 Node.js 中可以通过<code>process.env</code>来访问当前的环境变量信息，比如：</p>
 <pre><code class="prettyprint javascript">{ PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   TMPDIR: '/var/folders/rs/g4wqpvvj7bj08t35dxvfm0rr0000gn/T/',
   LOGNAME: 'glen',
@@ -1320,39 +1320,39 @@ undefined
 </code></pre>
 <h3><a id="_42"></a>设置环境变量</h3>
 <p>环境变量的名字一般为大写，多个单词之间可通过下划线来连接。</p>
-<p>Windows  系统下可通过 <code>set</code> 命令来设置环境变量，比如：</p>
+<p>Windows 系统下可通过<code>set</code>命令来设置环境变量，比如：</p>
 <pre><code class="prettyprint bash">$ set HELLO_MSG=&quot;Hello, world!&quot;
 </code></pre>
-<p>Linux  系统下可通过 <code>export</code> 命令来设置，比如：</p>
+<p>Linux 系统下可通过<code>export</code>命令来设置，比如：</p>
 <pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world!&quot;
 </code></pre>
-<h3><a id="__Nodejs___58"></a>在  Node.js  中读取环境变量</h3>
-<p>创建文件 <code>1.js</code> ，代码如下：</p>
+<h3><a id="_Nodejs__58"></a>在 Node.js 中读取环境变量</h3>
+<p>创建文件<code>1.js</code>，代码如下：</p>
 <pre><code class="prettyprint javascript">console.log(process.env.HELLO_MSG);
 </code></pre>
 <p>然后在命令行中执行：</p>
 <pre><code class="prettyprint bash">$ export HELLO_MSG=&quot;Hello, world&quot; &amp;&amp; node 1.js
 </code></pre>
-<p>控制台将输出 <code>Hello, world</code> ，即我们启动程序时给环境变量 <code>HELLO_MSG</code> 设置的值。</p>
+<p>控制台将输出<code>Hello, world</code>，即我们启动程序时给环境变量<code>HELLO_MSG</code>设置的值。</p>
 <h2><a id="_75"></a>通过配置文件指定配置</h2>
-<p>一些规模较小的项目往往会通过单一的配置文件来存储其配置，比如  CNode  中文社区的开源项目  <a href="https://github.com/cnodejs/nodeclub">nodeclub</a>  在启动时会载入文件 <code>config.js</code> ，该文件的大概结构如下：</p>
+<p>一些规模较小的项目往往会通过单一的配置文件来存储其配置，比如 CNode 中文社区的开源项目 <a href="https://github.com/cnodejs/nodeclub">nodeclub</a> 在启动时会载入文件<code>config.js</code>，该文件的大概结构如下：</p>
 <pre><code class="prettyprint javascript">var config = {
-  // debug  为  true  时，用于本地调试 
+  // debug 为 true 时，用于本地调试
   debug: true,
 
-  name: 'Nodeclub', //  社区名字 
-  description: 'CNode ： Node.js 专业中文社区 ', //  社区的描述 
+  name: 'Nodeclub', // 社区名字
+  description: 'CNode：Node.js 专业中文社区', // 社区的描述
   keywords: 'nodejs, node, express, connect, socket.io',
 
-  //  其他配置项 ...
+  // 其他配置项...
 };
 module.exports = config;
 </code></pre>
-<p>在程序启动的时候，可以使用 <code>require()</code> 来载入此文件，得到一个对象，然后通过此对象的属性来读取相应的配置信息：</p>
-<pre><code class="prettyprint javascript">//  载入配置文件 
+<p>在程序启动的时候，可以使用<code>require()</code>来载入此文件，得到一个对象，然后通过此对象的属性来读取相应的配置信息：</p>
+<pre><code class="prettyprint javascript">// 载入配置文件
 var config = require('./config');
 
-//  以下为使用到配置的部分代码： 
+// 以下为使用到配置的部分代码：
 if (!config.debug &amp;&amp; config.oneapm_key) {
   require('oneapm');
 }
@@ -1374,49 +1374,49 @@ app.listen(config.port, function () {
   logger.log('');
 });
 </code></pre>
-<p>使用配置文件与使用环境变量来指定配置相比，配置文件的可读性更强，可以表示一些更复杂的结构，而使用环境变量一般只限于 <code>key=value</code> 的形式。但在配置项数量较少时，使用环境变量会更简单，比如项目中只需要配置一个监听端口，可以简单使用 <code>export PORT=3000 &amp;&amp; node app.js</code> 命令来启动程序，而不需要单独创建一个配置文件。大多数时候往往会结合这两种方式来进行，下文讲详细讲解。</p>
+<p>使用配置文件与使用环境变量来指定配置相比，配置文件的可读性更强，可以表示一些更复杂的结构，而使用环境变量一般只限于<code>key=value</code>的形式。但在配置项数量较少时，使用环境变量会更简单，比如项目中只需要配置一个监听端口，可以简单使用<code>export PORT=3000 &amp;&amp; node app.js</code>命令来启动程序，而不需要单独创建一个配置文件。大多数时候往往会结合这两种方式来进行，下文讲详细讲解。</p>
 <h3><a id="_124"></a>其他配置文件格式</h3>
-<p>一般为了方便，在  Node.js  项目中会习惯使用 <code>.js</code> 文件格式，它的好处是可以使用通过程序来动态生成一些配置项，比如  nodeclub  的其中一个配置项：</p>
+<p>一般为了方便，在 Node.js 项目中会习惯使用<code>.js</code>文件格式，它的好处是可以使用通过程序来动态生成一些配置项，比如 nodeclub 的其中一个配置项：</p>
 <pre><code class="prettyprint javascript">var config = {
-  //  文件上传配置 
-  //  注：如果填写  qn_access ，则会上传到  7 牛，以下配置无效 
+  // 文件上传配置
+  // 注：如果填写 qn_access，则会上传到 7 牛，以下配置无效
   upload: {
     path: path.join(__dirname, 'public/upload/'),
     url: '/public/upload/'
   },
 }
 </code></pre>
-<p>其中使用到了 <code>path.join()</code> 和 <code>__dirname</code> 来生成 <code>upload.path</code> 。</p>
+<p>其中使用到了<code>path.join()</code>和<code>__dirname</code>来生成<code>upload.path</code>。</p>
 <h4><a id="JSON__141"></a>JSON 格式</h4>
-<p>另外，我们也可以使用  <a href="http://json.org/">JSON</a>  格式的配置文件，比如文件 <code>config.json</code> ：</p>
+<p>另外，我们也可以使用 <a href="http://json.org/">JSON</a> 格式的配置文件，比如文件<code>config.json</code>：</p>
 <pre><code class="prettyprint json">{
   &quot;debug&quot;: true,
   &quot;name&quot;: &quot;Nodeclub&quot;,
-  &quot;description&quot;: &quot;CNode ： Node.js 专业中文社区 &quot;,
+  &quot;description&quot;: &quot;CNode：Node.js 专业中文社区&quot;,
   &quot;keywords&quot;: &quot;nodejs, node, express, connect, socket.io&quot;
 }
 </code></pre>
 <p>在程序中可以通过以下方式来载入 JSON 文件配置：</p>
-<pre><code class="prettyprint javascript">//  通过 require() 函数 
+<pre><code class="prettyprint javascript">// 通过 require()函数
 var config = require('./config.json');
 
-//  读取文件并使用 JSON.parse() 解析 
+// 读取文件并使用 JSON.parse()解析
 var fs = require('fs');
 var config = JSON.parse(fs.readFileSync('./config.json').toString());
 </code></pre>
-<p>大多数时候，我们往往需要添加一些备注信息来说明某个配置项的使用方法及用途，在标准 JSON 文件中是不允许添加备注的，我们可以使用 <code>strip-json-comments</code> 模块来去掉配置文件中的备注，再将其当作标准的 JSON 来解析。</p>
+<p>大多数时候，我们往往需要添加一些备注信息来说明某个配置项的使用方法及用途，在标准 JSON 文件中是不允许添加备注的，我们可以使用<code>strip-json-comments</code>模块来去掉配置文件中的备注，再将其当作标准的 JSON 来解析。</p>
 <p>比如以下是带备注信息的 JSON 配置文件：</p>
 <pre><code class="prettyprint javascript">{
-  // debug  为  true  时，用于本地调试 
+  // debug 为 true 时，用于本地调试
   &quot;debug&quot;: true,
-  //  社区名字 
+  // 社区名字
   &quot;name&quot;: &quot;Nodeclub&quot;,
-  //  社区的描述 
-  &quot;description&quot;: &quot;CNode ： Node.js 专业中文社区 &quot;,
+  // 社区的描述
+  &quot;description&quot;: &quot;CNode：Node.js 专业中文社区&quot;,
   &quot;keywords&quot;: &quot;nodejs, node, express, connect, socket.io&quot;
 }
 </code></pre>
-<p>我们可以编写一个 <code>loadJSONFile()</code> 函数来载入带有备注的 JSON 文件：</p>
+<p>我们可以编写一个<code>loadJSONFile()</code>函数来载入带有备注的 JSON 文件：</p>
 <pre><code class="prettyprint javascript">var fs = require('fs');
 var stripJsonComments = require('strip-json-comments');
 
@@ -1429,7 +1429,7 @@ var config = loadJSONFile('./config.json');
 console.log(config);
 </code></pre>
 <h4><a id="YAML__196"></a>YAML 格式</h4>
-<p><a href="http://yaml.org/">YAML</a>  是面向所有编程语言的对人类友好的数据序列化标准。其最大的优点是可读性较好，比如以下  YAML  格式的配置：</p>
+<p><a href="http://yaml.org/">YAML</a> 是面向所有编程语言的对人类友好的数据序列化标准。其最大的优点是可读性较好，比如以下 YAML 格式的配置：</p>
 <pre><code class="prettyprint yaml">name: John Smith
 age: 37
 spouse:
@@ -1461,7 +1461,7 @@ children:
   ]
 }
 </code></pre>
-<p>在  Node.js  中可以通过 <code>yamljs</code> 模块来解析  YAML  格式，比如可以编写一个 <code>loadYAMLFile()</code> 函数来载入  YAML  格式的配置文件：</p>
+<p>在 Node.js 中可以通过<code>yamljs</code>模块来解析 YAML 格式，比如可以编写一个<code>loadYAMLFile()</code>函数来载入 YAML 格式的配置文件：</p>
 <pre><code class="prettyprint javascript">var fs = require('fs');
 var YAML = require('yamljs');
 
@@ -1475,8 +1475,8 @@ console.log(config);
 <h2><a id="_251"></a>根据运行环境选择不同的配置</h2>
 <p>大多数情况下，程序在本地开发环境和生产环境中的配置信息是不一样的，比如开发时连接到的数据库里面的数据是模拟出来的，而生产环境要连接到实际的数据库上，因此我们需要让程序能根据不同的运行环境来载入不同的配置文件。</p>
 <h3><a id="_255"></a>使用单一配置文件名</h3>
-<p>以  nodeclub  项目为例，其载入的配置文件名为 <code>./config.js</code> ，项目中有一个默认配置文件 <code>./config.default.js</code> 。要运行程序，首先需要复制一份默认配置文件，并保存为 <code>./config.js</code> ，再根据当前运行环境来修改 <code>./config.js</code> 。</p>
-<p>由于 <code>./config.js</code> 文件已经被添加到 <code>.gitignore</code> 文件中，因此我们 <code>./config.js</code> 文件的修改不会被纳入到项目的版本管理中，所以不同机器中的 <code>./config.js</code> 不会产生冲突，可以使用各自的配置来启动程序。</p>
+<p>以 nodeclub 项目为例，其载入的配置文件名为<code>./config.js</code>，项目中有一个默认配置文件<code>./config.default.js</code>。要运行程序，首先需要复制一份默认配置文件，并保存为<code>./config.js</code>，再根据当前运行环境来修改<code>./config.js</code>。</p>
+<p>由于<code>./config.js</code>文件已经被添加到<code>.gitignore</code>文件中，因此我们<code>./config.js</code>文件的修改不会被纳入到项目的版本管理中，所以不同机器中的<code>./config.js</code>不会产生冲突，可以使用各自的配置来启动程序。</p>
 <h3><a id="_261"></a>通过环境变量指定配置文件名</h3>
 <p>我们可以通过环境变量来指定配置文件，比如：</p>
 <pre><code class="prettyprint bash">$ export CONFIG_FILE=&quot;./config/production.js&quot;
@@ -1493,11 +1493,11 @@ var config = require(path.resolve(process.env.CONFIG_FILE));
 var configFile = path.resolve('./config', process.env.NODE_ENV + '.js');
 var config = require(configFile);
 </code></pre>
-<h2><a id="__config___291"></a>使用  config  模块来读取配置</h2>
-<p><a href="https://www.npmjs.com/package/config">config</a>  模块是  NPM  上下载量最高的  Node.js  配置文件管理模块，其实现原理与上文中介绍的方法大同小异，在实际开发中我们可以考虑使用这个现成的模块。下面将介绍此模块的简单使用方法。</p>
-<p><code>config</code> 模块通过环境变量 <code>NODE_CONFIG_DIR</code> 来指定配置文件所在的目录，默认为 <code>./config</code> （即当前运行目录下的 <code>config</code> 目录），通过环境变量 <code>NODE_ENV</code> 来指定当前的运行环境版本。</p>
-<p>配置文件使用  JSON  格式，模块加载后，会首先载入默认的配置文件 <code>${NODE_CONFIG_DIR}/default.json</code> ，再载入文件 <code>${NODE_CONFIG_DIR}/${NODE_ENV}.json</code> ，如果配置项有冲突则覆盖默认的配置。</p>
-<p>比如我们新建默认配置文件 <code>config/default.json</code> ：</p>
+<h2><a id="_config__291"></a>使用 config 模块来读取配置</h2>
+<p><a href="https://www.npmjs.com/package/config">config</a> 模块是 NPM 上下载量最高的 Node.js 配置文件管理模块，其实现原理与上文中介绍的方法大同小异，在实际开发中我们可以考虑使用这个现成的模块。下面将介绍此模块的简单使用方法。</p>
+<p><code>config</code>模块通过环境变量<code>NODE_CONFIG_DIR</code>来指定配置文件所在的目录，默认为<code>./config</code>（即当前运行目录下的<code>config</code>目录），通过环境变量<code>NODE_ENV</code>来指定当前的运行环境版本。</p>
+<p>配置文件使用 JSON 格式，模块加载后，会首先载入默认的配置文件<code>${NODE_CONFIG_DIR}/default.json</code>，再载入文件<code>${NODE_CONFIG_DIR}/${NODE_ENV}.json</code>，如果配置项有冲突则覆盖默认的配置。</p>
+<p>比如我们新建默认配置文件<code>config/default.json</code>：</p>
 <pre><code class="prettyprint javascript">{
   // Customer module configs
   &quot;Customer&quot;: {
@@ -1514,7 +1514,7 @@ var config = require(configFile);
   }
 }
 </code></pre>
-<p>再新建 <code>production</code> 环境配置文件 <code>config/production.json</code> ：</p>
+<p>再新建<code>production</code>环境配置文件<code>config/production.json</code>：</p>
 <pre><code class="prettyprint javascript">{
   &quot;Customer&quot;: {
     &quot;dbConfig&quot;: {
@@ -1526,7 +1526,7 @@ var config = require(configFile);
   }
 }
 </code></pre>
-<p>再新建测试文件 <code>1.js</code> ：</p>
+<p>再新建测试文件<code>1.js</code>：</p>
 <pre><code class="prettyprint javascript">var config = require('config');
 console.log(config);
 </code></pre>
@@ -1535,7 +1535,7 @@ console.log(config);
    { dbConfig: { host: 'localhost', port: 5984, dbName: 'customers' },
      credit: { initialLimit: 100, initialDays: 1 } } }
 </code></pre>
-<p>假如要使用 <code>production</code> 的配置，则使用以下命令启动：</p>
+<p>假如要使用<code>production</code>的配置，则使用以下命令启动：</p>
 <pre><code class="prettyprint bash">$ export NODE_ENV=production &amp;&amp; node 1.js
 </code></pre>
 <p>则其输出将是如下结果：</p>
@@ -1543,8 +1543,8 @@ console.log(config);
    { dbConfig: { host: 'prod-db-server', port: 5984, dbName: 'customers' },
      credit: { initialLimit: 100, initialDays: 30 } } }
 </code></pre>
-<p>在 <code>production.json</code> 文件中，重新定义了 <code>Customer.dbConfig.host</code> 和 <code>Customer.credit.initialDays</code> 这两个配置项，所以在 <code>production</code> 环境中仅这两项被覆盖为新的值，而其他配置项则使用 <code>default.json</code> 中指定的值。</p>
-<p>载入 <code>config</code> 模块后，其返回的对象实际上就是当前的配置信息，同时提供了两个方法 <code>get()</code> 和 <code>has()</code> 来操作配置项。比如：</p>
+<p>在<code>production.json</code>文件中，重新定义了<code>Customer.dbConfig.host</code>和<code>Customer.credit.initialDays</code>这两个配置项，所以在<code>production</code>环境中仅这两项被覆盖为新的值，而其他配置项则使用<code>default.json</code>中指定的值。</p>
+<p>载入<code>config</code>模块后，其返回的对象实际上就是当前的配置信息，同时提供了两个方法<code>get()</code>和<code>has()</code>来操作配置项。比如：</p>
 <pre><code class="prettyprint javascript">var config = require('config');
 console.log(config);
 console.log(config.get('Customer'));
@@ -1562,32 +1562,32 @@ console.log(config.has('Customer.dbConfig.host2'));
 true
 false
 </code></pre>
-<p>其中 <code>get()</code> 用来获取指定配置，可以使用诸如 <code>Customer.dbConfig</code> 这样的格式，如果配置项不存在则会抛出异常。 <code>has()</code> 用来检测指定配置项是否存在，如果存在则返回 <code>true</code> 。</p>
-<p>关于 <code>config</code> 模块的详细使用方法可阅读其帮助文档。</p>
+<p>其中<code>get()</code>用来获取指定配置，可以使用诸如<code>Customer.dbConfig</code>这样的格式，如果配置项不存在则会抛出异常。<code>has()</code>用来检测指定配置项是否存在，如果存在则返回<code>true</code>。</p>
+<p>关于<code>config</code>模块的详细使用方法可阅读其帮助文档。</p>
 <h2><a id="_394"></a>参考资料</h2>
 <ul>
-<li><a href="http://baike.baidu.com/view/95930.htm"> 百度百科：环境变量 </a></li>
-<li><a href="http://yijiebuyi.com/blog/1bfcf43248a873b39a3471901e764b68.html">ENV  定制开发，测试，发布环境变量 </a></li>
-<li><a href="http://yijiebuyi.com/blog/ad84da0f2d945dd77cf9631c8548e02c.html">node-config  模块根据  ENV  环境变量不同加载响应的配置文件 </a></li>
-<li><a href="http://aicode.cc/article/413.html">YAML  格式 </a></li>
-<li><a href="http://segmentfault.com/a/1190000000522997">.gitignore  文件使用说明 </a></li>
+<li><a href="http://baike.baidu.com/view/95930.htm">百度百科：环境变量</a></li>
+<li><a href="http://yijiebuyi.com/blog/1bfcf43248a873b39a3471901e764b68.html">ENV 定制开发，测试，发布环境变量</a></li>
+<li><a href="http://yijiebuyi.com/blog/ad84da0f2d945dd77cf9631c8548e02c.html">node-config 模块根据 ENV 环境变量不同加载响应的配置文件</a></li>
+<li><a href="http://aicode.cc/article/413.html">YAML 格式</a></li>
+<li><a href="http://segmentfault.com/a/1190000000522997">.gitignore 文件使用说明</a></li>
 </ul>
 <h2><a id="_403"></a>相关模块</h2>
 <ul>
-<li><a href="https://www.npmjs.com/package/strip-json-comments">strip-json-comments</a> -  去掉 JSON 字符串中的备注</li>
-<li><a href="https://www.npmjs.com/package/yamljs">yamljs</a> -  解析 YAML</li>
-<li><a href="https://www.npmjs.com/package/config">config</a> -  配置文件管理</li>
+<li><a href="https://www.npmjs.com/package/strip-json-comments">strip-json-comments</a> - 去掉 JSON 字符串中的备注</li>
+<li><a href="https://www.npmjs.com/package/yamljs">yamljs</a> - 解析 YAML</li>
+<li><a href="https://www.npmjs.com/package/config">config</a> - 配置文件管理</li>
 </ul>
 ]]></description><link>http://morning.work/page/2015-09/nodejs_project_config_loader.html</link><guid isPermaLink="true">http://morning.work/page/2015-09/nodejs_project_config_loader.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 17 Sep 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[在 Node.js 中读写大文件]]></title><description><![CDATA[<p>前段时间偶然需要整理一个几百 MB 的文本文件，内容大概 370W 行，我要将每一行的数据简单格式化一下，并转存到一个新的文件中。</p>
 <p>在 Node.js 中，我们可以通过两种方式来读取文件：</p>
 <ul>
-<li>使用 <code>fs.readFile()</code> 一次性将文件内容全部读取出来，考虑到可能将来会操作几 G 大的文件，所以放弃了这种方式；</li>
-<li>使用 <code>fs.createReadStream()</code> 创建一个读文件流，这种方式可不受限于文件的大小；</li>
+<li>使用<code>fs.readFile()</code>一次性将文件内容全部读取出来，考虑到可能将来会操作几 G 大的文件，所以放弃了这种方式；</li>
+<li>使用<code>fs.createReadStream()</code>创建一个读文件流，这种方式可不受限于文件的大小；</li>
 </ul>
-<p>因此，我很顺理成章地选用了 <code>fs.createReadStream()</code> 来读取文件，自然在写文件时也使用对应的 <code>fs.createWriteStream()</code> 来做。</p>
-<p><h3>目录 </h3><ul><ul><li><a href="#_15">按行读写流</a></li><ul><li><a href="#_19">安装模块</a></li><li><a href="#_27">按行读取流</a></li><li><a href="#_88">按行写流</a></li></ul><li><a href="#_127">控制读写速度</a></li><ul><li><a href="#_129">实验</a></li><li><a href="#_245">原理</a></li></ul><li><a href="#_365">优化写文件性能</a></li><ul><li><a href="#_367">实验</a></li><li><a href="#_516">原理</a></li></ul><li><a href="#_550">总结</a></li></ul></ul></p>
+<p>因此，我很顺理成章地选用了<code>fs.createReadStream()</code>来读取文件，自然在写文件时也使用对应的<code>fs.createWriteStream()</code>来做。</p>
+<p><h3>目录</h3><ul><ul><li><a href="#_15">按行读写流</a></li><ul><li><a href="#_19">安装模块</a></li><li><a href="#_27">按行读取流</a></li><li><a href="#_88">按行写流</a></li></ul><li><a href="#_127">控制读写速度</a></li><ul><li><a href="#_129">实验</a></li><li><a href="#_245">原理</a></li></ul><li><a href="#_365">优化写文件性能</a></li><ul><li><a href="#_367">实验</a></li><li><a href="#_516">原理</a></li></ul><li><a href="#_550">总结</a></li></ul></ul></p>
 <h2><a id="_15"></a>按行读写流</h2>
-<p>由于要操作的是文本文件，并且文件中的内容每一行记录均使用换行符 <code>\n</code> 来分隔，我编写了一个模块用来按行从一个 <code>stream</code> 中读取内容，以及按行往一个 <code>stream</code> 中写入内容，下面将介绍这个模块的简单使用方法。</p>
+<p>由于要操作的是文本文件，并且文件中的内容每一行记录均使用换行符<code>\n</code>来分隔，我编写了一个模块用来按行从一个<code>stream</code>中读取内容，以及按行往一个<code>stream</code>中写入内容，下面将介绍这个模块的简单使用方法。</p>
 <h3><a id="_19"></a>安装模块</h3>
 <p>执行以下命令安装</p>
 <pre><code class="prettyprint bash">$ npm install lei-stream --save
@@ -1604,92 +1604,92 @@ readLine('./myfile.txt').go(function (data, next) {
 </code></pre>
 <p>说明：</p>
 <ul>
-<li><code>readLine()</code> 的第一个参数应该传入一个 <code>ReadStream</code> 实例，当传入的是一个字符串时，会把它当作一个文件，自动调用 <code>fs.createReadStream()</code> 来创建一个 <code>ReadStream</code></li>
-<li><code>readLine()</code> 的第二个参数为读取到一行内容时的回调函数，为了便于控制读取速度，需要在回调函数中执行 <code>next()</code> 来继续读取下一行</li>
-<li><code>readLine()</code> 的第三个参数为整个流读取完毕后的回调函数</li>
+<li><code>readLine()</code>的第一个参数应该传入一个<code>ReadStream</code>实例，当传入的是一个字符串时，会把它当作一个文件，自动调用<code>fs.createReadStream()</code>来创建一个<code>ReadStream</code></li>
+<li><code>readLine()</code>的第二个参数为读取到一行内容时的回调函数，为了便于控制读取速度，需要在回调函数中执行<code>next()</code>来继续读取下一行</li>
+<li><code>readLine()</code>的第三个参数为整个流读取完毕后的回调函数</li>
 </ul>
 <p>另外，我们也可以指定各个选项来达到更个性化的控制：</p>
 <pre><code class="prettyprint javascript">var fs = require('fs');
 var readLine = require('lei-stream').readLine;
 
-// readLineStream 第一个参数为 ReadStream 实例，也可以为文件名 
+// readLineStream 第一个参数为 ReadStream 实例，也可以为文件名
 var s = readLine(fs.createReadStream('./myfile.txt'), {
-  //  换行符，默认 \n
+  // 换行符，默认\n
   newline: '\n',
-  //  是否自动读取下一行，默认 false
+  // 是否自动读取下一行，默认 false
   autoNext: false,
-  //  编码器，可以为函数或字符串（内置编码器： json ， base64 ），默认 null
+  // 编码器，可以为函数或字符串（内置编码器：json，base64），默认 null
   encoding: function (data) {
     return JSON.parse(data);
   }
 });
 
-//  读取到一行数据时触发 data 事件 
+// 读取到一行数据时触发 data 事件
 s.on('data', function (data) {
   console.log(data);
   s.next();
 });
 
-//  流结束时触发 end 事件 
+// 流结束时触发 end 事件
 s.on('end', function () {
   console.log('end');
 });
 </code></pre>
-<p>以下是关于 <code>readLine()</code> 的第二个参数的说明：</p>
+<p>以下是关于<code>readLine()</code>的第二个参数的说明：</p>
 <ul>
-<li><code>newLine</code> 表示换行符，默认为 <code>\n</code> ，当然也可以设置为任意字符，当读取到该字符时程序会认为该行数据已结束，并触发 <code>data</code> 事件</li>
-<li><code>autoNext</code> 表示是否自动读取下一行的内容，默认为 <code>false</code> ，如果设置为 <code>true</code> ，则不需要手动执行 <code>next()</code> 函数来继续读取</li>
-<li><code>encoding</code> 为编码器函数，默认为 <code>null</code> ，表示不对内容编码，我们可以自己指定一个编码器（要求该函数返回的是一个字符串），这样在每次 <code>write()</code> 一行数据时会自动调用该函数进行预处理</li>
+<li><code>newLine</code>表示换行符，默认为<code>\n</code>，当然也可以设置为任意字符，当读取到该字符时程序会认为该行数据已结束，并触发<code>data</code>事件</li>
+<li><code>autoNext</code>表示是否自动读取下一行的内容，默认为<code>false</code>，如果设置为<code>true</code>，则不需要手动执行<code>next()</code>函数来继续读取</li>
+<li><code>encoding</code>为编码器函数，默认为<code>null</code>，表示不对内容编码，我们可以自己指定一个编码器（要求该函数返回的是一个字符串），这样在每次<code>write()</code>一行数据时会自动调用该函数进行预处理</li>
 </ul>
 <p>以下是读取数据过程中的一些说明：</p>
 <ul>
-<li>当读取到一行数据时，会触发 <code>data</code> 事件</li>
-<li>调用 <code>s.next()</code> 来读取下一行数据，如果在初始化 <code>readLine()</code> 时指定了 <code>autoNext=true</code> ，则可省略</li>
-<li>当到达流末尾时，所有数据已读取完毕，会触发 <code>end</code> 事件</li>
+<li>当读取到一行数据时，会触发<code>data</code>事件</li>
+<li>调用<code>s.next()</code>来读取下一行数据，如果在初始化<code>readLine()</code>时指定了<code>autoNext=true</code>，则可省略</li>
+<li>当到达流末尾时，所有数据已读取完毕，会触发<code>end</code>事件</li>
 </ul>
 <h3><a id="_88"></a>按行写流</h3>
 <pre><code class="prettyprint javascript">var fs = require('fs');
 var writeLineStream = require('lei-stream').writeLine;
 
-// writeLineStream 第一个参数为 ReadStream 实例，也可以为文件名 
+// writeLineStream 第一个参数为 ReadStream 实例，也可以为文件名
 var s = writeLineStream(fs.createWriteStream('./myfile.txt'), {
-  //  换行符，默认 \n
+  // 换行符，默认\n
   newline: '\n',
-  //  编码器，可以为函数或字符串（内置编码器： json ， base64 ），默认 null
+  // 编码器，可以为函数或字符串（内置编码器：json，base64），默认 null
   encoding: function (data) {
     return JSON.stringify(data);
   },
-  //  缓存的行数，默认为 0 （表示不缓存），此选项主要用于优化写文件性能，当数量缓存的内容超过该数量时再一次性写入到流中，可以提高写速度 
+  // 缓存的行数，默认为 0（表示不缓存），此选项主要用于优化写文件性能，当数量缓存的内容超过该数量时再一次性写入到流中，可以提高写速度
   cacheLines: 0
 });
 
-//  写一行 
+// 写一行
 s.write(data, function () {
-  //  回调函数可选 
+  // 回调函数可选
   console.log('wrote');
 });
 
-//  结束 
+// 结束
 s.end(function () {
-  //  回调函数可选 
+  // 回调函数可选
   console.log('end');
 });
 </code></pre>
 <p>说明：</p>
 <ul>
-<li>与 <code>readLine()</code> 相类似，调用 <code>writeLine()</code> 时的第一个参数也可以是一个字符串，此时程序会自动调用 <code>fs.createWriteStream()</code> 来创建一个 <code>WriteStream</code></li>
-<li><code>writeLine()</code> 的第二个参数为一些选项，其中 <code>newLine</code> 选项要保持与 <code>readLine()</code> 时   的 <code>newLine</code> 一致； <code>encoding</code> 选项则刚好跟 <code>readLine()</code> 的相反； <code>cacheLines</code> 选项表示缓存的数据行数，设置一个较大的值时可以一定程度提高写入性能，但也会增加写入延时，在下文将详细介绍</li>
-<li>执行 <code>s.write()</code> 来写入一行数据</li>
-<li>执行 <code>s.end()</code> 来结束写入</li>
+<li>与<code>readLine()</code>相类似，调用<code>writeLine()</code>时的第一个参数也可以是一个字符串，此时程序会自动调用<code>fs.createWriteStream()</code>来创建一个<code>WriteStream</code></li>
+<li><code>writeLine()</code>的第二个参数为一些选项，其中<code>newLine</code>选项要保持与<code>readLine()</code>时 的<code>newLine</code>一致；<code>encoding</code>选项则刚好跟<code>readLine()</code>的相反；<code>cacheLines</code>选项表示缓存的数据行数，设置一个较大的值时可以一定程度提高写入性能，但也会增加写入延时，在下文将详细介绍</li>
+<li>执行<code>s.write()</code>来写入一行数据</li>
+<li>执行<code>s.end()</code>来结束写入</li>
 </ul>
 <h2><a id="_127"></a>控制读写速度</h2>
 <h3><a id="_129"></a>实验</h3>
-<p>我们在使用 <code>fs.createReadStream()</code> 创建一个读文件流后，文件内容便源源不断地被读取出来，不断地触发 <code>data</code> 事件。然后在 <code>ReadStream</code> 的 <code>data</code> 事件里面处理，并写入到 <code>WriteStream</code> 中。然而，大多数情况下读文件的速度总比写文件的速度快，这样便导致大量的数据被积压在内存中，当要读取的文件很大时，甚至会导致因占用内存太多而导致整个 Node.js 进程崩溃。</p>
-<p>以下是我通过 <code>lei-stream</code> 编写的一个例子，按行读取数据并写入到另一个文件中（在写入文件时不等待写入完成即刻执行 <code>next()</code> 来读取下一行，用于模拟不限制读取速度）：</p>
+<p>我们在使用<code>fs.createReadStream()</code>创建一个读文件流后，文件内容便源源不断地被读取出来，不断地触发<code>data</code>事件。然后在<code>ReadStream</code>的<code>data</code>事件里面处理，并写入到<code>WriteStream</code>中。然而，大多数情况下读文件的速度总比写文件的速度快，这样便导致大量的数据被积压在内存中，当要读取的文件很大时，甚至会导致因占用内存太多而导致整个 Node.js 进程崩溃。</p>
+<p>以下是我通过<code>lei-stream</code>编写的一个例子，按行读取数据并写入到另一个文件中（在写入文件时不等待写入完成即刻执行<code>next()</code>来读取下一行，用于模拟不限制读取速度）：</p>
 <pre><code class="prettyprint javascript">var readLine = require('lei-stream').readLine;
 var writeLine = require('lei-stream').writeLine;
 
-//  一个几百 M 的文本文件 
+// 一个几百 M 的文本文件
 var inputFile = '/Volumes/Works/data/xh.txt';
 var outputFile = '/Volumes/Works/tmp/output.txt';
 
@@ -1721,7 +1721,7 @@ readLine(inputFile).go(function (data, next) {
   });
 });
 
-//  打印进度 
+// 打印进度
 function printSpeedInfo () {
   var t = msToS(getSpentTime());
   var s = counter / t;
@@ -1729,7 +1729,7 @@ function printSpeedInfo () {
   console.log('read %s lines, speed: %sL/S', counter, s.toFixed(0));
 }
 
-//  打印内存占用情况 
+// 打印内存占用情况
 function printMemoryUsage () {
   var info = process.memoryUsage();
   function mb (v) {
@@ -1751,7 +1751,7 @@ rss=713.75MB, heapTotal=726.18MB, heapUsed=704.64MB
 done. total 3722040 lines, spent 80S
 rss=709.11MB, heapTotal=726.18MB, heapUsed=695.46MB
 </code></pre>
-<p>从输出的结果中可以看出，程序启动一秒后内存占用即达到 <code>77.64MB</code> ，而在程序结束时内存占用已达到 <code>726.18MB</code> ，如果文件体积再增加一倍，估计整个程序是无法执行完成的。</p>
+<p>从输出的结果中可以看出，程序启动一秒后内存占用即达到<code>77.64MB</code>，而在程序结束时内存占用已达到<code>726.18MB</code>，如果文件体积再增加一倍，估计整个程序是无法执行完成的。</p>
 <p>为了验证限制读取速度是否有效，我将读取内容部分的程序改为这样：</p>
 <pre><code class="prettyprint javascript">readLine(inputFile).go(function (data, next) {
   counter++;
@@ -1768,7 +1768,7 @@ rss=709.11MB, heapTotal=726.18MB, heapUsed=695.46MB
   });
 });
 </code></pre>
-<p>说明：在执行 <code>output.write()</code> 时，可以传入一个回调函数，当写入成功后执行此回调函数，再继续读取下一行数据。</p>
+<p>说明：在执行<code>output.write()</code>时，可以传入一个回调函数，当写入成功后执行此回调函数，再继续读取下一行数据。</p>
 <p>重新运行程序，看到的结果如下：</p>
 <pre><code>read 30000 lines, speed: 30000L/S
 rss=45.11MB, heapTotal=28.18MB, heapUsed=11.11MB
@@ -1781,19 +1781,19 @@ end
 done. total 3722040 lines, spent 90S
 rss=62.54MB, heapTotal=45.16MB, heapUsed=16.80MB
 </code></pre>
-<p>虽然程序的执行时间由原来的 80 秒增加到 90 秒，但整个进程的内存占用稳定保持在 <code>45MB</code> ，因此即使要读取一个超大文件功能也不会受到影响。</p>
+<p>虽然程序的执行时间由原来的 80 秒增加到 90 秒，但整个进程的内存占用稳定保持在<code>45MB</code>，因此即使要读取一个超大文件功能也不会受到影响。</p>
 <h3><a id="_245"></a>原理</h3>
-<p><code>ReadAStream</code> 提供了两个函数用于控制流：</p>
+<p><code>ReadAStream</code>提供了两个函数用于控制流：</p>
 <ul>
-<li><code>ReadStream.pause()</code> 暂停读取  <a href="https://nodejs.org/api/stream.html#stream_readable_pause"> 参考文档 </a></li>
-<li><code>ReadStream.resume()</code> 重新开始读取  <a href="https://nodejs.org/api/stream.html#stream_readable_resume"> 参考文档 </a></li>
+<li><code>ReadStream.pause()</code>暂停读取 <a href="https://nodejs.org/api/stream.html#stream_readable_pause">参考文档</a></li>
+<li><code>ReadStream.resume()</code>重新开始读取 <a href="https://nodejs.org/api/stream.html#stream_readable_resume">参考文档</a></li>
 </ul>
-<p>当读取速度超出我们期望的值时，可以执行 <code>pause()</code> 先暂停，待时机符合时再执行 <code>resume()</code> 重新开始。以下是用来限制读取速度的实例：</p>
+<p>当读取速度超出我们期望的值时，可以执行<code>pause()</code>先暂停，待时机符合时再执行<code>resume()</code>重新开始。以下是用来限制读取速度的实例：</p>
 <pre><code class="prettyprint javascript">var util = require('util');
 var events = require('events');
 var fs = require('fs');
 
-//  一个几百 M 的文本文件 
+// 一个几百 M 的文本文件
 var inputFile = '/Volumes/Works/data/xh.txt';
 
 
@@ -1807,18 +1807,18 @@ function ReadStreamThrottle (stream, speed) {
   this._paused = false;
   var self = this;
 
-  //  检查速度是否太快 
+  // 检查速度是否太快
   function isTooFast () {
     var t = (Date.now() - self._lastTimestamp) / 1000;
     var bps = self._readBytesSecond / t;
     return bps &gt; speed;
   }
 
-  //  每隔一段时间检查速度 
+  // 每隔一段时间检查速度
   function checkSpeed () {
     if (isTooFast()) {
       self.pause();
-      //  直到平均速度放缓到预设的值时继续读流 
+      // 直到平均速度放缓到预设的值时继续读流
       var tid = setInterval(function () {
         if (!isTooFast()) {
           clearInterval(tid);
@@ -1856,7 +1856,7 @@ ReadStreamThrottle.prototype.resume = function () {
 };
 
 
-//  读取文件，限制速度不大于 10MB/S
+// 读取文件，限制速度不大于 10MB/S
 var MB = 1024 * 1024;
 var s = new ReadStreamThrottle(fs.createReadStream(inputFile), MB * 10);
 var bytes = 0;
@@ -1891,8 +1891,8 @@ read 134676480 bytes, speed: 9.99MB/S
 read 134742016 bytes, speed: 9.99MB/S
 end. total 134742016 bytes
 </code></pre>
-<p>从结果中可以看出，读取速度并不是固定的 10MB/S ，而是在这个范围内不断变化。其原因是程序在读取文件时，每次都会读取一定长度的内容（比如 64KB ，
-这个与系统设置的缓冲区大小有关），因此我们采用一种简单的方法来控制读取速度：每次触发 <code>data</code> 事件时，计算每秒的读取速度，如果超过预设的值则暂停读取，并每隔 100ms 检查一次，直到平均速度在预设的范围内再重新读取。</p>
+<p>从结果中可以看出，读取速度并不是固定的 10MB/S，而是在这个范围内不断变化。其原因是程序在读取文件时，每次都会读取一定长度的内容（比如 64KB，
+这个与系统设置的缓冲区大小有关），因此我们采用一种简单的方法来控制读取速度：每次触发<code>data</code>事件时，计算每秒的读取速度，如果超过预设的值则暂停读取，并每隔 100ms 检查一次，直到平均速度在预设的范围内再重新读取。</p>
 <h2><a id="_365"></a>优化写文件性能</h2>
 <h3><a id="_367"></a>实验</h3>
 <p>前文中提到，『大多数情况下读文件的速度总比写文件的速度快，这样便导致大量的数据被积压在内存中，当要读取的文件很大时，甚至会导致因占用内存太多而导致整个 Node.js 进程崩溃』，那为什么我们在复制超大文件时程序又没问题呢？</p>
@@ -1917,7 +1917,7 @@ input.on('end', function () {
   });
 });
 
-//  打印内存占用情况 
+// 打印内存占用情况
 function printMemoryUsage () {
   var info = process.memoryUsage();
   function mb (v) {
@@ -1927,7 +1927,7 @@ function printMemoryUsage () {
 }
 setInterval(printMemoryUsage, 1000);
 </code></pre>
-<p>说明：在读取文件的 <code>data</code> 事件中，直接将数据原样写入到另一个文件中，用于模拟简单的复制文件操作。</p>
+<p>说明：在读取文件的<code>data</code>事件中，直接将数据原样写入到另一个文件中，用于模拟简单的复制文件操作。</p>
 <p>程序执行结果如下：</p>
 <pre><code>rss=64.89MB, heapTotal=10.28MB, heapUsed=3.78MB
 rss=82.43MB, heapTotal=11.26MB, heapUsed=3.97MB
@@ -1935,7 +1935,7 @@ end
 rss=83.86MB, heapTotal=11.26MB, heapUsed=5.21MB
 </code></pre>
 <p>从结果中可以看出，在读取文件结束后，写文件操作也很快完成，而内存占用并没有太大起伏。</p>
-<p>于是我将 <code>data</code> 事件部分改为以下代码：</p>
+<p>于是我将<code>data</code>事件部分改为以下代码：</p>
 <pre><code class="prettyprint javascript">input.on('data', function (chunk) {
   chunk = chunk.toString();
   var lines = chunk.split('\n');
@@ -1944,7 +1944,7 @@ rss=83.86MB, heapTotal=11.26MB, heapUsed=5.21MB
   });
 });
 </code></pre>
-<p>说明：将读取出来的数据拆分成多行，并按行调用 <code>write()</code> 写入到文件中，用于模拟前文转换数据的例子。</p>
+<p>说明：将读取出来的数据拆分成多行，并按行调用<code>write()</code>写入到文件中，用于模拟前文转换数据的例子。</p>
 <p>程序运行结果如下：</p>
 <pre><code>rss=117.18MB, heapTotal=91.43MB, heapUsed=62.23MB
 rss=194.33MB, heapTotal=157.35MB, heapUsed=130.03MB
@@ -1973,14 +1973,14 @@ rss=763.31MB, heapTotal=749.80MB, heapUsed=721.34MB
 rss=762.20MB, heapTotal=749.80MB, heapUsed=725.75MB
 </code></pre>
 <p>由结果可以看出，在读取文件结束后，程序还运行了很长时间才完成了写文件操作，在此过程中内存占用不断地增加，并且很明显感觉到打印内存占用的速度越来越慢（本来应该是 1 秒作用的时间打印一次）。</p>
-<p>是不是因为频繁的 <code>write()</code> 操作导致的呢？于是我又将 <code>data</code> 事件部分的代码改为这样：</p>
+<p>是不是因为频繁的<code>write()</code>操作导致的呢？于是我又将<code>data</code>事件部分的代码改为这样：</p>
 <pre><code class="prettyprint javascript">input.on('data', function (chunk) {
   chunk = chunk.toString();
   var lines = chunk.split('\n');
   output.write(lines.join('\n') + '\n');
 });
 </code></pre>
-<p>说明：考虑到有可能是因为 <code>data</code> 事件中对数据的处理导致写入缓慢，于是同样将读取出来的数据拆分成多行，但是写入时又将这些数据合并起来，只执行一次 <code>write()</code> 。</p>
+<p>说明：考虑到有可能是因为<code>data</code>事件中对数据的处理导致写入缓慢，于是同样将读取出来的数据拆分成多行，但是写入时又将这些数据合并起来，只执行一次<code>write()</code>。</p>
 <p>程序运行结果如下：</p>
 <pre><code>rss=37.27MB, heapTotal=22.28MB, heapUsed=5.30MB
 rss=78.17MB, heapTotal=39.26MB, heapUsed=14.64MB
@@ -1988,10 +1988,10 @@ rss=98.62MB, heapTotal=39.26MB, heapUsed=14.61MB
 end
 rss=100.35MB, heapTotal=39.26MB, heapUsed=15.00MB
 </code></pre>
-<p>由结果可以看出，在 <code>data</code> 事件中对数据的处理确实影响到了读文件的性能（全部读取完毕的时间由原来的 2 秒增加到 3 秒），另外内存占用也增加了，到结果与第一个例子中的简单复制文件相差不大。</p>
-<p>由此可以确定，减少 <code>write()</code> 的次数确实能提高写文件的速度。</p>
-<p>于是，在 <code>lei-stream</code> 模块中，增加了一个新的选项 <code>cacheLines</code> 用于指定缓存的行数，当执行 <code>write()</code> 时并不会马上将结果写入到流中，仅当达到这个数量时再一次性写入。</p>
-<p>我们将『控制读写速度』章节实验例子中的 <code>writeLine()</code> 改为以下代码（增加 <code>cacheLines</code> 选项）：</p>
+<p>由结果可以看出，在<code>data</code>事件中对数据的处理确实影响到了读文件的性能（全部读取完毕的时间由原来的 2 秒增加到 3 秒），另外内存占用也增加了，到结果与第一个例子中的简单复制文件相差不大。</p>
+<p>由此可以确定，减少<code>write()</code>的次数确实能提高写文件的速度。</p>
+<p>于是，在<code>lei-stream</code>模块中，增加了一个新的选项<code>cacheLines</code>用于指定缓存的行数，当执行<code>write()</code>时并不会马上将结果写入到流中，仅当达到这个数量时再一次性写入。</p>
+<p>我们将『控制读写速度』章节实验例子中的<code>writeLine()</code>改为以下代码（增加<code>cacheLines</code>选项）：</p>
 <pre><code>var output = writeLine(outputFile, {
   cacheLines: 10000
 });
@@ -2007,9 +2007,9 @@ end
 done. total 3722040 lines, spent 13S
 rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
 </code></pre>
-<p>由结果可以看出，程序执行时间从原来的 90S 下降到 13S ，并且内存占用仍然保持在 45.16MB 。</p>
+<p>由结果可以看出，程序执行时间从原来的 90S 下降到 13S，并且内存占用仍然保持在 45.16MB。</p>
 <h3><a id="_516"></a>原理</h3>
-<p>首先看看 Node.js 源码中 <code>fs.ReadStream</code> 的 <code>write()</code> 里面是怎样的（ <a href="https://github.com/joyent/node/blob/master/lib/fs.js#L1789"> 源码 </a> ）：</p>
+<p>首先看看 Node.js 源码中<code>fs.ReadStream</code>的<code>write()</code>里面是怎样的（<a href="https://github.com/joyent/node/blob/master/lib/fs.js#L1789">源码</a>）：</p>
 <pre><code class="prettyprint javascript">WriteStream.prototype._write = function(data, encoding, cb) {
   if (!util.isBuffer(data))
     return this.emit('error', new Error('Invalid data'));
@@ -2033,23 +2033,23 @@ rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
     this.pos += data.length;
 };
 </code></pre>
-<p>由源码可以看出，每一次的 <code>write()</code> 实际上是直接调用 <code>fs.write()</code> 来写入文件的（ <code>WriteStream</code> 记录了当前文件的偏移量），当频繁调用 <code>write()</code> 来写入数据时，每一次都会创建用于 <code>fs.write()</code> 的回调函数，因此内存占用急剧升高和性能下降也就很合情合理了。</p>
-<p>** 注意： <code>lei-stream</code> 本身的设计是用于读写流，并不仅限于文件流，因此 <code>cacheLines</code> 选项并不总是能起到提升性能的作用，所以把 <code>cacheLines</code> 设计为需要手动开启 **</p>
+<p>由源码可以看出，每一次的<code>write()</code>实际上是直接调用<code>fs.write()</code>来写入文件的（<code>WriteStream</code>记录了当前文件的偏移量），当频繁调用<code>write()</code>来写入数据时，每一次都会创建用于<code>fs.write()</code>的回调函数，因此内存占用急剧升高和性能下降也就很合情合理了。</p>
+<p><strong>注意：<code>lei-stream</code>本身的设计是用于读写流，并不仅限于文件流，因此<code>cacheLines</code>选项并不总是能起到提升性能的作用，所以把<code>cacheLines</code>设计为需要手动开启</strong></p>
 <h2><a id="_550"></a>总结</h2>
-<p>前几天在 CNode 论坛看到有人提问 <a href="https://cnodejs.org/topic/55a4b5213ecc81b621bba8d0"> 『 nodejs  如何加载大数据 json 文件比如 2g  ， 3g ， 10g 』 </a> ，其实这里的问题除了文件很大之外，重点还是在『读取 JSON 字符串里面的某部分内容』。</p>
+<p>前几天在 CNode 论坛看到有人提问<a href="https://cnodejs.org/topic/55a4b5213ecc81b621bba8d0">『nodejs 如何加载大数据 json 文件比如 2g ，3g，10g』</a>，其实这里的问题除了文件很大之外，重点还是在『读取 JSON 字符串里面的某部分内容』。</p>
 <p>一般情况下，在 Node.js 中读写大文件并没有什么高深的技术，主要注意以下几点：</p>
 <ul>
 <li>数据可被拆分成小块处理（比如一些日志文件，按行读写）</li>
 <li>控制读取速度，保持读写速度同步</li>
 </ul>
-<p>本文中提到的 <code>lei-stream</code> 模块源码可从这里获得： <a href="https://github.com/leizongmin/node-lei-stream">https://github.com/leizongmin/node-lei-stream</a></p>
-]]></description><link>http://morning.work/page/2015-07/read_and_write_big_file_in_nodejs.html</link><guid isPermaLink="true">http://morning.work/page/2015-07/read_and_write_big_file_in_nodejs.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 16 Jul 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[一种简单的生产环境部署 Node.js 程序方法]]></title><description><![CDATA[<p><h3>目录 </h3><ul><ul><li><a href="#_9">配置文件</a></li><li><a href="#_67">本地开发测试</a></li><li><a href="#_78">部署应用</a></li><li><a href="#_121">扩展阅读</a></li></ul></ul></p>
-<p><img src="../../images/2014-08/girl.jpg" alt=" 我的梦想是成为一名画家 "></p>
+<p>本文中提到的<code>lei-stream</code>模块源码可从这里获得：<a href="https://github.com/leizongmin/node-lei-stream">https://github.com/leizongmin/node-lei-stream</a></p>
+]]></description><link>http://morning.work/page/2015-07/read_and_write_big_file_in_nodejs.html</link><guid isPermaLink="true">http://morning.work/page/2015-07/read_and_write_big_file_in_nodejs.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 16 Jul 2015 00:00:00 GMT</pubDate></item><item><title><![CDATA[一种简单的生产环境部署 Node.js 程序方法]]></title><description><![CDATA[<p><h3>目录</h3><ul><ul><li><a href="#_9">配置文件</a></li><li><a href="#_67">本地开发测试</a></li><li><a href="#_78">部署应用</a></li><li><a href="#_121">扩展阅读</a></li></ul></ul></p>
+<p><img src="../../images/2014-08/girl.jpg" alt="我的梦想是成为一名画家"></p>
 <p>最近在部署 Node.js 程序时，写了段简单的脚本，发觉还挺简单的，忍不住想与大家分享。</p>
 <h2><a id="_9"></a>配置文件</h2>
 <p>首先，本地测试环境和生产环境的数据库连接这些配置信息是不一样的，需要将其分开为两个文件存储
-到 <code>config</code> 目录下，比如：</p>
-<p>开发环境配置文件 <code>config/development.js</code> ：</p>
+到<code>config</code>目录下，比如：</p>
+<p>开发环境配置文件<code>config/development.js</code>：</p>
 <pre><code class="prettyprint javascript">module.exports = {
   port:  3001,
   mysql: {
@@ -2057,7 +2057,7 @@ rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
   }
 };
 </code></pre>
-<p>生产环境配置文件 <code>config/production.js</code>:</p>
+<p>生产环境配置文件<code>config/production.js</code>:</p>
 <pre><code class="prettyprint javascript">module.exports = {
   port: 80,
   mysql: {
@@ -2066,14 +2066,14 @@ rss=64.83MB, heapTotal=45.16MB, heapUsed=15.29MB
   }
 };
 </code></pre>
-<p>另外还要建立一个程序自动载入相应环境的配置，文件 <code>config/index.js</code> ：</p>
+<p>另外还要建立一个程序自动载入相应环境的配置，文件<code>config/index.js</code>：</p>
 <pre><code class="prettyprint javascript">var path = require('path');
 
-//  通过 NODE_ENV 来设置环境变量，如果没有指定则默认为生产环境 
+// 通过 NODE_ENV 来设置环境变量，如果没有指定则默认为生产环境
 var env = process.env.NODE_ENV || 'production';
 env = env.toLowerCase();
 
-//  载入配置文件 
+// 载入配置文件
 var file = path.resolve(__dirname, env);
 try {
   var config = module.exports = require(file);
@@ -2083,21 +2083,21 @@ try {
   throw err;
 }
 </code></pre>
-<p>假设应用的入口文件是 <code>app.js</code> ，可通过以下方法载入配置：</p>
+<p>假设应用的入口文件是<code>app.js</code>，可通过以下方法载入配置：</p>
 <pre><code class="prettyprint javascript">var config = require('./config');
 
 console.log('listen on port %s', config.port);
-//  如果是开发环境，将输出  listen on port 3001
-//  如果是生产环境，将输出  listen on port 80
+// 如果是开发环境，将输出 listen on port 3001
+// 如果是生产环境，将输出 listen on port 80
 </code></pre>
 <h2><a id="_67"></a>本地开发测试</h2>
-<p>为了方便，我新建一个脚本文件 <code>run</code> ，代码如下：</p>
+<p>为了方便，我新建一个脚本文件<code>run</code>，代码如下：</p>
 <pre><code class="prettyprint bash">export NODE_ENV=development
 node app
 </code></pre>
-<p>要启动程序，直接在命令行下执行 <code>./run</code> 即可。</p>
+<p>要启动程序，直接在命令行下执行<code>./run</code>即可。</p>
 <h2><a id="_78"></a>部署应用</h2>
-<p>新建部署脚本文件 <code>deploy</code> ，代码如下：</p>
+<p>新建部署脚本文件<code>deploy</code>，代码如下：</p>
 <pre><code class="prettyprint bash">git reset --hard
 git pull origin HEAD
 npm install
@@ -2110,31 +2110,31 @@ pm2 start app.js -n myapp
 需要先将代码 clone 到服务器端，比如：</p>
 <pre><code class="prettyprint bash">git clone git@github.com:leizongmin/node-uc-server.git ~/myapp
 </code></pre>
-<p>应用在服务器端运行时使用 <code>pm2</code> 工具来管理进程，所以还需要先在服务器上安装此工具：</p>
+<p>应用在服务器端运行时使用<code>pm2</code>工具来管理进程，所以还需要先在服务器上安装此工具：</p>
 <pre><code class="prettyprint bash">npm install pm2 -g
 </code></pre>
-<p>完成以上准备工作后，我们就可以通过 <code>deploy</code> 脚本来实现自动更新代码：</p>
+<p>完成以上准备工作后，我们就可以通过<code>deploy</code>脚本来实现自动更新代码：</p>
 <ul>
 <li>将本地修改提交到远程 git 仓库</li>
-<li>登录服务器，进入 <code>~/myapp</code> 目录</li>
-<li>执行 <code>./deploy</code></li>
+<li>登录服务器，进入<code>~/myapp</code>目录</li>
+<li>执行<code>./deploy</code></li>
 </ul>
 <hr>
-<p>以上程序执行的环境为 Linux ，如果开发环境是 Windows ，需要将 <code>run</code> 文件改为以下代码：</p>
+<p>以上程序执行的环境为 Linux，如果开发环境是 Windows，需要将<code>run</code>文件改为以下代码：</p>
 <pre><code class="prettyprint bash">set NODE_ENV=development
 node app
 </code></pre>
 <h2><a id="_121"></a>扩展阅读</h2>
 <ul>
-<li><a href="http://www.oschina.net/translate/goodbye-node-forever-hello-pm2"> 告别 node-forever, 拥抱 PM2</a></li>
-<li><a href="http://blog.segmentfault.com/pengedy/1190000000514886">Git 入门指引 </a></li>
+<li><a href="http://www.oschina.net/translate/goodbye-node-forever-hello-pm2">告别 node-forever,拥抱 PM2</a></li>
+<li><a href="http://blog.segmentfault.com/pengedy/1190000000514886">Git 入门指引</a></li>
 </ul>
-]]></description><link>http://morning.work/page/2014-08/deploy-nodejs-production-app.html</link><guid isPermaLink="true">http://morning.work/page/2014-08/deploy-nodejs-production-app.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 28 Aug 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[《 Node.js  入门系列》——   一些简单的排错方法（一）]]></title><description><![CDATA[<p><h3>目录 </h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_64">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined____TypeError_Cannot_read_property_xxx_of_null_112">TypeError: Cannot read property 'xxx' of undefined  或者  TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_135">检查变量是未赋值</a></li><li><a href="#_142">检查函数是否有返回值</a></li><li><a href="#_153">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_161">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
+]]></description><link>http://morning.work/page/2014-08/deploy-nodejs-production-app.html</link><guid isPermaLink="true">http://morning.work/page/2014-08/deploy-nodejs-production-app.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 28 Aug 2014 00:00:00 GMT</pubDate></item><item><title><![CDATA[《Node.js 入门系列》—— 一些简单的排错方法（一）]]></title><description><![CDATA[<p><h3>目录</h3><ul><ul><li><a href="#TypeError_undefined_is_not_a_function_64">TypeError: undefined is not a function</a></li><li><a href="#TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112">TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</a></li><ul><li><a href="#_135">检查变量是未赋值</a></li><li><a href="#_142">检查函数是否有返回值</a></li><li><a href="#_153">检查变量是否引用了某个对象不存在的属性</a></li><li><a href="#_161">检查调用函数时是否未该传递参数</a></li></ul></ul></ul></p>
 <p>俗话说“常在河边走，哪能不湿鞋”，只要动手写程序，总会时不时的冒出点问题来，
 很难一下子就写出完全正确运行的程序。哪怕只是拿别人的程序来运行，也不能保证其能
 适应各种各样的系统环境，不作任何修改就能使用。因此，学会一些简单的排错方法是很
 有必要的。</p>
-<p>在  Node.js  程序运行过程中，当出现没有被捕捉到的异常时，程序会打印出相应的出错
+<p>在 Node.js 程序运行过程中，当出现没有被捕捉到的异常时，程序会打印出相应的出错
 信息，并终止运行。比如以下出错信息：</p>
 <pre><code>f:\tmp\2013-10-7\t.js:3
 proceess.nextTick(function () {
@@ -2149,46 +2149,46 @@ ReferenceError: proceess is not defined
     at startup (node.js:119:16)
     at node.js:901:3
 </code></pre>
-<p>出错信息的第 1 行  <code>f:\tmp\2013-10-7\t.js:3</code>  指明了在文件  <code>f:\tmp\2013-10-7\t.js</code>
+<p>出错信息的第 1 行 <code>f:\tmp\2013-10-7\t.js:3</code> 指明了在文件 <code>f:\tmp\2013-10-7\t.js</code>
 的第 3 行出错了；</p>
-<p>出错信息的第 2 行是相应的源程序  <code>proceess.nextTick(function () {</code>  ；</p>
-<p>出错信息的第 3 行的  <code>^</code>  指明了在该行的具体位置  <code>proceess</code>  ；</p>
-<p>出错信息的第 4 行是具体的出错信息  <code>ReferenceError: proceess is not defined</code>  ，后面
-还有几行以  <code>at</code>  开头的内容是详细的调用堆栈信息，可以以此来追踪到整个程序的
+<p>出错信息的第 2 行是相应的源程序 <code>proceess.nextTick(function () {</code> ；</p>
+<p>出错信息的第 3 行的 <code>^</code> 指明了在该行的具体位置 <code>proceess</code> ；</p>
+<p>出错信息的第 4 行是具体的出错信息 <code>ReferenceError: proceess is not defined</code> ，后面
+还有几行以 <code>at</code> 开头的内容是详细的调用堆栈信息，可以以此来追踪到整个程序的
 执行流程。</p>
 <p>当遇到这样的出错信息时，我们首先应该看第 4 行的
-<code>ReferenceError: proceess is not defined</code>  ，前面的  <code>ReferenceError</code>  是错误对象，
-表示这是一个“非法引用”错误，其后便相应的提示信息，大概意思是“  <code>proceess</code>  未定义”
-（看不懂可以用软件翻译一下，比如  <a href="http://dict.youdao.com/"> 有道词典 </a> ），
-这时候我们再往上看原来的程序是怎么写的： <code>proceess.nextTick(function () {</code>  。
-从这个程序可以看出来，要调用的应该是  <code>process.nextTick()</code>  ，
-此处不小心把  <code>process</code>  写成了  <code>proceess</code>  ，程序自然就报错“  <code>proceess</code>  未定义”了。</p>
+<code>ReferenceError: proceess is not defined</code> ，前面的 <code>ReferenceError</code> 是错误对象，
+表示这是一个“非法引用”错误，其后便相应的提示信息，大概意思是“ <code>proceess</code> 未定义”
+（看不懂可以用软件翻译一下，比如 <a href="http://dict.youdao.com/">有道词典</a>），
+这时候我们再往上看原来的程序是怎么写的：<code>proceess.nextTick(function () {</code> 。
+从这个程序可以看出来，要调用的应该是 <code>process.nextTick()</code> ，
+此处不小心把 <code>process</code> 写成了 <code>proceess</code> ，程序自然就报错“ <code>proceess</code> 未定义”了。</p>
 <p>常见的错误对象有以下这些：</p>
 <ul>
 <li>
-<p><strong>EvalError</strong> :  错误发生在  <code>eval()</code>  函数中，一般是要使用  <code>eval()</code>  执行的代码有语法错误</p>
+<p><strong>EvalError</strong> : 错误发生在 <code>eval()</code> 函数中，一般是要使用 <code>eval()</code> 执行的代码有语法错误</p>
 </li>
 <li>
-<p><strong>RangeError</strong> :  数字的值超过 javascript 可表示的范围</p>
+<p><strong>RangeError</strong> : 数字的值超过 javascript 可表示的范围</p>
 </li>
 <li>
-<p><strong>ReferenceError</strong> :  使用了非法的引用，一般是引用了一个未定义的变量或者函数</p>
+<p><strong>ReferenceError</strong> : 使用了非法的引用，一般是引用了一个未定义的变量或者函数</p>
 </li>
 <li>
-<p><strong>SyntaxError</strong> :  在 eval() 函数调用中发生了语法错误</p>
+<p><strong>SyntaxError</strong> : 在 eval()函数调用中发生了语法错误</p>
 </li>
 <li>
-<p><strong>TypeError</strong> :  变量的类型不是预期所需的</p>
+<p><strong>TypeError</strong> : 变量的类型不是预期所需的</p>
 </li>
 <li>
-<p><strong>URIError</strong> :  在 encodeURI() 或者 decodeURI() 函数中发生的错误</p>
+<p><strong>URIError</strong> : 在 encodeURI()或者 decodeURI()函数中发生的错误</p>
 </li>
 </ul>
 <p>记住这些常见的错误对象有助于更快速地理解出错信息。</p>
 <h2><a id="TypeError_undefined_is_not_a_function_64"></a>TypeError: undefined is not a function</h2>
-<p>出现这种错误的原因是某个变量不是  <code>Function</code>  类型，却把它当函数来调用了。例如：</p>
-<p>帖子：  <a href="http://cnodejs.org/topic/516acc466d38277306395c93"> 《 node 连接 mysql 出错》 </a></p>
-<p>Node.js  代码：</p>
+<p>出现这种错误的原因是某个变量不是 <code>Function</code> 类型，却把它当函数来调用了。例如：</p>
+<p>帖子： <a href="http://cnodejs.org/topic/516acc466d38277306395c93">《node 连接 mysql 出错》</a></p>
+<p>Node.js 代码：</p>
 <pre><code>var Client = require('mysql').Client;
 var client = new Client();
 client.host = 'localhost';
@@ -2220,14 +2220,14 @@ TypeError: undefined is not a function
     at startup (node.js:119:16)
     at node.js:901:3
 </code></pre>
-<p>由出错信息可以看出，在执行  <code>new Client()</code>  时出错了，
-<code>TypeError: undefined is not a function</code>  ，也就是说，此时  <code>Client</code>  的值是
-<code>undefined</code>  。我们再往上看，可以看到  <code>var Client = require('mysql').Client</code>
-那么，应该是  <code>mysql</code>  这个模块并没有输出  <code>Client</code>  这个函数，我们可以执行
-<code>console.log(require('mysql'))</code>  来打印  <code>mysql</code>  模块的输出，也确定并没有  <code>Client</code>
-这一项，这时候就应该详细看一下  mysql  模块帮助文档以及其正确的使用方法了。</p>
-<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined____TypeError_Cannot_read_property_xxx_of_null_112"></a>TypeError: Cannot read property 'xxx' of undefined  或者  TypeError: Cannot read property 'xxx' of null</h2>
-<p>出现这种错误的原因是尝试读取一个值为  <code>undefined</code>  或  <code>null</code>  的变量的属性。比如如下代码：</p>
+<p>由出错信息可以看出，在执行 <code>new Client()</code> 时出错了，
+<code>TypeError: undefined is not a function</code> ，也就是说，此时 <code>Client</code> 的值是
+<code>undefined</code> 。我们再往上看，可以看到 <code>var Client = require('mysql').Client</code>
+那么，应该是 <code>mysql</code> 这个模块并没有输出 <code>Client</code> 这个函数，我们可以执行
+<code>console.log(require('mysql'))</code> 来打印 <code>mysql</code> 模块的输出，也确定并没有 <code>Client</code>
+这一项，这时候就应该详细看一下 mysql 模块帮助文档以及其正确的使用方法了。</p>
+<h2><a id="TypeError_Cannot_read_property_xxx_of_undefined__TypeError_Cannot_read_property_xxx_of_null_112"></a>TypeError: Cannot read property 'xxx' of undefined 或者 TypeError: Cannot read property 'xxx' of null</h2>
+<p>出现这种错误的原因是尝试读取一个值为 <code>undefined</code> 或 <code>null</code> 的变量的属性。比如如下代码：</p>
 <pre><code>var a = undefined;
 console.log(a.b);
 </code></pre>
@@ -2246,82 +2246,82 @@ console.log(a.b);
 </code></pre>
 <p>当出现这种情况时，我们可以通过以下方法来排查：</p>
 <h3><a id="_135"></a>检查变量是未赋值</h3>
-<p>假如只通过  <code>var a</code>  来声明了变量，但未赋值，此时变量的值为  <code>undefined</code>  ，示例：</p>
-<pre><code>var a; //  没有赋值 
+<p>假如只通过 <code>var a</code> 来声明了变量，但未赋值，此时变量的值为 <code>undefined</code> ，示例：</p>
+<pre><code>var a; // 没有赋值
 console.log(a.b);
 </code></pre>
 <h3><a id="_142"></a>检查函数是否有返回值</h3>
-<p>当函数没有用  <code>return</code>  来返回一个值时，那么这个函数的返回值就是  <code>undefined</code>  ，
+<p>当函数没有用 <code>return</code> 来返回一个值时，那么这个函数的返回值就是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f () {
-  //  没有返回值 
+  // 没有返回值
 }
 var a = f();
 console.log(a.b);
 </code></pre>
 <h3><a id="_153"></a>检查变量是否引用了某个对象不存在的属性</h3>
-<p>当引用了某个对象一个不存在的属性时，其值就是  <code>undefined</code>  ，示例：</p>
+<p>当引用了某个对象一个不存在的属性时，其值就是 <code>undefined</code> ，示例：</p>
 <pre><code>var obj = {};
-var a = obj.c; //  引用了一个不存在的属性 
+var a = obj.c; // 引用了一个不存在的属性
 console.log(a.b);
 </code></pre>
 <h3><a id="_161"></a>检查调用函数时是否未该传递参数</h3>
-<p>当调用某个函数时没有按要求传递足够的参数，则在函数体内该参数的值是  <code>undefined</code>  ，
+<p>当调用某个函数时没有按要求传递足够的参数，则在函数体内该参数的值是 <code>undefined</code> ，
 示例：</p>
 <pre><code>function f (a) {
   console.log(a.b);
 }
-f(); //  本来该函数需要 1 个参数 
+f(); // 本来该函数需要 1 个参数
 </code></pre>
 <hr>
 <p>扩展阅读：</p>
 <ul>
-<li><a href="http://www.cnblogs.com/aqbyygyyga/archive/2011/10/29/2228824.html">javascript 异常处理 </a></li>
+<li><a href="http://www.cnblogs.com/aqbyygyyga/archive/2011/10/29/2228824.html">javascript 异常处理</a></li>
 </ul>
-]]></description><link>http://morning.work/page/2013-10/nodejs-simple-debug-1.html</link><guid isPermaLink="true">http://morning.work/page/2013-10/nodejs-simple-debug-1.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Wed, 09 Oct 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[《 Node.js  入门系列》——  NPM  安装第三方模块常见问题]]></title><description><![CDATA[<p><h3>目录 </h3><ul><ul><li><a href="#__npm_install_xxx___5">断网的机器，没法直接  npm install xxx  怎么办？</a></li><ul><li><a href="#__github_31">模块源码没有托管到  github</a></li><li><a href="#__C___41">不需要  C++  编译的模块还有更简便的安装方法</a></li></ul><li><a href="#_48">如何使用私有的模块</a></li><ul><li><a href="#1___NPM___50">1 、搭建私有  NPM  库</a></li><li><a href="#2___js___57">2 、通过一个  js  文件来链接</a></li></ul><li><a href="#npm_install___69">npm install  时出错</a></li><ul><li><a href="#_71">域名解析出错</a></li><li><a href="#_103">其他问题</a></li></ul></ul></ul></p>
-<h2><a id="__npm_install_xxx___5"></a>断网的机器，没法直接  npm install xxx  怎么办？</h2>
-<p>在部署  Node.js  写的应用时，我们都会在应用的根目录下执行  <code>npm install</code>  来安装所有
-的依赖模块，安装第三方模块也一样，你只要找到这个模块的源码，执行  <code>npm install</code>
+]]></description><link>http://morning.work/page/2013-10/nodejs-simple-debug-1.html</link><guid isPermaLink="true">http://morning.work/page/2013-10/nodejs-simple-debug-1.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Wed, 09 Oct 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[《Node.js 入门系列》—— NPM 安装第三方模块常见问题]]></title><description><![CDATA[<p><h3>目录</h3><ul><ul><li><a href="#_npm_install_xxx__5">断网的机器，没法直接 npm install xxx 怎么办？</a></li><ul><li><a href="#_github_31">模块源码没有托管到 github</a></li><li><a href="#_C__41">不需要 C++ 编译的模块还有更简便的安装方法</a></li></ul><li><a href="#_48">如何使用私有的模块</a></li><ul><li><a href="#1_NPM__50">1、搭建私有 NPM 库</a></li><li><a href="#2_js__57">2、通过一个 js 文件来链接</a></li></ul><li><a href="#npm_install__69">npm install 时出错</a></li><ul><li><a href="#_71">域名解析出错</a></li><li><a href="#_103">其他问题</a></li></ul></ul></ul></p>
+<h2><a id="_npm_install_xxx__5"></a>断网的机器，没法直接 npm install xxx 怎么办？</h2>
+<p>在部署 Node.js 写的应用时，我们都会在应用的根目录下执行 <code>npm install</code> 来安装所有
+的依赖模块，安装第三方模块也一样，你只要找到这个模块的源码，执行 <code>npm install</code>
 即可。</p>
-<p>假如我们要安装一个叫  <code>xss</code>  的模块，因为不能直接用  <code>npm install xss</code>  来安装，
+<p>假如我们要安装一个叫 <code>xss</code> 的模块，因为不能直接用 <code>npm install xss</code> 来安装，
 首先我们得想办法获取到这个这个模块的源码。</p>
-<p>先在浏览器中打开模块的主页：  <a href="https://npmjs.org/package/xss">https://npmjs.org/package/xss</a>
+<p>先在浏览器中打开模块的主页： <a href="https://npmjs.org/package/xss">https://npmjs.org/package/xss</a>
 （如果不明白这个网址是怎么来的，
-请阅读  <a href="http://f2e.html-js.com/article/1378"> 《寻找第三方模块》 </a> ）</p>
-<p>这时候我们可以知道  xss  这个模块的源码托管在  github  上，我们可以通过  git  命令
-把源码拉下来：  <code>git clone git://github.com/leizongmin/js-xss.git</code></p>
-<p>为了能让应用访问到这个模块，我们需要把源码放在应用的  <code>node_modules</code>  目录里面，
-比如这个模块叫  <code>xss</code>  ，那么它的源码就应该在  <code>node_modules/xss</code>  目录里面。</p>
-<p>然后进入  <code>node_modules/xss</code>  目录，打开这个模块的  <code>package.json</code>  文件，看看
-<code>dependencies</code>  这一项中是否有指定依赖模块，如果有的话，按照相同的方法把其依赖
-模块也安装到这个模块的  <code>node_modules</code>  目录里。</p>
-<p>（如果不明白为什么要放到  <code>node_modules</code>  目录，
-请阅读  <a href="http://nodejs.org/api/modules.html#modules_loading_from_node_modules_folders"> 《 Node.js API - Modules 》 </a> ）</p>
-<h3><a id="__github_31"></a>模块源码没有托管到  github</h3>
-<p>假如某个模块没有将源码托管到  github  这样的开源平台上，我们照样有办法获取到它的
-源码：把  <code>https://registry.npmjs.org/ 模块名 /-/ 模块名 - 版本号 .tgz</code>  这个压缩包下载
+请阅读 <a href="http://f2e.html-js.com/article/1378">《寻找第三方模块》</a>）</p>
+<p>这时候我们可以知道 xss 这个模块的源码托管在 github 上，我们可以通过 git 命令
+把源码拉下来： <code>git clone git://github.com/leizongmin/js-xss.git</code></p>
+<p>为了能让应用访问到这个模块，我们需要把源码放在应用的 <code>node_modules</code> 目录里面，
+比如这个模块叫 <code>xss</code> ，那么它的源码就应该在 <code>node_modules/xss</code> 目录里面。</p>
+<p>然后进入 <code>node_modules/xss</code> 目录，打开这个模块的 <code>package.json</code> 文件，看看
+<code>dependencies</code> 这一项中是否有指定依赖模块，如果有的话，按照相同的方法把其依赖
+模块也安装到这个模块的 <code>node_modules</code> 目录里。</p>
+<p>（如果不明白为什么要放到 <code>node_modules</code> 目录，
+请阅读 <a href="http://nodejs.org/api/modules.html#modules_loading_from_node_modules_folders">《Node.js API - Modules》</a>）</p>
+<h3><a id="_github_31"></a>模块源码没有托管到 github</h3>
+<p>假如某个模块没有将源码托管到 github 这样的开源平台上，我们照样有办法获取到它的
+源码：把 <code>https://registry.npmjs.org/模块名/-/模块名-版本号.tgz</code> 这个压缩包下载
 下来即可。</p>
-<p>比如要下载  <code>xss</code>  模块  <code>0.0.6</code>  版本的源码，其对应的网址就是
-<code>https://registry.npmjs.org/xss/-/xss-0.0.6.tgz</code>  。把压缩包下载下来后，先解压，
-其里面的  <code>package</code>  目录即是这个模块的源码，这时候就可以按照上面说的那样安装了。</p>
-<h3><a id="__C___41"></a>不需要  C++  编译的模块还有更简便的安装方法</h3>
-<p>大多数的第三方模块都是纯  JavaScript  写的，不需要进行  C++  编译，我们只要在一台
-能使用  <code>npm install xxx</code>  安装模块的机器上把模块安装好，直接复制到应用的
-<code>node_modules</code>  目录即可。</p>
+<p>比如要下载 <code>xss</code> 模块 <code>0.0.6</code> 版本的源码，其对应的网址就是
+<code>https://registry.npmjs.org/xss/-/xss-0.0.6.tgz</code> 。把压缩包下载下来后，先解压，
+其里面的 <code>package</code> 目录即是这个模块的源码，这时候就可以按照上面说的那样安装了。</p>
+<h3><a id="_C__41"></a>不需要 C++ 编译的模块还有更简便的安装方法</h3>
+<p>大多数的第三方模块都是纯 JavaScript 写的，不需要进行 C++ 编译，我们只要在一台
+能使用 <code>npm install xxx</code> 安装模块的机器上把模块安装好，直接复制到应用的
+<code>node_modules</code> 目录即可。</p>
 <h2><a id="_48"></a>如何使用私有的模块</h2>
-<h3><a id="1___NPM___50"></a>1 、搭建私有  NPM  库</h3>
-<p>一般一些大的公司，有自己内部的  Node.js  模块库时，会尝试这种搭建私有的  NPM  库，
-搭建好之后，直接使用  <code>npm install xxxx</code>  来安装模块，但是操作难度较大，有兴趣的
+<h3><a id="1_NPM__50"></a>1、搭建私有 NPM 库</h3>
+<p>一般一些大的公司，有自己内部的 Node.js 模块库时，会尝试这种搭建私有的 NPM 库，
+搭建好之后，直接使用 <code>npm install xxxx</code> 来安装模块，但是操作难度较大，有兴趣的
 可以参考
-<a href="https://github.com/isaacs/npmjs.org">The couchdb setup for registry.npmjs.org and search.npmjs.org</a> 。</p>
-<h3><a id="2___js___57"></a>2 、通过一个  js  文件来链接</h3>
-<p>假如有一个私有模块  <code>abc</code>  ，其源码放在  <code>/npm/abc</code>  目录，我们可以直接在当前应用的
-<code>node_modules</code>  目录下创建一个文件  <code>abc.js</code> ，其内容如下：</p>
+<a href="https://github.com/isaacs/npmjs.org">The couchdb setup for registry.npmjs.org and search.npmjs.org</a>。</p>
+<h3><a id="2_js__57"></a>2、通过一个 js 文件来链接</h3>
+<p>假如有一个私有模块 <code>abc</code> ，其源码放在 <code>/npm/abc</code> 目录，我们可以直接在当前应用的
+<code>node_modules</code> 目录下创建一个文件 <code>abc.js</code>，其内容如下：</p>
 <pre><code>module.exports = require('/npm/abc');
 </code></pre>
-<p>然后就可以直接通过  <code>require('abc')</code>  来载入这个私有模块了。</p>
+<p>然后就可以直接通过 <code>require('abc')</code> 来载入这个私有模块了。</p>
 <p>当同时在开发几个模块，而这几个模块存在依赖关系时，使用这种方法也能方便调试。</p>
-<h2><a id="npm_install___69"></a>npm install  时出错</h2>
+<h2><a id="npm_install__69"></a>npm install 时出错</h2>
 <h3><a id="_71"></a>域名解析出错</h3>
 <p>有时候网络不稳定会导致安装不成功，比如显示如下出错信息：</p>
 <pre><code>npm http GET http://registry.npmjs.org/supervisor
@@ -2346,41 +2346,41 @@ npm ERR! Additional logging details can be found in:
 npm ERR! /home/lwj/npm-debug.log
 npm ERR! not ok code 0
 </code></pre>
-<p>从中可以找到  <code>syscall getaddrinfo</code>  和  <code>code EADDRINFO</code>  这两行， <code>EADDRINFO</code>  表示
-在尝试解析域名的时候出错了，没法从  <code>registry.npmjs.org</code>  上下载模块的源码，
+<p>从中可以找到 <code>syscall getaddrinfo</code> 和 <code>code EADDRINFO</code> 这两行，<code>EADDRINFO</code> 表示
+在尝试解析域名的时候出错了，没法从 <code>registry.npmjs.org</code> 上下载模块的源码，
 这时候我们只需要重新执行一遍命令即可。如果问题还没有解决，应该检查一下本地机器
-域名解析服务是否正常，某些地区  <code>registry.npmjs.org</code>  这个域名会被屏蔽。如果实在
+域名解析服务是否正常，某些地区 <code>registry.npmjs.org</code> 这个域名会被屏蔽。如果实在
 无法通过命令直接安装模块，可参考本文开头提到的方法来手动安装。</p>
 <h3><a id="_103"></a>其他问题</h3>
 <p>还有很多……</p>
-]]></description><link>http://morning.work/page/2013-09/npm-install-problems.html</link><guid isPermaLink="true">http://morning.work/page/2013-09/npm-install-problems.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 26 Sep 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[《 Node.js  入门系列》——   寻找第三方模块]]></title><description><![CDATA[<p><h3>目录 </h3><ul><ul><li><a href="#1__5">1 、知道模块名，寻找模块的文档</a></li><li><a href="#2__20">2 、不知道模块名，根据关键字搜索需要的模块</a></li></ul></ul></p>
-<h2><a id="1__5"></a>1 、知道模块名，寻找模块的文档</h2>
+]]></description><link>http://morning.work/page/2013-09/npm-install-problems.html</link><guid isPermaLink="true">http://morning.work/page/2013-09/npm-install-problems.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Thu, 26 Sep 2013 00:00:00 GMT</pubDate></item><item><title><![CDATA[《Node.js 入门系列》—— 寻找第三方模块]]></title><description><![CDATA[<p><h3>目录</h3><ul><ul><li><a href="#1_5">1、知道模块名，寻找模块的文档</a></li><li><a href="#2_20">2、不知道模块名，根据关键字搜索需要的模块</a></li></ul></ul></p>
+<h2><a id="1_5"></a>1、知道模块名，寻找模块的文档</h2>
 <p>在看别人的代码或者文章的时候，经常会遇到自己没用过的第三方模块，怎么办呢？
-其实很简单，你只要在浏览器中输入网址  <code>https://npmjs.org/package/ 模块名称</code>  ，即可
-进入这个模块的介绍页面。比如，别人的源码中出现一行  <code>var xss = require('xss')</code>  ，
-说明这里使用到了  <code>xss</code>  这个模块，在浏览器中打开  <code>https://npmjs.org/package/xss</code>
-，即可进入这个模块在  NPM  上的主页：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380023785392-1.png" alt="xss 模块的 NPM 主页 "></p>
+其实很简单，你只要在浏览器中输入网址 <code>https://npmjs.org/package/模块名称</code> ，即可
+进入这个模块的介绍页面。比如，别人的源码中出现一行 <code>var xss = require('xss')</code> ，
+说明这里使用到了 <code>xss</code> 这个模块，在浏览器中打开 <code>https://npmjs.org/package/xss</code>
+，即可进入这个模块在 NPM 上的主页：</p>
+<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380023785392-1.png" alt="xss 模块的 NPM 主页"></p>
 <p>模块主页中显示这个模块的简介、作者、当前版本号、最后更新时间、模块源码链接、
-报告  Bug  的链接和  README  页面。一般  README  页面都会简要地写出了模块的用途、用法
-等等信息，大多数模块也都是托管在  Github  上的，直接点模块源码链接（ Repository ）
-即可跳到其在  Github  上的主页，可以通过这里获得更多的帮助。</p>
-<h2><a id="2__20"></a>2 、不知道模块名，根据关键字搜索需要的模块</h2>
-<p>我们可以通过  NPM  来寻找自己需要的模块。打开  NPM  的首页  <code>https://npmjs.org/</code>  ，
-在  Logo  的右边，有一个搜索框，只要在上面输入关键字，即可搜索出相应的模块。比如
-我们要搜索“模板”相关的模块，在搜索框输入  <code>template</code>  并按回车：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380024594836-2.png" alt="NPM 搜索结果 "></p>
+报告 Bug 的链接和 README 页面。一般 README 页面都会简要地写出了模块的用途、用法
+等等信息，大多数模块也都是托管在 Github 上的，直接点模块源码链接（Repository）
+即可跳到其在 Github 上的主页，可以通过这里获得更多的帮助。</p>
+<h2><a id="2_20"></a>2、不知道模块名，根据关键字搜索需要的模块</h2>
+<p>我们可以通过 NPM 来寻找自己需要的模块。打开 NPM 的首页 <code>https://npmjs.org/</code> ，
+在 Logo 的右边，有一个搜索框，只要在上面输入关键字，即可搜索出相应的模块。比如
+我们要搜索“模板”相关的模块，在搜索框输入 <code>template</code> 并按回车：</p>
+<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380024594836-2.png" alt="NPM 搜索结果"></p>
 <p>页面中显示出了相应的模块名称、简介、作者和当前版本，直接点击模块名称即可进入这个
 模块的主页。</p>
-<p>但是，  NPM  的搜索结果中，我们没法直接看到这个模块有多少人用，最后更新时间是什么
+<p>但是， NPM 的搜索结果中，我们没法直接看到这个模块有多少人用，最后更新时间是什么
 时候了（有些模块可能已经是几年前的了），怎么办？这就要用到我压箱底多年的工具了，
 一般人我不告诉他的：</p>
-<p>在浏览器中打开  <code>http://eirikb.github.io/nipster/</code>  （由于要加载所模块的信息，可能
+<p>在浏览器中打开 <code>http://eirikb.github.io/nipster/</code> （由于要加载所模块的信息，可能
 要等一阵才能完全显示出来）：</p>
-<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380025151549-3.png" alt="Nipster 首页 "></p>
+<p><img src="http://htmljs.b0.upaiyun.com/uploads/1380025151549-3.png" alt="Nipster 首页"></p>
 <p>在搜索栏中输入关键字，会自动筛选出相应的模块。模块信息包括了模块名称、简介、
-作者、最后更新时间、 Fork  数量和收藏数量。默认按照  Fork  数量降序排序，基本上
+作者、最后更新时间、Fork 数量和收藏数量。默认按照 Fork 数量降序排序，基本上
 最前面的结果是最多人用的。</p>
-<p>上面简单介绍了两种寻找  Node.js  模块的方法，学会了这两招之后，妈妈基本上再也不用
+<p>上面简单介绍了两种寻找 Node.js 模块的方法，学会了这两招之后，妈妈基本上再也不用
 担心你找不到好模块了。</p>
 ]]></description><link>http://morning.work/page/2013-09/nodejs-find-modules.html</link><guid isPermaLink="true">http://morning.work/page/2013-09/nodejs-find-modules.html</guid><dc:creator><![CDATA[老雷]]></dc:creator><pubDate>Tue, 24 Sep 2013 00:00:00 GMT</pubDate></item></channel></rss>
