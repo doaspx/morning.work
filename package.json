@@ -1,6 +1,6 @@
 {
   "name": "morning.work",
-  "version": "2015.12.6",
+  "version": "2016.1.7",
   "description": "http://morning.work",
   "main": "build/index.js",
   "scripts": {

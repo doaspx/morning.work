@@ -66,7 +66,7 @@ pre code {
 }
 h2 {
   border-bottom: 1px solid #CCC;
-  margin-top: 32px;
+  margin-top: 52px;
 }
 a {
   color: #008E59;
@@ -295,7 +295,7 @@ download(source, target, progress, (err, filename) =&gt; {
 </ul>
 <p>然后再编写一个<code>download()</code>函数来判断<code>source</code>参数，并选择使用<code>downloadFile()</code>或者<code>copyFile()</code>来完成请求。</p>
 <h3><a id="2_227"></a>2、编写程序</h3>
-<p>在本项目中，所有的 ES2015 源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在**「发布模块」**小节中介绍。</p>
+<p>在本项目中，所有的 ES2015 源程序均保存在<code>src</code>目录下，发布项目时会执行相应的命令将其编译并输出到<code>lib</code>目录，具体方法在 <strong>「发布模块」</strong> 小节中介绍。</p>
 <p>实现<code>copyFile()</code>函数，新建文件<code>src/copy.js</code>：</p>
 <pre><code class="prettyprint javascript">import fs from 'fs';
 
