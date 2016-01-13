@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>利用阿里云 OSS 搭建私有 Docker 仓库 - 早起搬砖 morning.work</title>
+<style>
+@media (min-width: 900px) {
+  html {
+    background-color: #f7f7f8;
+  }
+  body {
+    background-color: #fff;
+    padding: 0 50px;
+  }
+}
+body {
+  /*font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;*/
+  width: 92%;
+  max-width: 800px;
+  margin: auto;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.8);
+  -webkit-font-smoothing: antialiased;
+  word-break: break-word;
+  font-size: 100%;
+  line-height: 1.8;
+  font-family: 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, Helvetica, sans-serif;
+}
+b, strong, h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+#ds-thread {
+  margin-top: 20px;
+}
+blockquote {
+  font-size: 14px;
+  color: #333;
+  padding: 8px 0 8px 2.5em;
+  font-style: italic;
+  background-color: #f7f7f8;
+  margin: 0;
+  border-left: 4px solid #ddd;
+}
+code {
+  padding: 0 0.4em;
+  font-size: 0.875em;
+  word-break: break-word;
+  color: #008;
+  font-family: Consolas,Menlo,Monaco,"Courier New",monospace;
+  font-weight: 400;
+  text-rendering: optimizeSpeed;
+  border-radius: 3px;
+}
+pre {
+  line-height: 1.45;
+  padding: 16px;
+  background-color: #f7f7f8;
+  border-radius: 3px;
+}
+pre code {
+  padding: 0;
+  color: rgba(0,0,0,.9);
+}
+h2 {
+  border-bottom: 1px solid #CCC;
+  margin-top: 52px;
+}
+a {
+  color: #008E59;
+  text-decoration: none;
+}
+a:hover {
+  color: #B60000;
+}
+hr {
+  border: none;
+  border-bottom: 2px solid #CCC;
+  margin: 20px 0 40px 0;
+}
+table {
+  max-width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td, th {
+  border: 1px solid #CCC;
+  padding: 4px 16px;
+}
+#title {
+  margin-bottom: 0;
+  line-height: 1.2em;
+  margin-top: 2em;
+}
+#date {
+  font-size: 87.5%;
+  margin-top: 1em;
+}
+#nav {
+  border-bottom: 2px solid #eee;
+  font-size: 18px;
+}
+#license {
+  font-size: 14px;
+  background-color: #f7f7f8;
+  padding: 16px 6px;
+}
+#content {
+  min-height: 200px;
+  margin-top: 4em;
+}
+#content img {
+  display: block;
+  max-width: 100%;
+  margin: auto;
+}
+li > p {
+  margin-top: 5px;
+  margin-bottom: 0.4em;
+}
+</style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="http://morning.work" target="_self">早起搬砖 morning.work</a>
+<a href="http://morning.work/rss.xml" target="_blank" title="订阅 早起搬砖 morning.work">
+  <img style="vertical-align:middle;" width="20" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUzSURBVHjavFdbbFRVFF3nPjoz7dTWTittaW0jUDRAUqaNojyqREnEQKgfUj9MqqAmhqRt/OCD4CuY+Kckoh+aiGKC+gMJbdHoRysJ8dkhhmJLNdDKtJU+6GMK87j3Hs85d2Z6HzNtMYWb3Dn3NWftvfba+5xNYDl+e6Fkj6yqb/oDRbWq14vlPBLRKCITkxf0ROLt+hNjp1PPSRK4kA3vF1dXNRcWlyA2OQU9eos9opAkAiKxD+XkKO6t15aRWO7J/MgmAZU8MEgexgZHMX518Dh72sYMmVKShnxWuWHdHtxKIDIYTgMuDzgfmSOIQkYMpdUF8OY92Hytt4/jvkg47czzU16iQovM3QFwmNck+Yyduu7D6NA0Z6JR4THntFs9V4tWQg6Ui3s6MwKDncsFTnXKLJhDSeUK3AgPtyhccDzmVs999buRt/1Vm4i0od+hX7+MRG87jPGB/w1u8FPj9xEw7McVrnYuOCvtpjTth3J/nTg99c8LRhKhr6D3dTB5R24bXFwbMXBsyZzeoXaycEpJ95TB09AGX/NpqLVNtw8urnVzLvHjFNxiFqRy2OOHuqUVnue+ACkoWzo4O6lGzTmuHq6nPvY2m9rVqjrIK2rMEKxqyG5NPAKt+wjo0LklgfNxJkZMA3KJvqRUk3z5UFY3QH14P0h+WUY79HPvgv7VuSg4ZRGY1YgZgqXmORccF17sy2ehnf9AeO085K2HQFbtXBScj0LcpgF2cN+WV+DZ/LJQu6gD4R7oV7pBJwbSgtMvfiPoVp56DySwxm7EtkMs1WdAB7qzggsDJKQYsHucSkOudrkiCPWR/fA2nYCn8SNIK4NptSMyAu3sAdDRkIsJdfth0LzSrODUoPNZ4KI9SxJI5UHk7D4GdQfz2us31c7CoHMjRkKuDPHseCMrONVhNcDJwMJpKFVvg9L4OaTiNWm1x789KCqkrXhVBiEz0WYCT2nAzQAD1/vaETv1GrRfP4Vx5cfMNcDPwvP0h0DhanPym7OIf/+O67vcJ1/PCJ4KgdzaUP6Wz+dU+5yIL6fV+PsHGAOdwlPpvvUOyeeAVGyCdqkDNB6DPjsBSrnndfOGevOh3RhGItxvA+fX1CtbGFhgYUFkFMZPR6F1HnClHq8HyubWtJexX06CRmdt33hrd7nA7SFY4qoGpnYuOKcRykPPgDCBcsHx9Iv+fNL2PueBehCWUfYQIIMGLOCcOmXDXsh1+yCt35tUPfvzGFuSvzvoinXOxqa02qOhM6733nVP2MAdaej2XN11DPKjLZCD+yBvahGCo7JfTKAN9UD7s8Oe9zUNIhz8fWI8DG2k38WCFdxugANcXrvTVd1IEbuv3Jour7Hzn7jLMBNfKs7R3i67gRVrbeCOEDhinmWhAatsqdquM2XzHZINhK2cqTjHr/XZdVJUbgN3MWAVXKbSyg9jesRW2xP9di+lwrL5ojM3m2H/kG9hwcIA37c71W6wJdW2J2S5nrjYbq/t1AHAhJsKQeyfPvf6IMJgghPJhFZ4x0KlfLFvt22du45Au/A1SOlGc0P672XXwhLtOcM0kTTEMMd0qkVmMNXxMd/tsedUjInr4SQDgOfeXMSiN0FCL5WHah4L1qqYXPJOJlttd+a5M+YpcG5poLYKQ5f+6JJ4r8bbJYP47hq4r7QAs9PjYNhHJd4o8l5taiwuOpa7AS4XKqI/5NjJbTnaWK92nLdLuhQAJayRNMiygXPBeQN+Qbvu0zDc3y+aUzhbkGR73sI7ljvUnndx2q3t+X8CDAD66FtrIL864AAAAABJRU5ErkJggg==">
+</a>
+  </nav>
+
+
+  <h1 id="title">利用阿里云 OSS 搭建私有 Docker 仓库</h1>
+  <div id="date">
+              <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>      
+    创作于 2016-01-14    </div>
+
+  <article id="content">
+    <h2><a id="_2"></a>前言</h2>
+<p>最近开始研究 Docker 的应用，于是打算 <strong>搭建一个私有的 Docker 仓库，并使用阿里云的 OSS 作为存储引擎</strong> 。从网上搜索到的资料大都是比较旧的，新版本的 Registry 服务与旧版本的差别比较大，瞎折腾了一天，踩坑无数。突然有感， <strong>网上的过时资料（或者说得不清不楚的）真是坑死人不偿命</strong> ，还是得把这两天摸索出来的门道记录下来，一是好让自己过一段时间后再部署 Docker 仓库时不用重踩一次坑，二来也顺便给后来者提个醒。</p>
+<h2><a id="_7"></a>系统环境</h2>
+<h3><a id="docker_9"></a>客户端<code>docker</code>版本：</h3>
+<pre><code>docker version
+Client:
+ Version:      1.9.1
+ API version:  1.21
+ Go version:   go1.4.3
+ Git commit:   a34a1d5
+ Built:        Fri Nov 20 17:56:04 UTC 2015
+ OS/Arch:      darwin/amd64
+
+Server:
+ Version:      1.9.1
+ API version:  1.21
+ Go version:   go1.4.3
+ Git commit:   a34a1d5
+ Built:        Fri Nov 20 17:56:04 UTC 2015
+ OS/Arch:      linux/amd64
+</code></pre>
+<h3><a id="docker_30"></a>服务器端<code>docker</code>版本：</h3>
+<pre><code>Boot2Docker version 1.9.1, build master : cef800b - Fri Nov 20 19:33:59 UTC 2015
+Docker version 1.9.1, build a34a1d5
+</code></pre>
+<h3><a id="dockercompose_37"></a>客户端<code>docker-compose</code>版本：</h3>
+<pre><code>docker-compose version 1.5.2, build 7240ff3
+docker-py version: 1.5.0
+CPython version: 2.7.9
+OpenSSL version: OpenSSL 1.0.1j 15 Oct 2014
+</code></pre>
+<p>如果系统没有<code>docker-compose</code>命令，可以执行以下命令安装：</p>
+<pre><code class="prettyprint bash">$ curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose
+$ chmod +x /usr/local/bin/docker-compose
+</code></pre>
+<h2><a id="_Registry__54"></a>启动 Registry 服务</h2>
+<h3><a id="_56"></a>安装</h3>
+<p>为了发挥 Docker 容器技术的优势，我们直接使用 Docker 镜像来部署服务。</p>
+<p>首先在 <strong>服务器端</strong> 新建工作目录并进入该目录：</p>
+<pre><code class="prettyprint bash">$ mkdir my_registry &amp;&amp; cd my_registry
+</code></pre>
+<p>在当前目录下新建文件<code>docker-compose.yml</code>：</p>
+<pre><code>registry:
+  restart: always
+  image: &quot;registry:2&quot;
+  ports:
+    - 127.0.0.1:5000:5000
+  volumes:
+    - ./auth:/auth
+    - ./data:/var/lib/registry
+  environment:
+    - REGISTRY_AUTH=htpasswd
+    - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+    - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+</code></pre>
+<p>在启动 Registry 服务时，需要用到以下两个目录：</p>
+<ul>
+<li><code>auth</code>目录用于存放<code>docker login</code>时的账号和密码</li>
+<li><code>data</code>目录用于存放<code>docker push</code>时上传上来的文件</li>
+</ul>
+<p>执行以下命令新建这两个目录：</p>
+<pre><code class="prettyprint bash">$ mkdir auth &amp;&amp; mkdir data
+</code></pre>
+<p>接着，创建一个测试账号（用户名：<code>test</code>，密码：<code>123456</code>）并保存到<code>auth/htpasswd</code>中：</p>
+<pre><code class="prettyprint bash">$ htpasswd -Bbn test 123456 &gt; auth/htpasswd
+</code></pre>
+<p>现在我们来启动 Registry 服务：</p>
+<pre><code class="prettyprint bash">$ docker-compose up -d
+</code></pre>
+<p>由于本地没有名为<code>registry:2</code>的镜像，控制台可能会打印出如下信息然后暂停一阵：</p>
+<pre><code>Pulling registry (registry:2)...
+</code></pre>
+<p>稍等一两分钟，可以看到控制台打印出如下信息则说明已经启动成功了：</p>
+<pre><code>Creating dockertest_registry_1
+Attaching to dockertest_registry_1
+registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=warning msg=&quot;No HTTP secret provided - generated random secret. This may cause problems with uploads if multiple registries are behind a load-balancer. To provide a shared secret, fill in http.secret in the configuration file or set the REGISTRY_HTTP_SECRET environment variable.&quot; go.version=go1.5.2 instance.id=25aa4d1d-0510-4cb6-9006-1083bff5fc15 version=v2.2.1
+registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=info msg=&quot;redis not configured&quot; go.version=go1.5.2 instance.id=25aa4d1d-0510-4cb6-9006-1083bff5fc15 version=v2.2.1
+registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=info msg=&quot;using inmemory blob descriptor cache&quot; go.version=go1.5.2 instance.id=25aa4d1d-0510-4cb6-9006-1083bff5fc15 version=v2.2.1
+registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=info msg=&quot;Starting upload purge in 11m0s&quot; go.version=go1.5.2 instance.id=25aa4d1d-0510-4cb6-9006-1083bff5fc15 version=v2.2.1
+registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=info msg=&quot;listening on [::]:5000&quot; go.version=go1.5.2 instance.id=25aa4d1d-0510-4cb6-9006-1083bff5fc15 version=v2.2.1
+</code></pre>
+<h3><a id="_124"></a>测试</h3>
+<p>现在再打开一个命令行窗口，并进入<code>my_registry</code>目录。</p>
+<p>执行以下命令创建一个新镜像：</p>
+<pre><code class="prettyprint bash">$ docker tag registry:2 127.0.0.1:5000/test/registry
+</code></pre>
+<p>说明：镜像名为<code>127.0.0.1:5000/test/registry</code>，其中<code>127.0.0.1:5000</code>表示服务器地址，<code>test/registry</code>表示镜像名。</p>
+<p>上传之前要先登录：</p>
+<pre><code class="prettyprint bash">$ docker login 127.0.0.1:5000
+</code></pre>
+<p>说明：按提示输入上文创建的用户名和密码，邮箱可以不用填写。</p>
+<p>登陆成功后，执行以下命令即可上传：</p>
+<pre><code class="prettyprint bash">$ docker push 127.0.0.1:5000/test/registry
+</code></pre>
+<h2><a id="_OSS_151"></a>配置阿里云 OSS</h2>
+<p>首先在刚才执行<code>docker-compose up</code>的命令行窗口中按<code>CTRL + C</code>退出服务。</p>
+<p>将文件<code>docker-compose.yml</code>改为以下内容：</p>
+<pre><code>registry:
+  restart: always
+  image: &quot;registry:2&quot;
+  ports:
+    - 127.0.0.1:5000:5000
+  volumes:
+    - ./auth:/auth
+  environment:
+    - REGISTRY_AUTH=htpasswd
+    - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+    - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+    - REGISTRY_STORAGE=oss
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+</code></pre>
+<p>说明：由于使用阿里云 OSS 作为存储引擎，所以不需要再将文件存储到本地，因此将<code>volumes</code>中的<code>data</code>目录配置去掉；<code>environment</code>新增了<code>REGISTRY_STORAGE</code>系列的环境变量配置，需要将该部分的值替换为对应的<code>accesskey_id</code>、<code>accesskey_secret</code>、<code>region</code>、<code>bucket</code>和<code>endpoint</code>等信息。</p>
+<p>删除<code>data</code>目录并重新启动服务：</p>
+<pre><code class="prettyprint bash">$ rm -Rf data &amp;&amp; docker-compose up
+</code></pre>
+<p>再执行刚才的命令上传镜像：</p>
+<pre><code class="prettyprint bash">$ docker push 127.0.0.1:5000/test/registry
+</code></pre>
+<p>可以感觉到这次的上传速度没有第一次的快，因为它还需要上传到阿里云 OSS。待上传完毕，可以打开阿里云 OSS 的控制台界面检查文件是否被正确上传上去了。</p>
+<h2><a id="_SSL__194"></a>配置 SSL 证书</h2>
+<p>如果我们要在客户端（不是在服务器端测试）<code>pull</code>或<code>push</code>镜像时，<code>docker</code>使用的是<code>https</code>协议，因此会报<code>unable to ping registry endpoint</code>错误：</p>
+<pre><code>The push refers to a repository [registry.example.com:5000/test] (len: 1)
+unable to ping registry endpoint https://registry.example.com:5000/v0/
+v2 ping attempt failed with error: Get https://registry.example.com:5000/v2/: dial tcp registry.example.com:5000: i/o timeout
+ v1 ping attempt failed with error: Get https://registry.example.com:5000/v1/_ping: dial tcp 199.99.99.9:9000: i/o timeout
+</code></pre>
+<p>所以必须要配置 SSL 证书。</p>
+<h3><a id="_207"></a>安装</h3>
+<p>首先需要准备证书文件，分别保存到<code>auth/domain.crt</code>和<code>auth/domain.key</code>中。</p>
+<p>新建 Nginx 的配置文件<code>auth/nginx.conf</code>：</p>
+<pre><code>upstream docker-registry {
+  server registry:5000;
+}
+
+## Set a variable to help us decide if we need to add the
+## 'Docker-Distribution-Api-Version' header.
+## The registry always sets this header.
+## In the case of nginx performing auth, the header will be unset
+## since nginx is auth-ing before proxying.
+map $upstream_http_docker_distribution_api_version $docker_distribution_api_version {
+  'registry/2.0' '';
+  default registry/2.0;
+}
+
+server {
+  listen 443 ssl;
+  server_name myregistrydomain.com;
+
+  # SSL
+  ssl_certificate /etc/nginx/conf.d/domain.crt;
+  ssl_certificate_key /etc/nginx/conf.d/domain.key;
+
+  # Recommendations from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  ssl_protocols TLSv1.1 TLSv1.2;
+  ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+
+  # disable any limits to avoid HTTP 413 for large image uploads
+  client_max_body_size 0;
+
+  # required to avoid HTTP 411: see Issue #1486 (https://github.com/docker/docker/issues/1486)
+  chunked_transfer_encoding on;
+
+  location /v2/ {
+    # Do not allow connections from docker 1.5 and earlier
+    # docker pre-1.6.0 did not properly set the user agent on ping, catch &quot;Go *&quot; user agents
+    if ($http_user_agent ~ &quot;^(docker\/1\.(3|4|5(?!\.[0-9]-dev))|Go ).*\$&quot; ) {
+      return 404;
+    }
+
+    # To add basic authentication to v2 use auth_basic setting.
+    auth_basic &quot;Registry realm&quot;;
+    auth_basic_user_file /etc/nginx/conf.d/nginx.htpasswd;
+
+    ## If $docker_distribution_api_version is empty, the header will not be added.
+    ## See the map directive above where this variable is defined.
+    add_header 'Docker-Distribution-Api-Version' $docker_distribution_api_version always;
+
+    proxy_pass                          http://docker-registry;
+    proxy_set_header  Host              \$http_host;   # required for docker client's sake
+    proxy_set_header  X-Real-IP         \$remote_addr; # pass on real client's IP
+    proxy_set_header  X-Forwarded-For   \$proxy_add_x_forwarded_for;
+    proxy_set_header  X-Forwarded-Proto \$scheme;
+    proxy_read_timeout                  900;
+  }
+}
+</code></pre>
+<p>将文件<code>docker-compose.yml</code>改为如下内容：</p>
+<pre><code>nginx:
+  image: &quot;nginx:1.9&quot;
+  ports:
+    - 443:443
+  links:
+    - registry:registry
+  volumes:
+    - ./auth/:/etc/nginx/conf.d
+
+registry:
+  restart: always
+  image: &quot;registry:2&quot;
+  ports:
+    - 127.0.0.1:5000:5000
+  environment:
+    - REGISTRY_STORAGE=oss
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+</code></pre>
+<p>说明：删除<code>registry</code>项目的<code>environment</code>中<code>REGISTRY_AUTH</code>开头的变量以及<code>volumes</code>项，因为<code>auth</code>认证已经在 Nginx 中配置了。</p>
+<p>执行以下命令启动服务：</p>
+<pre><code>$ docker-compose up
+</code></pre>
+<p>说明：如果本地不存在名为<code>nginx:1.9</code>的镜像，控制台可能会打印出<code>Pulling nginx (nginx:1.9)...</code>并先下载该镜像。</p>
+<h3><a id="_309"></a>测试</h3>
+<p>假设刚才配置的证书域名为<code>docker.registry.ucdok.com</code>，现在我们 <strong>在客户端执行以下命令</strong> 登录：</p>
+<pre><code class="prettyprint bash">$ docker login docker.registry.ucdok.com
+</code></pre>
+<p>生成新的镜像：</p>
+<pre><code class="prettyprint bash">$ docker pull ubuntu
+$ docker tag ubuntu docker.registry.ucdok.com/test/ubuntu
+</code></pre>
+<p>上传新的镜像：</p>
+<pre><code class="prettyprint bash">$ docker push docker.registry.ucdok.com/test/ubuntu
+</code></pre>
+<h2><a id="_331"></a>其他问题</h2>
+<h3><a id="_333"></a>增加用户</h3>
+<p>可以执行<code>htpasswd</code>命令来创建，并将其保存到<code>auth/htpasswd</code>文件中：</p>
+<pre><code>$ htpasswd -Bbn username password &gt;&gt; auth/htpasswd
+</code></pre>
+<h3><a id="_341"></a>在后台启动服务</h3>
+<p>启动服务时增加<code>-d</code>参数：</p>
+<pre><code class="prettyprint bash">$ docker-compose up -d
+</code></pre>
+<h3><a id="_349"></a>停止后台服务</h3>
+<p>在<code>docker-compose.yml</code>文件所在目录执行以下命令：</p>
+<pre><code>$ docker-compose stop
+</code></pre>
+<h2><a id="_358"></a>相关链接</h2>
+<ul>
+<li><a href="https://hub.docker.com/_/registry/">Containerized docker registry</a></li>
+<li><a href="https://github.com/docker/compose/releases">docker-compose releases</a></li>
+<li><a href="https://docs.docker.com/registry/deploying/">Deploying a registry server</a></li>
+<li><a href="https://docs.docker.com/registry/nginx/#gotchas">Authenticating proxy with nginx</a></li>
+<li><a href="https://docs.docker.com/compose/compose-file/">Compose file reference</a></li>
+<li><a href="https://imququ.com/post/letsencrypt-certificate.html">Let's Encrypt，免费好用的 HTTPS 证书</a></li>
+<li><a href="https://buy.wosign.com/free/">沃通免费 SSL 证书申请</a></li>
+</ul>
+
+  </article>
+
+  <p id="license">
+  <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本作品由           <a href="http://ucdok.com" title="Node.js/JavaScript程序员" xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName" rel="cc:attributionURL">老雷</a>       创作，采用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a> 进行许可。
+  </p>
+
+</body>
+</html>
+
+<link rel="stylesheet" href="//cdn.staticfile.org/prettify/r298/prettify.min.css">
+<script src="//cdn.staticfile.org/prettify/r298/prettify.min.js"></script>
+<script>
+prettyPrint();
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-26599868-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/2016-01/deploying-your-own-private-docker-registry.html" data-title="利用阿里云 OSS 搭建私有 Docker 仓库 - 早起搬砖 morning.work" data-url="http://morning.work/page/2016-01/deploying-your-own-private-docker-registry.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {
+  short_name: "morningwork"
+};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';
+  ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- 多说公共JS代码 end -->
+
