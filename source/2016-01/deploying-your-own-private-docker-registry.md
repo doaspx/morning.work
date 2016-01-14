@@ -11,7 +11,7 @@ author: 老雷
 
 ## 系统环境
 
-### 客户端`docker`版本：
+### 客户端docker版本
 
 ```
 docker version
@@ -32,14 +32,14 @@ Server:
  OS/Arch:      linux/amd64
 ```
 
-### 服务器端`docker`版本：
+### 服务器端docker版本
 
 ```
 Boot2Docker version 1.9.1, build master : cef800b - Fri Nov 20 19:33:59 UTC 2015
 Docker version 1.9.1, build a34a1d5
 ```
 
-### 客户端`docker-compose`版本：
+### 客户端docker-compose版本
 
 ```
 docker-compose version 1.5.2, build 7240ff3
@@ -313,23 +313,23 @@ $ docker-compose up
 
 ### 测试
 
-假设刚才配置的证书域名为`docker.registry.ucdok.com`，现在我们 **在客户端执行以下命令** 登录：
+假设刚才配置的证书域名为`docker.ucdok.com`，现在我们 **在客户端执行以下命令** 登录：
 
 ```bash
-$ docker login docker.registry.ucdok.com
+$ docker login docker.ucdok.com
 ```
 
 生成新的镜像：
 
 ```bash
 $ docker pull ubuntu
-$ docker tag ubuntu docker.registry.ucdok.com/test/ubuntu
+$ docker tag ubuntu docker.ucdok.com/test/ubuntu
 ```
 
 上传新的镜像：
 
 ```bash
-$ docker push docker.registry.ucdok.com/test/ubuntu
+$ docker push docker.ucdok.com/test/ubuntu
 ```
 
 

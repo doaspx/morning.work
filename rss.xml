@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Thu, 14 Jan 2016 05:35:49 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[利用阿里云 OSS 搭建私有 Docker 仓库]]></title><description><![CDATA[<h2><a id="_2"></a>前言</h2>
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[早起搬砖 morning.work]]></title><description><![CDATA[早起搬砖 morning.work]]></description><link>http://morning.work</link><generator>RSS for Node</generator><lastBuildDate>Thu, 14 Jan 2016 05:37:39 GMT</lastBuildDate><atom:link href="http://morning.work/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[zh-CN,en]]></language><ttl>60</ttl><item><title><![CDATA[利用阿里云 OSS 搭建私有 Docker 仓库]]></title><description><![CDATA[<h2><a id="_2"></a>前言</h2>
 <p>最近开始研究 Docker 的应用，于是打算 <strong>搭建一个私有的 Docker 仓库，并使用阿里云的 OSS 作为存储引擎</strong> 。从网上搜索到的资料大都是比较旧的，新版本的 Registry 服务与旧版本的差别比较大，瞎折腾了一天，踩坑无数。突然有感， <strong>网上的过时资料（或者说得不清不楚的）真是坑死人不偿命</strong> ，还是得把这两天摸索出来的门道记录下来，一是好让自己过一段时间后再部署 Docker 仓库时不用重踩一次坑，二来也顺便给后来者提个醒。</p>
 <h2><a id="_7"></a>系统环境</h2>
-<h3><a id="docker_9"></a>客户端<code>docker</code>版本：</h3>
+<h3><a id="_docker__9"></a>客户端 docker 版本</h3>
 <pre><code>docker version
 Client:
  Version:      1.9.1
@@ -19,11 +19,11 @@ Server:
  Built:        Fri Nov 20 17:56:04 UTC 2015
  OS/Arch:      linux/amd64
 </code></pre>
-<h3><a id="docker_30"></a>服务器端<code>docker</code>版本：</h3>
+<h3><a id="_docker__30"></a>服务器端 docker 版本</h3>
 <pre><code>Boot2Docker version 1.9.1, build master : cef800b - Fri Nov 20 19:33:59 UTC 2015
 Docker version 1.9.1, build a34a1d5
 </code></pre>
-<h3><a id="dockercompose_37"></a>客户端<code>docker-compose</code>版本：</h3>
+<h3><a id="_dockercompose__37"></a>客户端 docker-compose 版本</h3>
 <pre><code>docker-compose version 1.5.2, build 7240ff3
 docker-py version: 1.5.0
 CPython version: 2.7.9
@@ -219,15 +219,15 @@ registry:
 </code></pre>
 <p>说明：如果本地不存在名为<code>nginx:1.9</code>的镜像，控制台可能会打印出<code>Pulling nginx (nginx:1.9)...</code>并先下载该镜像。</p>
 <h3><a id="_309"></a>测试</h3>
-<p>假设刚才配置的证书域名为<code>docker.registry.ucdok.com</code>，现在我们 <strong>在客户端执行以下命令</strong> 登录：</p>
-<pre><code class="prettyprint bash">$ docker login docker.registry.ucdok.com
+<p>假设刚才配置的证书域名为<code>docker.ucdok.com</code>，现在我们 <strong>在客户端执行以下命令</strong> 登录：</p>
+<pre><code class="prettyprint bash">$ docker login docker.ucdok.com
 </code></pre>
 <p>生成新的镜像：</p>
 <pre><code class="prettyprint bash">$ docker pull ubuntu
-$ docker tag ubuntu docker.registry.ucdok.com/test/ubuntu
+$ docker tag ubuntu docker.ucdok.com/test/ubuntu
 </code></pre>
 <p>上传新的镜像：</p>
-<pre><code class="prettyprint bash">$ docker push docker.registry.ucdok.com/test/ubuntu
+<pre><code class="prettyprint bash">$ docker push docker.ucdok.com/test/ubuntu
 </code></pre>
 <h2><a id="_331"></a>其他问题</h2>
 <h3><a id="_333"></a>增加用户</h3>
