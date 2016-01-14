@@ -248,11 +248,11 @@ registry_1 | time=&quot;2016-01-13T21:57:14Z&quot; level=info msg=&quot;listenin
     - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
     - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
     - REGISTRY_STORAGE=oss
-    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
-    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
-    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
-    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
-    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=your_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=your_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=your_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=your_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=your_oss_bucket.your_oss_region.aliyuncs.com
 </code></pre>
 <p>说明：由于使用阿里云 OSS 作为存储引擎，所以不需要再将文件存储到本地，因此将<code>volumes</code>中的<code>data</code>目录配置去掉；<code>environment</code>新增了<code>REGISTRY_STORAGE</code>系列的环境变量配置，需要将该部分的值替换为对应的<code>accesskey_id</code>、<code>accesskey_secret</code>、<code>region</code>、<code>bucket</code>和<code>endpoint</code>等信息。</p>
 <p>删除<code>data</code>目录并重新启动服务：</p>
@@ -348,11 +348,11 @@ registry:
     - 127.0.0.1:5000:5000
   environment:
     - REGISTRY_STORAGE=oss
-    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
-    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
-    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
-    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
-    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=your_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=your_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=your_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=your_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=your_oss_bucket.your_oss_region.aliyuncs.com
 </code></pre>
 <p>说明：删除<code>registry</code>项目的<code>environment</code>中<code>REGISTRY_AUTH</code>开头的变量以及<code>volumes</code>项，因为<code>auth</code>认证已经在 Nginx 中配置了。</p>
 <p>执行以下命令启动服务：</p>
@@ -392,6 +392,7 @@ $ docker tag ubuntu docker.registry.ucdok.com/test/ubuntu
 <li><a href="https://docs.docker.com/compose/compose-file/">Compose file reference</a></li>
 <li><a href="https://imququ.com/post/letsencrypt-certificate.html">Let's Encrypt，免费好用的 HTTPS 证书</a></li>
 <li><a href="https://buy.wosign.com/free/">沃通免费 SSL 证书申请</a></li>
+<li><a href="https://cnodejs.org/topic/5629c84ee6a3804c5815918d">Using Docker Compose in Node.js Project 中文翻译</a></li>
 </ul>
 
   </article>

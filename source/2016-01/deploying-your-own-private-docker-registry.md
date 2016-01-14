@@ -172,11 +172,11 @@ registry:
     - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
     - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
     - REGISTRY_STORAGE=oss
-    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
-    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
-    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
-    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
-    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=your_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=your_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=your_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=your_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=your_oss_bucket.your_oss_region.aliyuncs.com
 ```
 
 说明：由于使用阿里云OSS作为存储引擎，所以不需要再将文件存储到本地，因此将`volumes`中的`data`目录配置去掉；`environment`新增了`REGISTRY_STORAGE`系列的环境变量配置，需要将该部分的值替换为对应的`accesskey_id`、`accesskey_secret`、`region`、`bucket`和`endpoint`等信息。
@@ -294,11 +294,11 @@ registry:
     - 127.0.0.1:5000:5000
   environment:
     - REGISTRY_STORAGE=oss
-    - REGISTRY_STORAGE_OSS_ACCESSKEYID=you_oss_accesskey_id
-    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=you_oss_accesskey_secret
-    - REGISTRY_STORAGE_OSS_REGION=you_oss_region
-    - REGISTRY_STORAGE_OSS_BUCKET=you_oss_bucket
-    - REGISTRY_STORAGE_OSS_ENDPOINT=you_oss_bucket.you_oss_region.aliyuncs.com
+    - REGISTRY_STORAGE_OSS_ACCESSKEYID=your_oss_accesskey_id
+    - REGISTRY_STORAGE_OSS_ACCESSKEYSECRET=your_oss_accesskey_secret
+    - REGISTRY_STORAGE_OSS_REGION=your_oss_region
+    - REGISTRY_STORAGE_OSS_BUCKET=your_oss_bucket
+    - REGISTRY_STORAGE_OSS_ENDPOINT=your_oss_bucket.your_oss_region.aliyuncs.com
 ```
 
 说明：删除`registry`项目的`environment`中`REGISTRY_AUTH`开头的变量以及`volumes`项，因为`auth`认证已经在Nginx中配置了。
@@ -369,4 +369,4 @@ $ docker-compose stop
 + [Compose file reference](https://docs.docker.com/compose/compose-file/)
 + [Let's Encrypt，免费好用的 HTTPS 证书](https://imququ.com/post/letsencrypt-certificate.html)
 + [沃通免费SSL证书申请](https://buy.wosign.com/free/)
-
++ [Using Docker Compose in Node.js Project 中文翻译](https://cnodejs.org/topic/5629c84ee6a3804c5815918d)
