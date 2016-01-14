@@ -370,3 +370,5 @@ $ docker-compose stop
 + [Let's Encrypt，免费好用的 HTTPS 证书](https://imququ.com/post/letsencrypt-certificate.html)
 + [沃通免费SSL证书申请](https://buy.wosign.com/free/)
 + [Using Docker Compose in Node.js Project 中文翻译](https://cnodejs.org/topic/5629c84ee6a3804c5815918d)
++ [在公有云上搭建负载均衡的Docker私有仓库](https://www.genedock.com/blog/2015/09/28/docker_private_registry/)
+
